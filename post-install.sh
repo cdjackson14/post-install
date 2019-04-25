@@ -40,7 +40,11 @@ optionals () {
 
 xfce () {
 	# Install the essential XFCE Ubuntu stuff
-	sudo apt install -y xubuntu-desktop xfce4 xfce4-goodies
+	sudo apt install -y xfce4-goodies
+}
+
+xfce-gcloud () {
+	sudo apt install -y xubuntu-desktop xfce4
 }
 
 google-chrome () {
@@ -113,6 +117,7 @@ echo 'and remove the comments for functions you want to execute.'
 # essentials
 # optionals
 # xfce
+# xfce-gcloud
 # google-chrome
 # google-remote 
 # ssh-config
