@@ -104,13 +104,16 @@ clean-up () {
 # Here are the functions that will run.  
 # Simple remove what you do not want to execute.
 ######################################################################
-create-alias
-update-upgrade
-build-essentials
-essentials
-optionals
-xfce
-google-chrome
-google-remote 
-ssh-config
-clean-up
+echo 'Nothing has been selected, please edit this file at the bottom'
+echo 'and remove the comments for functions you want to execute.'
+
+# create-alias
+# update-upgrade
+# build-essentials
+# essentials
+# optionals
+# xfce
+# google-chrome
+# google-remote 
+# ssh-config
+# clean-up
