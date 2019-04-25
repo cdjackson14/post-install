@@ -31,7 +31,7 @@ build-essentials () {
 
 essentials () {
 	# Install the essential stuff for most all Debian based systems (Deb, Ubuntu, RaspberryPi, Kali...)
-	sudo apt install -y net-tools nmon ssh screen emacs sshfs cmatrix vlc mplayer rtorrent screen exiv2 
+	sudo apt install -y net-tools nmon ssh screen emacs sshfs cmatrix vlc mplayer rtorrent screen exiv2 git
 }
 
 optionals () {
