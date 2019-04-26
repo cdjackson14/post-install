@@ -14,7 +14,7 @@ create-alias () {
 	alias sshgat='ssh -C -p2222 g1e0x5r5@jackconsult.com'
 	alias sshgen='ssh -C jackchr1@genesis.local'
 	alias sshjackjack='ssh -C jackchr1@jackjack.duckdns.org'
-	" >> .bashrc &&
+	" >> ~/.bashrc &&
 	source ~/.bashrc
 }
 
