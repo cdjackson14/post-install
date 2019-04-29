@@ -47,7 +47,7 @@ optionals () {
 	sudo apt install -y rdesktop iftop ircii ubuntu-wallpapers* ubuntu-restricted-extras
 }
 
-xfce () {
+xfce-goodies () {
 	# Install the essential XFCE Ubuntu stuff
 	sudo apt install -y xfce4-goodies
 }
@@ -120,15 +120,15 @@ clean-up () {
 echo 'Nothing has been selected, please edit this file at the bottom'
 echo 'and remove the comments for functions you want to execute.'
 
-# create-alias
-# update-upgrade
-# create-swap
-# build-essentials
-# essentials
-# optionals
-# xfce
-# xfce-gcloud
-# google-chrome
-# google-remote 
-# ssh-config
-# clean-up
+#create-alias       # set up common helpful alias in .bashrc
+#update-upgrade     # issue update and upgrade for everything
+#create-swap        # create swap spave on a Micro GCP compute
+#build-essentials   # install: build-essential module-assistant dkms
+#essentials         # install: htop net-tools nmon ssh screen emacs sshfs cmatrix vlc mplayer rtorrent screen exiv2 git
+#optionals          # install: rdesktop iftop ircii ubuntu-wallpapers* ubuntu-restricted-extras
+#xfce-goodies       # install: xfce-goodies
+#xfce-gcloud        # install: xfce4 for GCP compute
+#google-chrome      # install: Google Chrome browser
+#google-remote      # install: Google Remote
+#ssh-config         # set up SSH keys in .ssh
+#clean-up           # clean up everything, no harm for any base here
