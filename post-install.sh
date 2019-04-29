@@ -18,6 +18,15 @@ create-alias () {
 	source ~/.bashrc
 }
 
+create-swap () {
+	sudo fallocate -l 1G /swapfile
+	sudo dd if=/dev/zero of=/swapfile bs=1024 count=1048576
+	sudo chmod 600 /swapfile
+	sudo mkswap /swapfile
+	sudo swapon /swapfile
+	sudo echo '/swapfile swap swap defaults 0 0' >> /etc/fstab
+}
+
 update-upgrade () {
 	# Update the system
 	sudo apt update &&
@@ -113,6 +122,7 @@ echo 'and remove the comments for functions you want to execute.'
 
 # create-alias
 # update-upgrade
+# create-swap
 # build-essentials
 # essentials
 # optionals
