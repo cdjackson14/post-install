@@ -116,9 +116,9 @@ clean-up () {
 lamp () {
 	# Install the needed items for a basic LAMP
 	# Apache
-	sudo apt install apache2
+	sudo apt -y install apache2
 	# PHP
-	sudo apt install libapache2-mod-php7.0 php7.0 php7.0-gd php7.0-xml php7.0-curl php7.0-mbstring php7.0-mcrypt php7.0-xmlrpc
+	sudo apt -y install libapache2-mod-php7.0 php7.0 php7.0-gd php7.0-xml php7.0-curl php7.0-mbstring php7.0-mcrypt php7.0-xmlrpc
 	# MySQL (really MariaDB)
 	sudo apt install php7.0-mysql mariadb-server mariadb-client
 	# Start DB
