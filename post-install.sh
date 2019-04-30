@@ -113,6 +113,40 @@ clean-up () {
 	sudo apt -y clean
 }
 
+lamp () {
+	# Install the needed items for a basic LAMP
+	# Apache
+	sudo apt install apache2
+	# PHP
+	sudo apt install libapache2-mod-php7.0 php7.0 php7.0-gd php7.0-xml php7.0-curl php7.0-mbstring php7.0-mcrypt php7.0-xmlrpc
+	# MySQL (really MariaDB)
+	sudo apt install php7.0-mysql mariadb-server mariadb-client
+	# Start DB
+	sudo systemctl start mariadb
+	# Answer the DB wizard
+	sudo mysql_secure_installation
+	# enable and configure TLS and rewrite modules
+	sudo a2enmod rewrite ssl
+	sudo a2ensite default-ssl.conf
+	
+	echo 'Visit https://www.howtoforge.com/tutorial/install-wordpress-5-with-apache-on-debian-9/'
+	echo 'You still need to:'
+	echo '1. Keep root from logging into DB without password'
+	echo '2. Change DocumentRoot directive in'
+	echo '    /etc/apache2/sites-enabled/000-default.conf'
+	echo '    /etc/apache2/sites-enabled/default-ssl.conf'
+	echo ''
+	echo '		<Directory /var/www/html>'
+	echo '			Options Indexes FollowSymLinks MultiViews'
+	echo '			AllowOverride All'
+	echo '			Require all granted'
+	echo '		</Directory>'
+	echo ''
+	echo '3. Add default-ssl.conf TLS configuration file'
+	echo '4. And then restart a few things listed in the above URL instructions'
+	echo ''
+}
+
 ######################################################################
 # Here are the functions that will run.  
 # Simple remove what you do not want to execute.
@@ -132,3 +166,4 @@ echo 'and remove the comments for functions you want to execute.'
 #google-remote      # install: Google Remote
 #ssh-config         # set up SSH keys in .ssh
 #clean-up           # clean up everything, no harm for any base here
+#lamp               # install: LAMP (Linux, Apache, MariaDB, PHP) on GCP
