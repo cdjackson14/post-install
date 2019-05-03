@@ -40,7 +40,7 @@ build-essentials () {
 
 essentials () {
 	# Install the essential stuff for most all Debian based systems (Deb, Ubuntu, RaspberryPi, Kali...)
-	sudo apt install -y htop net-tools nmon ssh screen emacs sshfs cmatrix vlc mplayer rtorrent screen exiv2 git
+	sudo apt install -y htop net-tools nmon ssh screen emacs sshfs cmatrix vlc mplayer rtorrent screen exiv2 git exfat-utils
 }
 
 optionals () {
@@ -158,7 +158,7 @@ echo 'and remove the comments for functions you want to execute.'
 #update-upgrade     # issue update and upgrade for everything
 #create-swap        # create swap spave on a Micro GCP compute
 #build-essentials   # install: build-essential module-assistant dkms
-#essentials         # install: htop net-tools nmon ssh screen emacs sshfs cmatrix vlc mplayer rtorrent screen exiv2 git
+#essentials         # install: htop net-tools nmon ssh screen emacs sshfs cmatrix vlc mplayer rtorrent screen exiv2 git exfat-utils
 #optionals          # install: rdesktop iftop ircii ubuntu-wallpapers* ubuntu-restricted-extras
 #xfce-goodies       # install: xfce-goodies
 #xfce-gcloud        # install: xfce4 for GCP compute
