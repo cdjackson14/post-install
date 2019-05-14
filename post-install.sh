@@ -129,6 +129,16 @@ lamp () {
 	sudo a2enmod rewrite ssl
 	sudo a2ensite default-ssl.conf
 	
+	# Allow Emacs to color code PHP and web pages
+	sudo apt -y install php-elisp
+	
+	# Install phpMyAdmin
+	# https://www.digitalocean.com/community/tutorials/how-to-install-and-secure-phpmyadmin-on-debian-9
+	sudo apt -y install phpmyadmin php-mbstring php-gettext
+	echo 'Post phpMyAdmin config and security at:'
+	echo 'https://www.digitalocean.com/community/tutorials/how-to-install-and-secure-phpmyadmin-on-debian-9'
+	echo ''
+	
 	echo 'Visit https://www.howtoforge.com/tutorial/install-wordpress-5-with-apache-on-debian-9/'
 	echo 'You still need to:'
 	echo '1. Keep root from logging into DB without password'
