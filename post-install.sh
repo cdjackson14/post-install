@@ -3,18 +3,18 @@
 create-alias () {
 	# Update the .bashrc with some helpful alias commands
 	echo -e "
-	alias update='sudo apt update'
-	alias install='sudo apt install'
-	alias upgrade='sudo apt upgrade'
-	alias remove='sudo apt remove'
-	alias purge='sudo apt purge'
-	alias search='sudo apt search'
-	alias pp='ps -ef | grep '
-	alias h='history'
-	alias sshgat='ssh -C -p2222 g1e0x5r5@jackconsult.com'
-	alias sshgen='ssh -C jackchr1@genesis.local'
-	alias sshjackjack='ssh -C jackchr1@jackjack.duckdns.org'
-	" >> ~/.bashrc &&
+alias update='sudo apt update'
+alias install='sudo apt install'
+alias upgrade='sudo apt upgrade'
+alias remove='sudo apt remove'
+alias purge='sudo apt purge'
+alias search='sudo apt search'
+alias pp='ps -ef | grep '
+alias h='history'
+alias sshgat='ssh -C -p2222 g1e0x5r5@jackconsult.com'
+alias sshgen='ssh -C jackchr1@genesis.local'
+alias sshjackjack='ssh -C jackchr1@jackjack.duckdns.org'
+" >> ~/.bashrc &&
 	source ~/.bashrc
 }
 
