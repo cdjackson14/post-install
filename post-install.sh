@@ -157,6 +157,18 @@ lamp () {
 	echo ''
 }
 
+realtek-wifi {
+	sudo apt install build-essential git libelf-dev dkms
+	git clone https://github.com/cilynx/rtl88x2BU_WiFi_linux_v5.3.1_27678.20180430_COEX20180427-5959.git
+	cd rtl88x2BU_WiFi_linux_v5.3.1_27678.20180430_COEX20180427-5959
+	VER=$(sed -n 's/\PACKAGE_VERSION="\(.*\)"/\1/p' dkms.conf)
+	sudo rsync -rvhP ./ /usr/src/rtl88x2bu-${VER}
+	sudo dkms add -m rtl88x2bu -v ${VER}
+	sudo dkms build -m rtl88x2bu -v ${VER}
+	sudo dkms install -m rtl88x2bu -v ${VER}
+	sudo modprobe 88x2bu
+}
+
 ######################################################################
 # Here are the functions that will run.  
 # Simple remove what you do not want to execute.
@@ -177,3 +189,4 @@ echo 'and remove the comments for functions you want to execute.'
 #ssh-config         # set up SSH keys in .ssh
 #clean-up           # clean up everything, no harm for any base here
 #lamp               # install: LAMP (Linux, Apache, MariaDB, PHP) on GCP
+#realtek-wifi       # build and install the Realtek AC1200 wifi drivers
