@@ -188,12 +188,12 @@ realvnc-xfce4 () {
 	sudo apt install -f -y
 
 	# Set up the StartX
-	sudo echo '#!/bin/sh 
+	echo '#!/bin/sh 
 DESKTOP_SESSION=xfce
 export DESKTOP_SESSION
 startxfce4
 vncserver-virtual -kill $DISPLAY
-' > /etc/vnc/xstartup.custom
+' | sudo tee -a /etc/vnc/xstartup.custom
 	sudo chmod 755 /etc/vnc/xstartup.custom
 	
 	# Set up a nice alias for starting up with multiple resolutions
