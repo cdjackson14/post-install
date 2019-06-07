@@ -169,6 +169,37 @@ realtek-wifi () {
 	sudo modprobe 88x2bu
 }
 
+realvnc-xfce4 () {
+	# Check	is wanting 64 or 32 bit
+        if [[ $(getconf LONG_BIT) = "64" ]]
+        then
+		BIT=x64
+        else
+		BIT=x86
+        fi
+	# Download the RealVNC files
+	wget https://www.realvnc.com/download/file/vnc.files/VNC-Server-6.4.1-Linux-$BIT.deb
+	wget https://www.realvnc.com/download/file/viewer.files/VNC-Viewer-6.19.325-Linux-$BIT.deb
+	
+	# Install both
+	sudo dpkg --install VNC-Server-*.deb
+	sudo apt install -f -y
+	sudo dpkg --install VNC-Viewer-*.deb
+	sudo apt install -f -y
+
+	# Set up the StartX
+	sudo echo '#!/bin/sh 
+DESKTOP_SESSION=xfce
+export DESKTOP_SESSION
+startxfce4
+vncserver-virtual -kill $DISPLAY
+' > /etc/vnc/xstartup.custom
+	sudo chmod 755 /etc/vnc/xstartup.custom
+	
+	# Set up a nice alias for starting up with multiple resolutions
+	echo "alias vv='vncserver :28 -geometry 1280x800 -randr 1280x800,1024x768,1920x1080,1280x1024,1600x1200,1440x900,1600x900,2880x1800,1680x1050'" >> ~/.bashrc
+}
+
 ######################################################################
 # Here are the functions that will run.  
 # Simple remove what you do not want to execute.
@@ -187,6 +218,7 @@ echo 'and remove the comments for functions you want to execute.'
 #google-chrome      # install: Google Chrome browser
 #google-remote      # install: Google Remote
 #ssh-config         # set up SSH keys in .ssh
-#clean-up           # clean up everything, no harm for any base here
 #lamp               # install: LAMP (Linux, Apache, MariaDB, PHP) on GCP
 #realtek-wifi       # build and install the Realtek AC1200 wifi drivers
+#realvnc-xfce4      # install: RealVNC debian files and configure for XFCE4 startup
+#clean-up           # clean up everything, no harm for any base here
