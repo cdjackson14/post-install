@@ -196,9 +196,11 @@ vncserver-virtual -kill $DISPLAY
 ' | sudo tee -a /etc/vnc/xstartup.custom
 	sudo chmod 755 /etc/vnc/xstartup.custom
 	
+	# Register the license
+	sudo vnclicense -add 4326B-7H7LA-RG5F2-292D5-9LTTA
 	# Set up a nice alias for starting up with multiple resolutions
 	echo "alias vv='vncserver :28 -geometry 1280x800 -randr 1280x800,1024x768,1920x1080,1280x1024,1600x1200,1440x900,1600x900,2880x1800,1680x1050'" >> ~/.bashrc
-
+	# Remove the install files
 	rm VNC-Server*.deb
 	rm VNC-Viewer*.deb
 }
