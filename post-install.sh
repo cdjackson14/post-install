@@ -205,25 +205,27 @@ vncserver-virtual -kill $DISPLAY
 	rm VNC-Viewer*.deb
 }
 
-######################################################################
-# Here are the functions that will run.  
-# Simple remove what you do not want to execute.
-######################################################################
-echo 'Nothing has been selected, please edit this file at the bottom'
-echo 'and remove the comments for functions you want to execute.'
 
-#create-alias       # set up common helpful alias in .bashrc
-#update-upgrade     # issue update and upgrade for everything
-#create-swap        # create swap spave on a Micro GCP compute
-#build-essentials   # install: build-essential module-assistant dkms
-#essentials         # install: htop net-tools nmon ssh screen emacs sshfs cmatrix vlc mplayer rtorrent screen exiv2 git exfat-utils
-#optionals          # install: rdesktop iftop ircii ubuntu-wallpapers* ubuntu-restricted-extras
-#xfce-goodies       # install: xfce-goodies
-#xfce-gcloud        # install: xfce4 for GCP compute
-#google-chrome      # install: Google Chrome browser
-#google-remote      # install: Google Remote
-#ssh-config         # set up SSH keys in .ssh
-#lamp               # install: LAMP (Linux, Apache, MariaDB, PHP) on GCP
-#realtek-wifi       # build and install the Realtek AC1200 wifi drivers
-#realvnc-xfce4      # install: RealVNC debian files and configure for XFCE4 startup
-#clean-up           # clean up everything, no harm for any base here
+eval `resize`
+whiptail --title "Post Install on Debian" --checklist --separate-output \
+"What post install activities would you like to run?" $LINES $COLUMNS $((LINES-8)) \
+"create-alias"      "Create common alias in .bashrc " OFF \
+"update-upgrade"    "Update and upgrade core system " OFF \
+"build-essentials"  "Install: build-essential module-assistant dkms " OFF \
+"essentials"        "Install: basic utilities " OFF \
+"optionals"         "Install: rdesktop iftop ircii ubuntu-wallpapers* ubuntu-restricted-extras " OFF \
+"xfce-goodies"      "Install: xfce-goodies " OFF \
+"google-chrome"     "Install: Google Chrome browser " OFF \
+"realtek-wifi"      "Install: Realtek AC1200 wifi drivers " OFF \
+"realvnc-xfce4"     "Install: RealVNC debian files and configure for XFCE4 startup " OFF \
+"ssh-config"        "set up SSH keys in .ssh " OFF \
+"create-swap"       "GCP: Create swap space on a Micro compute " OFF \
+"google-remote"     "GCP: install Google Remote " OFF \
+"xfce-gcloud"       "GCP: install xfce4 for GCP compute " OFF \
+"lamp"		    "GCP: install LAMP (Linux, Apache, MariaDB, PHP) on GCP " OFF \
+"clean-up"          "Clean up everything " OFF 2>results
+
+while read choice
+do
+    $choice
+done<results
