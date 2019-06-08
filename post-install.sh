@@ -173,18 +173,20 @@ realvnc-xfce4 () {
 	# Check	is wanting 64 or 32 bit
         if [[ $(getconf LONG_BIT) = "64" ]]
         then
-		BIT=x64
+		VNCSERVER=VNC-Server-6.4.1-Linux-x64.deb
+		VNCVIEWER=VNC-Viewer-6.19.325-Linux-x64.deb
         else
-		BIT=x86
+		VNCSERVER=VNC-Server-6.4.1-Linux-x86.deb
+		VNCVIEWER=VNC-Viewer-6.19.325-Linux-x86.deb
         fi
 	# Download the RealVNC files
-	wget https://www.realvnc.com/download/file/vnc.files/VNC-Server-6.4.1-Linux-$BIT.deb
-	wget https://www.realvnc.com/download/file/viewer.files/VNC-Viewer-6.19.325-Linux-$BIT.deb
+	wget https://www.realvnc.com/download/file/vnc.files/$VNCSERVER
+	wget https://www.realvnc.com/download/file/viewer.files/$VNCVIEWER
 	
 	# Install both
-	sudo dpkg --install VNC-Server-*.deb
+	sudo dpkg --install $VNCSERVER
 	sudo apt install -f -y
-	sudo dpkg --install VNC-Viewer-*.deb
+	sudo dpkg --install $VNCVIEWER
 	sudo apt install -f -y
 
 	# Set up the StartX
@@ -192,8 +194,7 @@ realvnc-xfce4 () {
 DESKTOP_SESSION=xfce
 export DESKTOP_SESSION
 startxfce4
-vncserver-virtual -kill $DISPLAY
-' | sudo tee -a /etc/vnc/xstartup.custom
+vncserver-virtual -kill $DISPLAY' | sudo tee -a /etc/vnc/xstartup.custom
 	sudo chmod 755 /etc/vnc/xstartup.custom
 	
 	# Register the license
@@ -201,31 +202,33 @@ vncserver-virtual -kill $DISPLAY
 	# Set up a nice alias for starting up with multiple resolutions
 	echo "alias vv='vncserver :28 -geometry 1280x800 -randr 1280x800,1024x768,1920x1080,1280x1024,1600x1200,1440x900,1600x900,2880x1800,1680x1050'" >> ~/.bashrc
 	# Remove the install files
-	rm VNC-Server*.deb
-	rm VNC-Viewer*.deb
+	rm $VNCSERVER
+	rm $VNCVIEWER
 }
 
-
+######################################################################
+# Finally we start the real part, and show a little menu
+######################################################################
 eval `resize`
 whiptail --title "Post Install on Debian" --checklist --separate-output \
-"What post install activities would you like to run?" $LINES $COLUMNS $((LINES-8)) \
-"create-alias"      "Create common alias in .bashrc " OFF \
-"update-upgrade"    "Update and upgrade core system " OFF \
-"build-essentials"  "Install: build-essential module-assistant dkms " OFF \
-"essentials"        "Install: basic utilities " OFF \
-"optionals"         "Install: rdesktop iftop ircii ubuntu-wallpapers* ubuntu-restricted-extras " OFF \
-"xfce-goodies"      "Install: xfce-goodies " OFF \
-"google-chrome"     "Install: Google Chrome browser " OFF \
-"realtek-wifi"      "Install: Realtek AC1200 wifi drivers " OFF \
-"realvnc-xfce4"     "Install: RealVNC debian files and configure for XFCE4 startup " OFF \
-"ssh-config"        "set up SSH keys in .ssh " OFF \
-"create-swap"       "GCP: Create swap space on a Micro compute " OFF \
-"google-remote"     "GCP: install Google Remote " OFF \
-"xfce-gcloud"       "GCP: install xfce4 for GCP compute " OFF \
-"lamp"		    "GCP: install LAMP (Linux, Apache, MariaDB, PHP) on GCP " OFF \
-"clean-up"          "Clean up everything " OFF 2>results
+	"What post install activities would you like to run?" $LINES $COLUMNS $((LINES-8)) \
+	"create-alias"      "Create common alias in .bashrc " OFF \
+	"update-upgrade"    "Update and upgrade core system " OFF \
+	"build-essentials"  "Install: build-essential module-assistant dkms " OFF \
+	"essentials"        "Install: basic utilities " OFF \
+	"optionals"         "Install: rdesktop iftop ircii ubuntu-wallpapers* ubuntu-restricted-extras " OFF \
+	"xfce-goodies"      "Install: xfce-goodies " OFF \
+	"google-chrome"     "Install: Google Chrome browser " OFF \
+	"realtek-wifi"      "Install: Realtek AC1200 wifi drivers " OFF \
+	"realvnc-xfce4"     "Install: RealVNC debian files and configure for XFCE4 startup " OFF \
+	"ssh-config"        "set up SSH keys in .ssh " OFF \
+	"create-swap"       "GCP: Create swap space on a Micro compute " OFF \
+	"google-remote"     "GCP: install Google Remote " OFF \
+	"xfce-gcloud"       "GCP: install xfce4 for GCP compute " OFF \
+	"lamp"		    "GCP: install LAMP (Linux, Apache, MariaDB, PHP) on GCP " OFF \
+	"clean-up"          "Clean up everything " OFF 2>results
 
 while read choice
 do
-    $choice
+	$choice
 done<results
