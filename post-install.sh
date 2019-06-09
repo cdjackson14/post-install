@@ -210,7 +210,8 @@ vncserver-virtual -kill $DISPLAY' | sudo tee -a /etc/vnc/xstartup.custom
 # Finally we start the real part, and show a little menu
 ######################################################################
 eval `resize`
-whiptail --title "Post Install on Debian" --checklist --separate-output \
+declare -a NAME
+NAME=( $(whiptail --title "Post Install on Debian" --checklist --separate-output \
 	"What post install activities would you like to run?" $LINES $COLUMNS $((LINES-8)) \
 	"create-alias"      "Create common alias in .bashrc " OFF \
 	"update-upgrade"    "Update and upgrade core system " OFF \
@@ -226,9 +227,11 @@ whiptail --title "Post Install on Debian" --checklist --separate-output \
 	"google-remote"     "GCP: install Google Remote " OFF \
 	"xfce-gcloud"       "GCP: install xfce4 for GCP compute " OFF \
 	"lamp"		    "GCP: install LAMP (Linux, Apache, MariaDB, PHP) on GCP " OFF \
-	"clean-up"          "Clean up everything " OFF 2>results
+	"clean-up"          "Clean up everything " OFF \
+	3>&1 1>&2 2>&3) )
 
-while read choice
+for i in "${NAME[@]}"
 do
-	$choice
-done<results
+	$i
+done
+
