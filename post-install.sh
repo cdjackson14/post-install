@@ -1,5 +1,18 @@
 #!/bin/bash
 
+# Created by Chris Jackson, cdjackson14@gmail.com
+# Can be used on many Debian based installs, like Ubuntu, Raspberry Pi, Kali, and GCP Linux computes
+#
+# Top is all functions, the bottom lines contain the menu and action.
+
+
+
+
+
+##############################
+# FUNCTIONS
+##############################
+
 create-alias () {
 	# Update the .bashrc with some helpful alias commands
 	echo -e "
@@ -206,12 +219,24 @@ vncserver-virtual -kill $DISPLAY' | sudo tee -a /etc/vnc/xstartup.custom
 	rm $VNCVIEWER
 }
 
+
+
 ######################################################################
-# Finally we start the real part, and show a little menu
+# MAIN
 ######################################################################
+
+# Get the size of the current terminal window
 eval `resize`
-declare -a NAME
-NAME=( $(whiptail --title "Post Install on Debian" --checklist --separate-output \
+
+declare -a SELECTION
+
+# OK, this is a little tricky...
+#   but I've added a left and right () before and after so the variable is
+#   interperated as an array.
+#
+#   example of a possible value
+#             $SELECTION=(create-alias update-upgrade options ssh-config)
+SELECTION=( $(whiptail --title "Post Install on Debian" --checklist --separate-output \
 	"What post install activities would you like to run?" $LINES $COLUMNS $((LINES-8)) \
 	"create-alias"      "Create common alias in .bashrc " OFF \
 	"update-upgrade"    "Update and upgrade core system " OFF \
@@ -230,8 +255,8 @@ NAME=( $(whiptail --title "Post Install on Debian" --checklist --separate-output
 	"clean-up"          "Clean up everything " OFF \
 	3>&1 1>&2 2>&3) )
 
-for i in "${NAME[@]}"
+# Now loop through all the returned selections, which is stored in an array $SELECTION
+for i in "${SELECTION[@]}"
 do
 	$i
 done
-
