@@ -7,4 +7,4 @@ This uses a command line menu system (whiptail) for selecting the various compon
     $ cd post-install
     $ ./post-install
 
-[![post-install](https://raw.githubusercontent.com/cdjackson14/post-install/master/post-install.png "post-install")](https://raw.githubusercontent.com/cdjackson14/post-install/ "post-install")
+[![post-install](https://raw.githubusercontent.com/cdjackson14/post-install/master/screenshot.png "post-install")](https://raw.githubusercontent.com/cdjackson14/post-install/ "post-install")
