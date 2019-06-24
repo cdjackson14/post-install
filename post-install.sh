@@ -227,7 +227,9 @@ vncserver-virtual -kill $DISPLAY' | sudo tee -a /etc/vnc/xstartup.custom
 ######################################################################
 
 # Get the size of the current terminal window
-eval `resize`
+#eval `resize`
+LINES=`tput lines`
+COLUMNS=`tput cols`
 
 declare -a SELECTION
 
