@@ -170,6 +170,22 @@ lamp () {
 	echo ''
 }
 
+lap () {
+	# Install the needed items for a basic LAMP (no MySQL)
+	# Apache
+	sudo apt -y install apache2
+	# PHP
+	sudo apt -y install libapache2-mod-php7.0 php7.0 php7.0-gd php7.0-xml php7.0-curl php7.0-mbstring php7.0-mcrypt php7.0-xmlrpc
+	# MySQL PHP connector only
+	sudo apt install php7.0-mysql
+	# enable and configure TLS and rewrite modules
+	sudo a2enmod rewrite ssl
+	sudo a2ensite default-ssl.conf
+	
+	# Allow Emacs to color code PHP and web pages
+	sudo apt -y install php-elisp
+}
+
 realtek-wifi () {
 	sudo apt install build-essential git libelf-dev dkms bc
 	#sudo apt install raspberrypi-kernel-headers raspberrypi-kernel
@@ -255,6 +271,7 @@ SELECTION=( $(whiptail --title "Post Install on Debian" --checklist --separate-o
 	"google-remote"     "GCP: install Google Remote " OFF \
 	"xfce-gcloud"       "GCP: install xfce4 for GCP compute " OFF \
 	"lamp"		    "GCP: install LAMP (Linux, Apache, MariaDB, PHP) on GCP " OFF \
+	"lap"		    "GCP: install LAP(m) (Linux, Apache, PHP, MySQL Connectors only) on GCP " OFF \
 	"clean-up"          "Clean up everything " OFF \
 	3>&1 1>&2 2>&3) )
 
