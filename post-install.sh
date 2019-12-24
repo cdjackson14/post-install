@@ -206,6 +206,7 @@ tor () {
 	wget $TOR_LINK
 	tar -xf $TOR_FILE
 	rm $TOR_FILE
+	sudo mv tor-browser_en-US ~/tor-browser
 }
 
 realvnc-xfce4 () {
