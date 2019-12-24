@@ -199,6 +199,15 @@ realtek-wifi () {
 	sudo modprobe 88x2bu
 }
 
+tor {
+	# Install the TOR Browser on Linux
+	TOR_LINK=https://www.torproject.org/dist/torbrowser/9.0.2/tor-browser-linux64-9.0.2_en-US.tar.xz
+	TOR_FILE=tor-browser-linux64-9.0.2_en-US.tar.xz
+	wget $TOR_LINK
+	tar -xf $TOR_FILE
+	rm $TOR_FILE
+}
+
 realvnc-xfce4 () {
 	# Check	is wanting 64 or 32 bit
         if [[ $(getconf LONG_BIT) = "64" ]]
@@ -266,6 +275,7 @@ SELECTION=( $(whiptail --title "Post Install on Debian" --checklist --separate-o
 	"google-chrome"     "Install: Google Chrome browser " OFF \
 	"realtek-wifi"      "Install: Realtek AC1200 wifi drivers " OFF \
 	"realvnc-xfce4"     "Install: RealVNC debian files and configure for XFCE4 startup " OFF \
+	"tor"               "Install: TOR Browser " OFF \
 	"ssh-config"        "set up SSH keys in .ssh " OFF \
 	"create-swap"       "GCP: Create swap space on a Micro compute " OFF \
 	"google-remote"     "GCP: install Google Remote " OFF \
