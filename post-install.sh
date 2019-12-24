@@ -199,7 +199,7 @@ realtek-wifi () {
 	sudo modprobe 88x2bu
 }
 
-tor {
+tor () {
 	# Install the TOR Browser on Linux
 	TOR_LINK=https://www.torproject.org/dist/torbrowser/9.0.2/tor-browser-linux64-9.0.2_en-US.tar.xz
 	TOR_FILE=tor-browser-linux64-9.0.2_en-US.tar.xz
