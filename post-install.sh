@@ -207,7 +207,7 @@ tor () {
 	tar -xf ${TOR_FILE}
 	rm ${TOR_FILE}
 	sudo mv tor-browser_en-US ~/tor-browser
-	echo '#!/bin/bash' > ~/tor-browser/copy-to-start-menu.sh
+	echo '#!/bin/bash' > ~/tor-browser/copy-to-start-menu.sh 
 	echo 'cp ~/tor-browser/start-tor-browser.desktop ~/.local/share/applications/' >> ~/tor-browser/copy-to-start-menu.sh
 	chmod 777 ~/tor-browser/copy-to-start-menu.sh
 }
