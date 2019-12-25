@@ -219,7 +219,7 @@ kernel-latest () {
 	FILE_3=linux-image-unsigned-5.4.6-050406-generic_5.4.6-050406.201912211140_amd64.deb
 	FILE_4=linux-modules-5.4.6-050406-generic_5.4.6-050406.201912211140_amd64.deb
 	sudo apt update &&
-	sudo apt upgrade -y
+	sudo apt upgrade -y 
 	wget ${BASE_URL}/${FILE_1}
 	wget ${BASE_URL}/${FILE_2}
 	wget ${BASE_URL}/${FILE_3}
