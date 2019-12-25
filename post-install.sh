@@ -213,21 +213,22 @@ tor () {
 }
 
 kernel-latest () {
+	BASE_URL=https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.4.6/
 	FILE_1=linux-headers-5.4.6-050406_5.4.6-050406.201912211140_all.deb
 	FILE_2=linux-headers-5.4.6-050406-generic_5.4.6-050406.201912211140_amd64.deb
 	FILE_3=linux-image-unsigned-5.4.6-050406-generic_5.4.6-050406.201912211140_amd64.deb
 	FILE_4=linux-modules-5.4.6-050406-generic_5.4.6-050406.201912211140_amd64.deb
 	sudo apt update &&
 	sudo apt upgrade -y
-	wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.4.6/$FILE_1
-	wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.4.6/$FILE_2
-	wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.4.6/$FILE_3
-	wget https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.4.6/$FILE_4
-	sudo dpkg -i $FILE_1
-	sudo dpkg -i $FILE_2
-	sudo dpkg -i $FILE_3
-	sudo dpkg -i $FILE_4
-	rm $FILE_1 $FILE_2 $FILE_3 $FILE_4
+	wget ${BASE_URL}/${FILE_1}
+	wget ${BASE_URL}/${FILE_2}
+	wget ${BASE_URL}/${FILE_3}
+	wget ${BASE_URL}/${FILE_4}
+	sudo dpkg -i ${FILE_1}
+	sudo dpkg -i ${FILE_2}
+	sudo dpkg -i ${FILE_3}
+	sudo dpkg -i ${FILE_4}
+	rm ${FILE_1} ${FILE_2} ${FILE_3} ${FILE_4}
 	sudo reboot
 }
 
