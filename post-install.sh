@@ -203,9 +203,9 @@ tor () {
 	# Install the TOR Browser on Linux
 	TOR_LINK=https://www.torproject.org/dist/torbrowser/9.0.2/tor-browser-linux64-9.0.2_en-US.tar.xz
 	TOR_FILE=tor-browser-linux64-9.0.2_en-US.tar.xz
-	wget $TOR_LINK
-	tar -xf $TOR_FILE
-	rm $TOR_FILE
+	wget ${TOR_LINK}
+	tar -xf ${TOR_FILE}
+	rm ${TOR_FILE}
 	sudo mv tor-browser_en-US ~/tor-browser
 	echo '#!/bin/bash' > ~/tor-browser/copy-to-start-menu.sh
 	echo 'cp ~/tor-browser/start-tor-browser.desktop ~/.local/share/applications/' >> ~/tor-browser/copy-to-start-menu.sh
@@ -224,10 +224,7 @@ kernel-latest () {
 	wget ${BASE_URL}/${FILE_2}
 	wget ${BASE_URL}/${FILE_3}
 	wget ${BASE_URL}/${FILE_4}
-	sudo dpkg -i ${FILE_1}
-	sudo dpkg -i ${FILE_2}
-	sudo dpkg -i ${FILE_3}
-	sudo dpkg -i ${FILE_4}
+	sudo dpkg -i ${FILE_1} ${FILE_2} ${FILE_3} ${FILE_4}
 	rm ${FILE_1} ${FILE_2} ${FILE_3} ${FILE_4}
 	sudo reboot
 }
