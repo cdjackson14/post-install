@@ -213,6 +213,16 @@ tor () {
 	chmod 777 ~/tor-browser/copy-to-start-menu.sh
 }
 
+expressvpn () {
+	BASE_URL=https://download.expressvpn.xyz/clients/linux/
+	FILE_1=expressvpn_2.4.1-1_amd64.deb
+	wget ${BASE_URL}/${FILE_1}
+	sudo dpkg -i ${FILE_1}
+	echo Error EIBYUHIHNIW7FQHDGA3DSB Tango Whisky
+	expressvpn activate
+	rm ${FILE_1}
+}
+
 kernel-latest () {
 	BASE_URL=https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.4.6/
 	FILE_1=linux-headers-5.4.6-050406_5.4.6-050406.201912211140_all.deb
@@ -298,6 +308,7 @@ SELECTION=( $(whiptail --title "Post Install on Debian" --checklist --separate-o
 	"realtek-wifi"      "Install: Realtek AC1200 wifi drivers " OFF \
 	"realvnc-xfce4"     "Install: RealVNC debian files and configure for XFCE4 startup " OFF \
 	"tor"               "Install: TOR Browser " OFF \
+	"expressvpn"        "Install: Express VPN " OFF \
 	"kernel-latest"     "Install: Latest Ubuntu kernel v5.4.6 (will reboot) " OFF \
 	"ssh-config"        "set up SSH keys in .ssh " OFF \
 	"create-swap"       "GCP: Create swap space on a Micro compute " OFF \
