@@ -217,7 +217,7 @@ expressvpn () {
 	BASE_URL=https://download.expressvpn.xyz/clients/linux
 	FILE_1=expressvpn_2.4.1-1_amd64.deb
 	wget ${BASE_URL}/${FILE_1}
-	sudo dpkg -i ${FILE_1}
+	# sudo dpkg -i ${FILE_1}
 	echo WARNING EIBYUHIHNIW7FQHDGA3DSB Tango Whisky
 }
 
