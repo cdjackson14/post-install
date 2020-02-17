@@ -219,17 +219,6 @@ expressvpn () {
 	wget ${BASE_URL}/${FILE_1}
 	sudo dpkg -i ${FILE_1}
 	echo WARNING EIBYUHIHNIW7FQHDGA3DSB Tango Whisky
-	echo This will disconnect your network when installed.  If you are connected remotely
-	echo     this will more than likely hang your remote session.  Should only be installed
-	echo     at the terminal.
-	echo
-	read -p "Do you want to install? " -n 1 -r
-	echo    # (optional) move to a new line
-	if [[ ! $REPLY =~ ^[Yy]$ ]]
-	then
-		echo expressvpn activate
-		echo rm ${FILE_1}
-	fi
 }
 
 kernel-latest () {
