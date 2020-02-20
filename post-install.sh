@@ -201,8 +201,8 @@ realtek-wifi () {
 
 tor () {
 	# Install the TOR Browser on Linux
-	TOR_LINK=https://www.torproject.org/dist/torbrowser/9.0.2/tor-browser-linux64-9.0.5_en-US.tar.xz
 	TOR_FILE=tor-browser-linux64-9.0.5_en-US.tar.xz
+	TOR_LINK=https://www.torproject.org/dist/torbrowser/9.0.5/${TOR_FILE}
 	wget ${TOR_LINK}
 	tar -xf ${TOR_FILE}
 	rm ${TOR_FILE}
