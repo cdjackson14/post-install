@@ -242,11 +242,11 @@ realvnc-xfce4 () {
 	# Check	is wanting 64 or 32 bit
         if [[ $(getconf LONG_BIT) = "64" ]]
         then
-		VNCSERVER=VNC-Server-6.4.1-Linux-x64.deb
-		VNCVIEWER=VNC-Viewer-6.19.325-Linux-x64.deb
+		VNCSERVER=VNC-Server-6.7.1-Linux-x64.deb
+		VNCVIEWER=VNC-Viewer-6.20.113-Linux-x64.deb
         else
-		VNCSERVER=VNC-Server-6.4.1-Linux-x86.deb
-		VNCVIEWER=VNC-Viewer-6.19.325-Linux-x86.deb
+		VNCSERVER=VNC-Server-6.7.1-Linux-x86.deb
+		VNCVIEWER=VNC-Viewer-6.20.113-Linux-x86.deb
         fi
 	# Download the RealVNC files
 	wget https://www.realvnc.com/download/file/vnc.files/$VNCSERVER
