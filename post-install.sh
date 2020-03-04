@@ -287,13 +287,18 @@ vncserver-virtual -kill $DISPLAY' | sudo tee -a /etc/vnc/xstartup.custom
 # Get the size of the current terminal window
 #eval `resize`
 
-# Check to make sure whiptail is installed and available
-command -v whiptail >/dev/null 2>&1 || { echo >&2 "I require whiptail but it's not installed."; echo "Please install it with the following:"; echo "sudo apt install whiptail"; exit 1; }
-read -p "Would you like to install whiptail now (y/n)? "
-case $(echo $REPLY | tr '[A-Z]' '[a-z]') in
-	y|yes) sudo apt update; sudo apt install git ;;
-	*)     echo "OK, we shall skip it, but things will not work :-(" ;;
-esac
+# Check to make sure whiptail is installed and available, if not install it.
+if hash whiptail 2>/dev/null; then
+	# It's installed, there is nothing to do... continue on.
+else
+	# Not installed, or we can't find it, so let's prompt to install it
+	echo "Bummer, whiptail is required for the menu of install options."
+	read -p "Would you like to install whiptail now (y/n)? "
+	case $(echo $REPLY | tr '[A-Z]' '[a-z]') in
+		y|yes) sudo apt update; sudo apt install whiptail ;;
+		*)     echo "OK, we shall skip it, but things will not work :-(" ;;
+	esac
+fi
 
 # Set up to allow for line breaks
 IFS=$'\n'
