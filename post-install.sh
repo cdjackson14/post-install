@@ -24,9 +24,6 @@ alias purge='sudo apt purge'
 alias search='sudo apt search'
 alias pp='ps -ef | grep '
 alias h='history'
-alias sshgat='ssh -C -p2222 g1e0x5r5@jackconsult.com'
-alias sshgen='ssh -C jackchr1@genesis.local'
-alias sshjackjack='ssh -C jackchr1@jackjack.duckdns.org'
 " >> ~/.bashrc &&
 	source ~/.bashrc
 }
@@ -217,8 +214,10 @@ expressvpn () {
 	BASE_URL=https://download.expressvpn.xyz/clients/linux
 	FILE_1=expressvpn_2.4.1-1_amd64.deb
 	wget ${BASE_URL}/${FILE_1}
-	# sudo dpkg -i ${FILE_1}
-	echo WARNING EIBYUHIHNIW7FQHDGA3DSB Tango Whisky
+	sudo dpkg -i ${FILE_1}
+	echo Please log into your account and get the activiation code.
+	echo https://www.expressvpn.com/sign-in
+	rm ${FILE_1}
 }
 
 kernel-latest () {
@@ -267,7 +266,11 @@ vncserver-virtual -kill $DISPLAY' | sudo tee -a /etc/vnc/xstartup.custom
 	sudo chmod 755 /etc/vnc/xstartup.custom
 	
 	# Register the license
-	sudo vnclicense -add 4326B-7H7LA-RG5F2-292D5-9LTTA
+	read -p "Would you like to add the VNC license (y/n)? "
+	case $(echo $REPLY | tr '[A-Z]' '[a-z]') in
+		y|yes) sudo vnclicense -add 4326B-7H7LA-RG5F2-292D5-9LTTA ;;
+		*)     echo "OK, we shall skip it." ;;
+	esac
 	# Set up a nice alias for starting up with multiple resolutions
 	echo "alias vv='vncserver :28 -geometry 1280x800 -randr 1280x800,1024x768,1920x1080,1280x1024,1600x1200,1440x900,1600x900,2880x1800,1680x1050'" >> ~/.bashrc
 	# Remove the install files
@@ -286,6 +289,14 @@ vncserver-virtual -kill $DISPLAY' | sudo tee -a /etc/vnc/xstartup.custom
 
 # Check to make sure whiptail is installed and available
 command -v whiptail >/dev/null 2>&1 || { echo >&2 "I require whiptail but it's not installed."; echo "Please install it with the following:"; echo "sudo apt install whiptail"; exit 1; }
+read -p "Would you like to install whiptail now (y/n)? "
+case $(echo $REPLY | tr '[A-Z]' '[a-z]') in
+	y|yes) sudo apt update; sudo apt install git ;;
+	*)     echo "OK, we shall skip it, but things will not work :-(" ;;
+esac
+
+# Set up to allow for line breaks
+IFS=$'\n'
 
 # Check how big the current screen/terminal is
 LINES=`tput lines`
@@ -305,7 +316,7 @@ SELECTION=( $(whiptail --title "Post Install on Debian" --checklist --separate-o
 	"update-upgrade"    "Update and upgrade core system " OFF \
 	"build-essentials"  "Install: build-essential module-assistant dkms " OFF \
 	"essentials"        "Install: basic utilities " OFF \
-	"optionals"         "Install: rdesktop iftop ircii ubuntu-wallpapers* ubuntu-restricted-extras " OFF \
+	"optionals"         "Install: rdesktop iftop ircii ubuntu-wallpapers* \n /n ubuntu-restricted-extras " OFF \
 	"xfce-goodies"      "Install: xfce-goodies " OFF \
 	"google-chrome"     "Install: Google Chrome browser " OFF \
 	"realtek-wifi"      "Install: Realtek AC1200 wifi drivers " OFF \
