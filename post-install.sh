@@ -346,5 +346,5 @@ MYCOUNT=0
 for i in "${SELECTION[@]}"
 do
 	((MYCOUNT=MYCOUNT+1))
-	echo    $MYCOUNT $i
+	echo    ${MYCOUNT}. ${i}
 done
