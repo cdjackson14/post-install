@@ -340,8 +340,11 @@ do
 done
 
 # Let us show what was selected and done... cause sometimes I walk away and forget what I just did
-echo Completed:
+echo
+echo "Completed: "
+MYCOUNT=0
 for i in "${SELECTION[@]}"
 do
-	echo    - $i
+	((MYCOUNT=MYCOUNT+1))
+	echo    $MYCOUNT $i
 done
