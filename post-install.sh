@@ -6,9 +6,6 @@
 # Top is all functions, the bottom lines contain the menu and action.
 
 
-
-
-
 ##############################
 # FUNCTIONS
 ##############################
@@ -321,12 +318,12 @@ SELECTION=( $(whiptail --title "Post Install on Debian" --checklist --separate-o
 	"create-alias"      "Create common alias in .bashrc " OFF \
 	"update-upgrade"    "Update and upgrade core system " OFF \
 	"build-essentials"  "Install: build-essential module-assistant dkms " OFF \
-	"essentials"        "Install: basic utilities " OFF \
-	"optionals"         "Install: rdesktop iftop ircii ubuntu-wallpapers* \n /n ubuntu-restricted-extras " OFF \
+	"essentials"        "Install: basic utilities - htop net-tools nmon ssh screen emacs sshfs cmatrix vlc mplayer rtorrent screen exiv2 git exfat-utils cifs-utils" OFF \
+	"optionals"         "Install: rdesktop iftop ircii ubuntu-wallpapers* ubuntu-restricted-extras " OFF \
 	"xfce-goodies"      "Install: xfce-goodies " OFF \
 	"google-chrome"     "Install: Google Chrome browser " OFF \
 	"realtek-wifi"      "Install: Realtek AC1200 wifi drivers " OFF \
-	"realvnc-xfce4"     "Install: RealVNC debian files and configure for XFCE4 startup " OFF \
+	"realvnc-xfce4"     "Install: RealVNC files and configure for XFCE4 startup " OFF \
 	"tor"               "Install: TOR Browser " OFF \
 	"expressvpn"        "Install: Express VPN " OFF \
 	"kernel-latest"     "Install: Latest Ubuntu kernel v5.4.6 (will reboot) " OFF \
