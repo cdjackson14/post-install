@@ -290,6 +290,7 @@ vncserver-virtual -kill $DISPLAY' | sudo tee -a /etc/vnc/xstartup.custom
 # Check to make sure whiptail is installed and available, if not install it.
 if hash whiptail 2>/dev/null; then
 	# It's installed, there is nothing to do... continue on.
+	echo ""
 else
 	# Not installed, or we can't find it, so let's prompt to install it
 	echo "Bummer, whiptail is required for the menu of install options."
