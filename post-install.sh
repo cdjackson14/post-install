@@ -293,7 +293,7 @@ else
 	echo "Bummer, whiptail is required for the menu of install options."
 	read -p "Would you like to install whiptail now (y/n)? "
 	case $(echo $REPLY | tr '[A-Z]' '[a-z]') in
-		y|yes) sudo apt update; sudo apt install whiptail ;;
+		y|yes) sudo apt update; sudo apt install -y whiptail ;;
 		*)     echo "OK, we shall skip it, but things will not work :-(" ;;
 	esac
 fi
