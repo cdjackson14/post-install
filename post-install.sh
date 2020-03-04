@@ -338,3 +338,10 @@ for i in "${SELECTION[@]}"
 do
 	$i
 done
+
+# Let us show what was selected and done... cause sometimes I walk away and forget what I just did
+for i in "${SELECTION[@]}"
+do
+	echo Completed:
+	echo    - $i
+done
