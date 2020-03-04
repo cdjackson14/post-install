@@ -164,7 +164,7 @@ lamp () {
 	echo ''
 }
 
-lap () {
+lap-no-m () {
 	# Install the needed items for a basic LAMP (no MySQL)
 	# Apache
 	sudo apt -y install apache2
@@ -298,9 +298,6 @@ else
 	esac
 fi
 
-# Set up to allow for line breaks
-IFS=$'\n'
-
 # Check how big the current screen/terminal is
 LINES=`tput lines`
 COLUMNS=`tput cols`
@@ -318,11 +315,11 @@ SELECTION=( $(whiptail --title "Post Install on Debian" --checklist --separate-o
 	"create-alias"      "Create common alias in .bashrc " OFF \
 	"update-upgrade"    "Update and upgrade core system " OFF \
 	"build-essentials"  "Install: build-essential module-assistant dkms " OFF \
-	"essentials"        "Install: basic utilities - htop net-tools nmon ssh screen emacs sshfs cmatrix vlc mplayer rtorrent screen exiv2 git exfat-utils cifs-utils" OFF \
+	"essentials"        "Install: basic utilities - network, emacs, and mount tools" OFF \
 	"optionals"         "Install: rdesktop iftop ircii ubuntu-wallpapers* ubuntu-restricted-extras " OFF \
 	"xfce-goodies"      "Install: xfce-goodies " OFF \
 	"google-chrome"     "Install: Google Chrome browser " OFF \
-	"realtek-wifi"      "Install: Realtek AC1200 wifi drivers " OFF \
+	"realtek-wifi"      "Install: Realtek AC1200 wifi drivers (rtl88x2BU) " OFF \
 	"realvnc-xfce4"     "Install: RealVNC files and configure for XFCE4 startup " OFF \
 	"tor"               "Install: TOR Browser " OFF \
 	"expressvpn"        "Install: Express VPN " OFF \
@@ -332,7 +329,7 @@ SELECTION=( $(whiptail --title "Post Install on Debian" --checklist --separate-o
 	"google-remote"     "GCP: install Google Remote " OFF \
 	"xfce-gcloud"       "GCP: install xfce4 for GCP compute " OFF \
 	"lamp"		    "GCP: install LAMP (Linux, Apache, MariaDB, PHP) on GCP " OFF \
-	"lap"		    "GCP: install LAP(m) (Linux, Apache, PHP, MySQL Connectors only) on GCP " OFF \
+	"lap-no-m"	    "GCP: install LAP(no MySQL) (Linux, Apache, PHP, MySQL Connectors only) on GCP " OFF \
 	"clean-up"          "Clean up everything " OFF \
 	3>&1 1>&2 2>&3) )
 
