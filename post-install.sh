@@ -4,7 +4,7 @@
 # Can be used on many Debian based installs, like Ubuntu, Raspberry Pi, Kali, and GCP Linux computes
 #
 # Top is all functions, the bottom lines contain the menu and action.
-
+VERSION=2.0
 
 ##############################
 # FUNCTIONS
@@ -310,8 +310,8 @@ declare -a SELECTION
 #
 #   example of a possible value
 #             $SELECTION=(create-alias update-upgrade options ssh-config)
-SELECTION=( $(whiptail --title "Post Install on Debian" --checklist --separate-output \
-	"What post install activities would you like to run?" $LINES $COLUMNS $((LINES-8)) \
+SELECTION=( $(whiptail --title "Post Install on Debian - ${VERSION}" --checklist --separate-output \
+	"What post install activities would you like to run on your Debian OS?" $LINES $COLUMNS $((LINES-8)) \
 	"create-alias"      "Create common alias in .bashrc " OFF \
 	"update-upgrade"    "Update and upgrade core system " OFF \
 	"build-essentials"  "Install: build-essential module-assistant dkms " OFF \
