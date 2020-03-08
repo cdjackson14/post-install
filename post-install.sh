@@ -275,7 +275,43 @@ vncserver-virtual -kill $DISPLAY' | sudo tee -a /etc/vnc/xstartup.custom
 	rm $VNCVIEWER
 }
 
+wine () {
+	DISTRO=`lsb_release  -i | awk '{print $3}' | tr '[:upper:]' '[:lower:]'`
+	CODE_NAME=`lsb_release  -c | awk '{print $2}' | tr '[:upper:]' '[:lower:]'`
+	# Install dependances
+	sudo apt install software-properties-common zenity cabextract
+	# Add the i386 arch
+	sudo dpkg --add-architecture i386
+	# Add the wine repo
+	wget -nc https://dl.winehq.org/wine-builds/winehq.key && sudo apt-key add winehq.key
+	sudo apt-add-repository 'deb https://dl.winehq.org/wine-builds/'${DISTRO}'/ '${CODE_NAME}' main'
+	sudo add-apt-repository ppa:cybermax-dexter/sdl2-backport
+	# Install 4.21
+	sudo apt install --install-recommends winehq-devel
+	# Install WineTricks
+	sudo apt install winetricks
+}
 
+wine-chromebook () {
+	DISTRO=`lsb_release  -i | awk '{print $3}' | tr '[:upper:]' '[:lower:]'`
+	CODE_NAME=`lsb_release  -c | awk '{print $2}' | tr '[:upper:]' '[:lower:]'`
+	# Install dependances
+	sudo apt install software-properties-common zenity cabextract
+	# Add the i386 arch
+	sudo dpkg --add-architecture i386
+	# Add the wine repo
+	sudo apt-add-repository https://dl.winehq.org/wine-builds/debian/
+	# Install 4.21
+	sudo apt install --install-recommends winehq-stable
+	# Install WineTricks
+	wget -O- -q https://download.opensuse.org/repositories/Emulators:/Wine:/Debian/Debian_10/Release.key | sudo apt-key add -
+	echo "deb http://download.opensuse.org/repositories/Emulators:/Wine:/Debian/Debian_10 ./" | sudo tee /etc/apt/sources.list.d/wine-obs.list
+	sudo apt update
+	sudo apt install --install-recommends winehq-stable
+	wget  https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks
+	chmod +x winetricks
+
+}
 
 ######################################################################
 # MAIN
@@ -324,6 +360,8 @@ SELECTION=( $(whiptail --title "Post Install on Debian - ${VERSION}" --checklist
 	"tor"               "Install: TOR Browser " OFF \
 	"expressvpn"        "Install: Express VPN " OFF \
 	"kernel-latest"     "Install: Latest Ubuntu kernel v5.4.6 (will reboot) " OFF \
+	"wine"		    "Install: Wine & Winetricks" OFF \
+	"wine-chromebook"   "Install: Wine & Winetricks on a Chromebook" OFF \
 	"ssh-config"        "set up SSH keys in .ssh " OFF \
 	"create-swap"       "GCP: Create swap space on a Micro compute " OFF \
 	"google-remote"     "GCP: install Google Remote " OFF \
