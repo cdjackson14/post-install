@@ -4,7 +4,7 @@
 # Can be used on many Debian based installs, like Ubuntu, Raspberry Pi, Kali, and GCP Linux computes
 #
 # Top is all functions, the bottom lines contain the menu and action.
-VERSION=2.0
+VERSION=2.1
 
 ##############################
 # FUNCTIONS
@@ -313,6 +313,11 @@ wine-chromebook () {
 
 }
 
+libdvd () {
+	sudo apt install libdvd-pkg
+	sudo dpkg-reconfigure libdvd-pkg
+}
+
 ######################################################################
 # MAIN
 ######################################################################
@@ -362,6 +367,7 @@ SELECTION=( $(whiptail --title "Post Install on Debian - ${VERSION}" --checklist
 	"kernel-latest"     "Install: Latest Ubuntu kernel v5.4.6 (will reboot) " OFF \
 	"wine"		    "Install: Wine & Winetricks" OFF \
 	"wine-chromebook"   "Install: Wine & Winetricks on a Chromebook" OFF \
+	"libdvd"	    "Install: Install and configure libdvd-pkg for copy protected DVDs" OFF \
 	"ssh-config"        "set up SSH keys in .ssh " OFF \
 	"create-swap"       "GCP: Create swap space on a Micro compute " OFF \
 	"google-remote"     "GCP: install Google Remote " OFF \
