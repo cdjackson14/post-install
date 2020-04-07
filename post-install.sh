@@ -4,7 +4,10 @@
 # Can be used on many Debian based installs, like Ubuntu, Raspberry Pi, Kali, and GCP Linux computes
 #
 # Top is all functions, the bottom lines contain the menu and action.
-VERSION=2.1
+VERSION=2.2
+BUILD=`lsb_release -i | awk {'print $3'} | tr '[:upper:]' '[:lower:]'`
+RELEASE=`lsb_release -r | awk {'print $2'}`
+CODENAME=`lsb_release -c | awk {'print $2'} | tr '[:upper:]' '[:lower:]'`
 
 ##############################
 # FUNCTIONS
@@ -318,6 +321,27 @@ libdvd () {
 	sudo dpkg-reconfigure libdvd-pkg
 }
 
+google-drive () {
+	if [[ ${BUILD} = "debian" ]]; then
+		sudo apt install software-properties-common dirmngr
+		sudo echo deb http://ppa.launchpad.net/alessandro-strada/ppa/ubuntu xenial main >> /etc/apt/sources.list.d/alessandro-strada-ubuntu-ppa-bionic.list
+		sudo echo deb-src http://ppa.launchpad.net/alessandro-strada/ppa/ubuntu xenial main >> /etc/apt/sources.list.d/alessandro-strada-ubuntu-ppa-bionic.list
+		sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys AD5F235DF639B041
+	elif [[ ${BUILD} = "ubuntu" ]]; then
+		sudo add-apt-repository ppa:alessandro-strada/ppa
+	else
+		# Not sure what, so we will try the basic Ubuntu packages
+		sudo add-apt-repository ppa:alessandro-strada/ppa
+	fi
+	sudo apt update
+	sudo apt install google-drive-ocamlfuse
+	google-drive-ocamlfuse
+	echo "Now just create a directory and mount with google-drive-ocamlfuse"
+	echo "       $ mkdir ~/gdrive "
+	echo "       $ google-drive-ocamlfuse ~/gdrive "
+	echo " "
+}
+
 ######################################################################
 # MAIN
 ######################################################################
@@ -360,6 +384,7 @@ SELECTION=( $(whiptail --title "Post Install on Debian - ${VERSION}" --checklist
 	"optionals"         "Install: rdesktop iftop ircii ubuntu-wallpapers* ubuntu-restricted-extras " OFF \
 	"xfce-goodies"      "Install: xfce-goodies " OFF \
 	"google-chrome"     "Install: Google Chrome browser " OFF \
+	"google-drive"	    "Install: Google Drive using OCamlFUSE " OFF \
 	"realtek-wifi"      "Install: Realtek AC1200 wifi drivers (rtl88x2BU) " OFF \
 	"realvnc-xfce4"     "Install: RealVNC files and configure for XFCE4 startup " OFF \
 	"tor"               "Install: TOR Browser " OFF \
