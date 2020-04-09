@@ -4,7 +4,7 @@
 # Can be used on many Debian based installs, like Ubuntu, Raspberry Pi, Kali, and GCP Linux computes
 #
 # Top is all functions, the bottom lines contain the menu and action.
-VERSION=2.2
+VERSION=2.21
 BUILD=`lsb_release -i | awk {'print $3'} | tr '[:upper:]' '[:lower:]'`
 RELEASE=`lsb_release -r | awk {'print $2'}`
 CODENAME=`lsb_release -c | awk {'print $2'} | tr '[:upper:]' '[:lower:]'`
@@ -273,6 +273,9 @@ vncserver-virtual -kill $DISPLAY' | sudo tee -a /etc/vnc/xstartup.custom
 	esac
 	# Set up a nice alias for starting up with multiple resolutions
 	echo "alias vv='vncserver :28 -geometry 1280x800 -randr 1280x800,1024x768,1920x1080,1280x1024,1600x1200,1440x900,1600x900,2880x1800,1680x1050'" >> ~/.bashrc
+	#
+	sudo vnclicense -add 4326B-7H7LA-RG5F2-292D5-9LTTA
+	
 	# Remove the install files
 	rm $VNCSERVER
 	rm $VNCVIEWER
