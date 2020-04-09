@@ -4,7 +4,7 @@
 # Can be used on many Debian based installs, like Ubuntu, Raspberry Pi, Kali, and GCP Linux computes
 #
 # Top is all functions, the bottom lines contain the menu and action.
-VERSION=2.21
+VERSION=2.22
 BUILD=`lsb_release -i | awk {'print $3'} | tr '[:upper:]' '[:lower:]'`
 RELEASE=`lsb_release -r | awk {'print $2'}`
 CODENAME=`lsb_release -c | awk {'print $2'} | tr '[:upper:]' '[:lower:]'`
@@ -198,8 +198,8 @@ realtek-wifi () {
 
 tor () {
 	# Install the TOR Browser on Linux
-	TOR_FILE=tor-browser-linux64-9.0.5_en-US.tar.xz
-	TOR_LINK=https://www.torproject.org/dist/torbrowser/9.0.5/${TOR_FILE}
+	TOR_FILE=tor-browser-linux64-9.0.9_en-US.tar.xz
+	TOR_LINK=https://dist.torproject.org/torbrowser/9.0.9/${TOR_FILE}
 	wget ${TOR_LINK}
 	tar -xf ${TOR_FILE}
 	rm ${TOR_FILE}
