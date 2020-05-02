@@ -4,7 +4,7 @@
 # Can be used on many Debian based installs, like Ubuntu, Raspberry Pi, Kali, and GCP Linux computes
 #
 # Top is all functions, the bottom lines contain the menu and action.
-VERSION=2.3
+VERSION=2.4
 BUILD=`lsb_release -i | awk {'print $3'} | tr '[:upper:]' '[:lower:]'`
 RELEASE=`lsb_release -r | awk {'print $2'}`
 CODENAME=`lsb_release -c | awk {'print $2'} | tr '[:upper:]' '[:lower:]'`
@@ -243,15 +243,20 @@ kernel-latest () {
 }
 
 realvnc-xfce4 () {
+	# Determine the latest version
+	VNCS_VER=`wget -q -O - https://www.realvnc.com/en/connect/download/vnc/ | grep 'download-link-type' | awk '{ print $4;exit }'`
+	VNCV_VER=`wget -q -O - https://www.realvnc.com/en/connect/download/viewer | grep 'x64.deb' | awk -F '-' '{ print $3 }'`
+
 	# Check	is wanting 64 or 32 bit
         if [[ $(getconf LONG_BIT) = "64" ]]
         then
-		VNCSERVER=VNC-Server-6.7.1-Linux-x64.deb
-		VNCVIEWER=VNC-Viewer-6.20.113-Linux-x64.deb
+		VNCSERVER=VNC-Server-${VNCS_VER}-Linux-x64.deb
+		VNCVIEWER=VNC-Viewer-${VNCV_VER}-Linux-x64.deb
         else
-		VNCSERVER=VNC-Server-6.7.1-Linux-x86.deb
-		VNCVIEWER=VNC-Viewer-6.20.113-Linux-x86.deb
+		VNCSERVER=VNC-Server-${VNCS_VER}-Linux-x86.deb
+		VNCVIEWER=VNC-Viewer-${VNCV_VER}-Linux-x86.deb
         fi
+
 	# Download the RealVNC files
 	wget https://www.realvnc.com/download/file/vnc.files/$VNCSERVER
 	wget https://www.realvnc.com/download/file/viewer.files/$VNCVIEWER
