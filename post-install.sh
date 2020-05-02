@@ -197,9 +197,14 @@ realtek-wifi () {
 }
 
 tor () {
+	# Find the current version
+	TOR_VERSION=`wget -q -O - https://www.torproject.org/download/languages/ | grep 'tor-browser-linux64-' | awk -F '/' '{ print $4;exit }'`
+
 	# Install the TOR Browser on Linux
-	TOR_FILE=tor-browser-linux64-9.0.9_en-US.tar.xz
-	TOR_LINK=https://dist.torproject.org/torbrowser/9.0.9/${TOR_FILE}
+	TOR_FILE=tor-browser-linux64-${TOR_VERSION}_en-US.tar.xz
+	TOR_LINK=https://dist.torproject.org/torbrowser/${TOR_VERSION}/${TOR_FILE}
+
+	# Download, untar, and set up for use
 	wget ${TOR_LINK}
 	tar -xf ${TOR_FILE}
 	rm ${TOR_FILE}
