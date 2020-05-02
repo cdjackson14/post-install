@@ -4,7 +4,7 @@
 # Can be used on many Debian based installs, like Ubuntu, Raspberry Pi, Kali, and GCP Linux computes
 #
 # Top is all functions, the bottom lines contain the menu and action.
-VERSION=2.23
+VERSION=2.3
 BUILD=`lsb_release -i | awk {'print $3'} | tr '[:upper:]' '[:lower:]'`
 RELEASE=`lsb_release -r | awk {'print $2'}`
 CODENAME=`lsb_release -c | awk {'print $2'} | tr '[:upper:]' '[:lower:]'`
