@@ -421,9 +421,9 @@ SELECTION=( $(whiptail --title "Post Install on Debian - ${VERSION}" --checklist
 	3>&1 1>&2 2>&3) )
 
 # Now loop through all the returned selections, which is stored in an array $SELECTION
-echo BUILD
-echo RELEASE
-echo CODENAME
+echo ${BUILD}
+echo ${RELEASE}
+echo ${CODENAME}
 for i in "${SELECTION[@]}"
 do
 	$i
