@@ -10,7 +10,7 @@ VERSION=2.3
 #	BUILD=`lsb_release -i | awk {'print $3'} | tr '[:upper:]' '[:lower:]'`
 #	RELEASE=`lsb_release -r | awk {'print $2'}`
 #	CODENAME=`lsb_release -c | awk {'print $2'} | tr '[:upper:]' '[:lower:]'`
-BUILD=`grep ^ID= /etc/os-release | awk -F = '{ print $2 }' | tr '[:upper:]' '[:lower:]'`
+BUILD=`grep ^ID= /etc/os-release | awk -F = '{ print $2 }' | tr '[:lower:]' '[:upper:]'`
 RELEASE=`grep ^VERSION_ID= /etc/os-release | awk -F = '{ print $2 }' | sed s/\"//g`
 CODENAME=`grep VERSION_CODENAME /etc/os-release | awk -F = '{ print $2 }'`
 
@@ -340,12 +340,12 @@ libdvd () {
 }
 
 google-drive () {
-	if [[ ${BUILD} = "debian" ]]; then
+	if [[ ${BUILD} = "DEBIAN" ]]; then
 		sudo apt install software-properties-common dirmngr
 		sudo echo deb http://ppa.launchpad.net/alessandro-strada/ppa/ubuntu xenial main >> /etc/apt/sources.list.d/alessandro-strada-ubuntu-ppa-bionic.list
 		sudo echo deb-src http://ppa.launchpad.net/alessandro-strada/ppa/ubuntu xenial main >> /etc/apt/sources.list.d/alessandro-strada-ubuntu-ppa-bionic.list
 		sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys AD5F235DF639B041
-	elif [[ ${BUILD} = "ubuntu" ]]; then
+	elif [[ ${BUILD} = "UBUNTU" ]]; then
 		sudo add-apt-repository ppa:alessandro-strada/ppa
 	else
 		# Not sure what, so we will try the basic Ubuntu packages
@@ -393,8 +393,8 @@ declare -a SELECTION
 #
 #   example of a possible value
 #             $SELECTION=(create-alias update-upgrade options ssh-config)
-SELECTION=( $(whiptail --title "Post Install on Debian - ${VERSION}" --checklist --separate-output \
-	"What post install activities would you like to run on your Debian OS?" $LINES $COLUMNS $((LINES-8)) \
+SELECTION=( $(whiptail --title "Post Install on Debian Based Architecture - ${VERSION}" --checklist --separate-output \
+	"What post install activities would you like to run on ${BUILD} ${RELEASE} (${CODENAME})?" ${LINES} ${COLUMNS} $((LINES-8)) \
 	"create-alias"      "Create common alias in .bashrc " OFF \
 	"update-upgrade"    "Update and upgrade core system " OFF \
 	"build-essentials"  "Install: build-essential module-assistant dkms " OFF \
