@@ -4,10 +4,15 @@
 # Can be used on many Debian based installs, like Ubuntu, Raspberry Pi, Kali, and GCP Linux computes
 #
 # Top is all functions, the bottom lines contain the menu and action.
-VERSION=2.4
-BUILD=`lsb_release -i | awk {'print $3'} | tr '[:upper:]' '[:lower:]'`
-RELEASE=`lsb_release -r | awk {'print $2'}`
-CODENAME=`lsb_release -c | awk {'print $2'} | tr '[:upper:]' '[:lower:]'`
+VERSION=2.3
+# Found that Chromebooks don't have lsb-release install by default, so
+# switching to looking in /etc/os-release
+#	BUILD=`lsb_release -i | awk {'print $3'} | tr '[:upper:]' '[:lower:]'`
+#	RELEASE=`lsb_release -r | awk {'print $2'}`
+#	CODENAME=`lsb_release -c | awk {'print $2'} | tr '[:upper:]' '[:lower:]'`
+BUILD=`grep ^ID= /etc/os-release | awk -F = '{ print $2 }' | tr '[:upper:]' '[:lower:]'`
+RELEASE=`grep ^VERSION_ID= /etc/os-release | awk -F = '{ print $2 }' | sed s/\"//g`
+CODENAME=`grep VERSION_CODENAME /etc/os-release | awk -F = '{ print $2 }'`
 
 ##############################
 # FUNCTIONS
@@ -416,6 +421,9 @@ SELECTION=( $(whiptail --title "Post Install on Debian - ${VERSION}" --checklist
 	3>&1 1>&2 2>&3) )
 
 # Now loop through all the returned selections, which is stored in an array $SELECTION
+echo BUILD
+echo RELEASE
+echo CODENAME
 for i in "${SELECTION[@]}"
 do
 	$i
