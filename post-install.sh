@@ -59,7 +59,8 @@ essentials () {
 }
 
 optionals () {
-	sudo apt install -y rdesktop iftop ircii ubuntu-wallpapers* ubuntu-restricted-extras
+	# Added the ~n needed when install wildcards using apt (or I could have fallen back to apt-get)
+	sudo apt install -y rdesktop iftop ircii '~nubuntu-wallpapers*' ubuntu-restricted-extras xscreensaver
 }
 
 xfce-goodies () {
@@ -101,7 +102,8 @@ google-remote () {
 	sudo apt install -y --with-source=chrome-remote-desktop_current_amd64.deb chrome-remote-desktop
 	sudo DEBIAN_FRONTEND=noninteractive apt install --assume-yes xfce4 desktop-base
 	echo "xfce4-session" > ~/.chrome-remote-desktop-session
-	sudo apt install --assume-yes xscreensaver
+	# I don't think I really want this... I think this accidently was cut/pasted here many versions ago
+	# sudo apt install --assume-yes xscreensaver
 	sudo systemctl disable lightdm.service
 	echo ''
 	echo ''
