@@ -60,7 +60,15 @@ essentials () {
 
 optionals () {
 	# Added the ~n needed when install wildcards using apt (or I could have fallen back to apt-get)
-	sudo apt install -y rdesktop iftop ircii '~nubuntu-wallpapers*' ubuntu-restricted-extras '~nxscreensaver*'
+	sudo apt install -y rdesktop iftop ircii ubuntu-restricted-extras
+
+	# Things to install with wildcard (for Ubuntu 20.04+)
+	sudo apt install -y '~nubuntu-wallpapers*' '~nxscreensaver*'
+	if [[ $? = 100 ]]
+	then
+		# Maybe this is not Ubuntu 20+, so fall back to the old behavious of apt
+		sudo apt install -y ubuntu-wallpapers* xscreensaver*
+	fi
 }
 
 xfce-goodies () {
