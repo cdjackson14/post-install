@@ -392,8 +392,10 @@ else
 fi
 
 # Check how big the current screen/terminal is
-LINES=`tput lines`
-COLUMNS=`tput cols`
+# LINES=`tput lines`
+# COLUMNS=`tput cols`
+HEIGHT=`stty size | cut -d" " -f1`
+WIDTH=`stty size | cut -d" " -f2`
 
 declare -a SELECTION
 
@@ -404,7 +406,7 @@ declare -a SELECTION
 #   example of a possible value
 #             $SELECTION=(create-alias update-upgrade options ssh-config)
 SELECTION=( $(whiptail --title "Post Install on Debian Based Architecture - ${VERSION}" --checklist --separate-output \
-	"What post install activities would you like to run on ${BUILD} ${RELEASE} (${CODENAME})?" ${LINES} ${COLUMNS} $((LINES-8)) \
+	"What post install activities would you like to run on ${BUILD} ${RELEASE} (${CODENAME})?" ${HEIGHT} ${WIDTH} $((HEIGHT-8)) \
 	"create-alias"      "Create common alias in .bashrc " OFF \
 	"update-upgrade"    "Update and upgrade core system " OFF \
 	"build-essentials"  "Install: build-essential module-assistant dkms " OFF \
