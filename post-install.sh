@@ -257,7 +257,7 @@ kernel-latest () {
 	sudo reboot
 }
 
-realvnc-xfce4 () {
+realvnc () {
 	# Determine the latest version
 	VNCS_VER=`wget -q -O - https://www.realvnc.com/en/connect/download/vnc/ | grep 'download-link-type' | awk '{ print $4;exit }'`
 	VNCV_VER=`wget -q -O - https://www.realvnc.com/en/connect/download/viewer | grep 'x64.deb' | awk -F '-' '{ print $3 }'`
@@ -281,14 +281,6 @@ realvnc-xfce4 () {
 	sudo apt install -f -y
 	sudo dpkg --install $VNCVIEWER
 	sudo apt install -f -y
-
-	# Set up the StartX
-	echo '#!/bin/sh 
-DESKTOP_SESSION=xfce
-export DESKTOP_SESSION
-startxfce4
-vncserver-virtual -kill $DISPLAY' | sudo tee -a /etc/vnc/xstartup.custom
-	sudo chmod 755 /etc/vnc/xstartup.custom
 	
 	# Register the license
 	read -p "Would you like to add the VNC license (y/n)? "
@@ -297,13 +289,23 @@ vncserver-virtual -kill $DISPLAY' | sudo tee -a /etc/vnc/xstartup.custom
 		*)     echo "OK, we shall skip it." ;;
 	esac
 	# Set up a nice alias for starting up with multiple resolutions
-	echo "alias vv='vncserver :28 -geometry 1280x800 -randr 1280x800,1024x768,1920x1080,1280x1024,1600x1200,1440x900,1600x900,2880x1800,1680x1050'" >> ~/.bashrc
-	#
-	sudo vnclicense -add 4326B-7H7LA-RG5F2-292D5-9LTTA
+	# echo "alias vv='vncserver :28 -geometry 1280x800 -randr 1280x800,1024x768,1920x1080,1280x1024,1600x1200,1440x900,1600x900,2880x1800,1680x1050'" >> ~/.bashrc
+	# sudo vnclicense -add 4326B-7H7LA-RG5F2-292D5-9LTTA
 	
 	# Remove the install files
 	rm $VNCSERVER
 	rm $VNCVIEWER
+}
+
+realvnc-xfce-add () {
+	# This is needed to get RealVNC Server working on XFCE (specifically Xubuntu)
+	# Set up the StartX
+	echo '#!/bin/sh 
+DESKTOP_SESSION=xfce
+export DESKTOP_SESSION
+startxfce4
+vncserver-virtual -kill $DISPLAY' | sudo tee -a /etc/vnc/xstartup.custom
+	sudo chmod 755 /etc/vnc/xstartup.custom
 }
 
 wine () {
@@ -416,7 +418,8 @@ SELECTION=( $(whiptail --title "Post Install on Debian Based Architecture - ${VE
 	"google-chrome"     "Install: Google Chrome browser " OFF \
 	"google-drive"	    "Install: Google Drive using OCamlFUSE " OFF \
 	"realtek-wifi"      "Install: Realtek AC1200 wifi drivers (rtl88x2BU) " OFF \
-	"realvnc-xfce4"     "Install: RealVNC files and configure for XFCE4 startup " OFF \
+	"realvnc"           "Install: RealVNC files" OFF \
+	"realvnc-xfce4-add" "Install: Configure XFCE4 startup for use with RealVNC" OFF \
 	"tor"               "Install: TOR Browser " OFF \
 	"expressvpn"        "Install: Express VPN " OFF \
 	"kernel-latest"     "Install: Latest Ubuntu kernel v5.4.6 (will reboot) " OFF \
