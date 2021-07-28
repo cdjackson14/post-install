@@ -452,7 +452,7 @@ SELECTION=( $(whiptail --title "Post Install on Debian Based Architecture - ${VE
 	"wine-chromebook"   "Install: Wine & Winetricks on a Chromebook" OFF \
 	"libdvd"	    "Install: Install and configure libdvd-pkg for copy protected DVDs" OFF \
 	"xo-installer"      "Install: XenOrchestraInstallerUpdater" OFF \
-	"hamclock".         "Install: HamClock" OFF \
+	"hamclock"          "Install: HamClock" OFF \
 	"ssh-config"        "set up SSH keys in .ssh " OFF \
 	"create-swap"       "GCP: Create swap space on a Micro compute " OFF \
 	"google-remote"     "GCP: install Google Remote " OFF \
