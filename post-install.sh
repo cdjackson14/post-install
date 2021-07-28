@@ -4,7 +4,7 @@
 # Can be used on many Debian based installs, like Ubuntu, Raspberry Pi, Kali, and GCP Linux computes
 #
 # Top is all functions, the bottom lines contain the menu and action.
-VERSION=2.6
+VERSION=2.7
 # Found that Chromebooks don't have lsb-release install by default, so
 # switching to looking in /etc/os-release
 #	BUILD=`lsb_release -i | awk {'print $3'} | tr '[:upper:]' '[:lower:]'`
@@ -377,6 +377,25 @@ xo-installer () {
 	git clone https://github.com/ronivay/XenOrchestraInstallerUpdater.git
 }
 
+hamclock () {
+	sudo apt -y install make g++ libx11-dev xserver-xorg raspberrypi-ui-mods lightdm lxsession
+	cd ~
+	rm -fr ESPHamClock
+	curl -O https://www.clearskyinstitute.com/ham/HamClock/ESPHamClock.zip
+	unzip ESPHamClock.zip
+	cd ESPHamClock
+
+	echo "How many CPU cores do you wish to use (1-4, PiZero should be 1)?"
+	read cpuCores
+	echo " "
+	echo "Please copy/paste a target, such as hamclock-1600x960"
+	make
+	read targetSize
+
+	make -j ${cpuCores} ${targetSize}
+	sudo make install
+}
+
 
 ######################################################################
 # MAIN
@@ -433,6 +452,7 @@ SELECTION=( $(whiptail --title "Post Install on Debian Based Architecture - ${VE
 	"wine-chromebook"   "Install: Wine & Winetricks on a Chromebook" OFF \
 	"libdvd"	    "Install: Install and configure libdvd-pkg for copy protected DVDs" OFF \
 	"xo-installer"      "Install: XenOrchestraInstallerUpdater" OFF \
+	"hamclock".         "Install: HamClock" OFF \
 	"ssh-config"        "set up SSH keys in .ssh " OFF \
 	"create-swap"       "GCP: Create swap space on a Micro compute " OFF \
 	"google-remote"     "GCP: install Google Remote " OFF \
