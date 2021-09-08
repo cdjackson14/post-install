@@ -261,7 +261,7 @@ kernel-latest () {
 realvnc () {
 	# Determine the latest version
 	VNCS_VER=`wget -q -O - https://www.realvnc.com/en/connect/download/vnc/ | grep 'download-link-type' | awk '{ print $4;exit }'`
-	VNCV_VER=`wget -q -O - https://www.realvnc.com/en/connect/download/viewer | grep 'x64.deb' | awk -F '-' '{ print $3 }'`
+	VNCV_VER=`wget -q -O - https://www.realvnc.com/en/connect/download/viewer/linux | grep 'x64.deb' | awk -F '-' '{ print $3 }'`
 
 	# Check	is wanting 64 or 32 bit
         if [[ $(getconf LONG_BIT) = "64" ]]
