@@ -18,7 +18,7 @@ CODENAME=`grep VERSION_CODENAME /etc/os-release | awk -F = '{ print $2 }'`
 # FUNCTIONS
 ##############################
 
-create-alias () {
+set-bashrc () {
 	# Update the .bashrc with some helpful alias commands
 	echo -e "
 alias update='sudo apt update; apt list --upgradable'
@@ -61,15 +61,18 @@ essentials () {
 optionals () {
 	# Added the ~n needed when install wildcards using apt (or I could have fallen back to apt-get)
 	sudo apt install -y rdesktop iftop ircii ubuntu-restricted-extras
+}
 
+wallpapers () {
 	# Things to install with wildcard (for Ubuntu 20.04+)
-	sudo apt install -y '~nubuntu-wallpapers*' '~nxscreensaver*'
+	sudo apt install -y '~nubuntu-wallpapers*'
 	if [[ $? = 100 ]]
 	then
 		# Maybe this is not Ubuntu 20+, so fall back to the old behavious of apt
-		sudo apt install -y ubuntu-wallpapers* xscreensaver*
+		sudo apt install -y ubuntu-wallpapers*
 	fi
 }
+
 
 xfce-goodies () {
 	# Install the essential XFCE Ubuntu stuff
@@ -143,7 +146,7 @@ lamp () {
 	# Apache
 	sudo apt -y install apache2
 	# PHP
-	sudo apt -y install libapache2-mod-php7.0 php7.0 php7.0-gd php7.0-xml php7.0-curl php7.0-mbstring php7.0-mcrypt php7.0-xmlrpc
+	sudo apt -y install libapache2-mod-php7.3 php7.3 php7.0-gd php7.0-xml php7.0-curl php7.0-mbstring php7.0-mcrypt php7.0-xmlrpc
 	# MySQL (really MariaDB)
 	sudo apt install php7.0-mysql mariadb-server mariadb-client
 	# Start DB
@@ -187,9 +190,9 @@ lap-no-m () {
 	# Apache
 	sudo apt -y install apache2
 	# PHP
-	sudo apt -y install libapache2-mod-php7.0 php7.0 php7.0-gd php7.0-xml php7.0-curl php7.0-mbstring php7.0-mcrypt php7.0-xmlrpc
+	sudo apt -y install php7.3 php7.3-cli php7.3-common
 	# MySQL PHP connector only
-	sudo apt install php7.0-mysql
+	sudo apt install php7.3-mysql
 	# enable and configure TLS and rewrite modules
 	sudo a2enmod rewrite ssl
 	sudo a2ensite default-ssl.conf
@@ -231,8 +234,9 @@ tor () {
 }
 
 expressvpn () {
+	# BASE_URL=https://www.expressvpn.works/clients/linux
 	BASE_URL=https://download.expressvpn.xyz/clients/linux
-	FILE_1=expressvpn_3.8.0.4-1_amd64.deb
+	FILE_1=expressvpn_3.14.0.4-1_amd64.deb
 	wget ${BASE_URL}/${FILE_1}
 	sudo dpkg -i ${FILE_1}
 	echo Please log into your account and get the activiation code.
@@ -434,17 +438,18 @@ declare -a SELECTION
 #             $SELECTION=(create-alias update-upgrade options ssh-config)
 SELECTION=( $(whiptail --title "Post Install on Debian Based Architecture - ${VERSION}" --checklist --separate-output \
 	"What post install activities would you like to run on ${BUILD} ${RELEASE} (${CODENAME})?" ${HEIGHT} ${WIDTH} $((HEIGHT-8)) \
-	"create-alias"      "Create common alias in .bashrc " OFF \
+	"set-bashrc"        "Create common alias in .bashrc " OFF \
 	"update-upgrade"    "Update and upgrade core system " OFF \
 	"build-essentials"  "Install: build-essential module-assistant dkms " OFF \
-	"essentials"        "Install: basic utilities - network, emacs, and mount tools" OFF \
-	"optionals"         "Install: rdesktop iftop ircii ubuntu-wallpapers* ubuntu-restricted-extras " OFF \
+	"essentials"        "Install: basic utilities - vim, networking, monitoring, tools, and misc." OFF \
+	"optionals"         "Install: rdesktop iftop ircii ubuntu-restricted-extras" OFF \
+	"wallpapers"        "Install: A bunch of Ubuntu wallpapers" OFF \
 	"xfce-goodies"      "Install: xfce-goodies " OFF \
 	"google-chrome"     "Install: Google Chrome browser " OFF \
 	"google-drive"	    "Install: Google Drive using OCamlFUSE " OFF \
 	"realtek-wifi"      "Install: Realtek AC1200 wifi drivers (rtl88x2BU) " OFF \
 	"realvnc"           "Install: RealVNC files" OFF \
-	"realvnc-xfce4-add" "Install: Configure XFCE4 startup for use with RealVNC" OFF \
+	"realvnc-xfce4-add" "Install: Configure XFCE4 startup for use with RealVNC (for older versions, pre 2021)" OFF \
 	"tor"               "Install: TOR Browser " OFF \
 	"expressvpn"        "Install: Express VPN " OFF \
 	"kernel-latest"     "Install: Latest Ubuntu kernel v5.4.6 (will reboot) " OFF \
@@ -457,8 +462,8 @@ SELECTION=( $(whiptail --title "Post Install on Debian Based Architecture - ${VE
 	"create-swap"       "GCP: Create swap space on a Micro compute " OFF \
 	"google-remote"     "GCP: install Google Remote " OFF \
 	"xfce-gcloud"       "GCP: install xfce4 for GCP compute " OFF \
-	"lamp"		    "GCP: install LAMP (Linux, Apache, MariaDB, PHP) on GCP " OFF \
-	"lap-no-m"	    "GCP: install LAP(no MySQL) (Linux, Apache, PHP, MySQL Connectors only) on GCP " OFF \
+	"lamp"		    "GCP: install LAMP 7.0 (Linux, Apache, MariaDB, PHP) on GCP " OFF \
+	"lap-no-m"	    "GCP: install LAP(no MySQL) 7.3 (Linux, Apache, PHP, MySQL Connectors only) on GCP " OFF \
 	"clean-up"          "Clean up everything " OFF \
 	3>&1 1>&2 2>&3) )
 
