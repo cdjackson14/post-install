@@ -4,7 +4,7 @@
 # Can be used on many Debian based installs, like Ubuntu, Raspberry Pi, Kali, and GCP Linux computes
 #
 # Top is all functions, the bottom lines contain the menu and action.
-VERSION=2.7
+VERSION=2.8
 # Found that Chromebooks don't have lsb-release install by default, so
 # switching to looking in /etc/os-release
 #	BUILD=`lsb_release -i | awk {'print $3'} | tr '[:upper:]' '[:lower:]'`
@@ -61,6 +61,16 @@ essentials () {
 optionals () {
 	# Added the ~n needed when install wildcards using apt (or I could have fallen back to apt-get)
 	sudo apt install -y rdesktop iftop ircii ubuntu-restricted-extras
+}
+
+qemu-guest () {
+	sudo apt install -y qemu-guest-agent spice-vdagent
+	mkdir ~/bin
+	touch ~/bin/vmresize
+	chmod 777 ~/bin/vmresize
+	cat << EOF > ~/bin/vmresize 
+xrandr --output "$(xrandr | awk '/ connected/{print $1; exit; }')" --auto
+EOF
 }
 
 wallpapers () {
@@ -443,6 +453,7 @@ SELECTION=( $(whiptail --title "Post Install on Debian Based Architecture - ${VE
 	"build-essentials"  "Install: build-essential module-assistant dkms " OFF \
 	"essentials"        "Install: basic utilities - vim, networking, monitoring, tools, and misc." OFF \
 	"optionals"         "Install: rdesktop iftop ircii ubuntu-restricted-extras" OFF \
+	"qemu-guest"        "Install: Guest tools for qemu/kvm " OFF \
 	"wallpapers"        "Install: A bunch of Ubuntu wallpapers" OFF \
 	"xfce-goodies"      "Install: xfce-goodies " OFF \
 	"google-chrome"     "Install: Google Chrome browser " OFF \
