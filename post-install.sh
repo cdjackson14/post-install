@@ -64,13 +64,12 @@ optionals () {
 }
 
 qemu-guest () {
+	$dq='"'
+	$sq="'"
 	sudo apt install -y qemu-guest-agent spice-vdagent
 	mkdir ~/bin
-	touch ~/bin/vmresize
+	echo $'xrandr --output \"$(xrandr | awk \'/ connected/{print $1; exit; }\')\" --auto' > ~/bin/vmresize
 	chmod 777 ~/bin/vmresize
-	cat << EOF > ~/bin/vmresize 
-xrandr --output "$(xrandr | awk '/ connected/{print $1; exit; }')" --auto
-EOF
 }
 
 wallpapers () {
