@@ -64,8 +64,6 @@ optionals () {
 }
 
 qemu-guest () {
-	$dq='"'
-	$sq="'"
 	sudo apt install -y qemu-guest-agent spice-vdagent
 	mkdir ~/bin
 	echo $'xrandr --output \"$(xrandr | awk \'/ connected/{print $1; exit; }\')\" --auto' > ~/bin/vmresize
