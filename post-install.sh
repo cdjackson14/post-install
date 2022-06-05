@@ -4,7 +4,7 @@
 # Can be used on many Debian based installs, like Ubuntu, Raspberry Pi, Kali, and GCP Linux computes
 #
 # Top is all functions, the bottom lines contain the menu and action.
-VERSION=2.8
+VERSION=2.9
 # Found that Chromebooks don't have lsb-release install by default, so
 # switching to looking in /etc/os-release
 #	BUILD=`lsb_release -i | awk {'print $3'} | tr '[:upper:]' '[:lower:]'`
@@ -55,7 +55,8 @@ build-essentials () {
 
 essentials () {
 	# Install the essential stuff for most all Debian based systems (Deb, Ubuntu, RaspberryPi, Kali...)
-	sudo apt install -y htop vim net-tools nmon ssh screen sshfs cmatrix vlc mplayer rtorrent exiv2 git exfat-utils cifs-utils exfatprogs gparted
+	sudo apt install -y htop vim net-tools nmon ssh screen sshfs cmatrix vlc mplayer rtorrent exiv2 git cifs-utils exfatprogs gparted
+	sudo apt install -y exfat-utils 
 }
 
 optionals () {
