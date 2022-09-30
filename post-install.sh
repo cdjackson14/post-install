@@ -269,8 +269,47 @@ kernel-latest () {
 	rm ${FILE_1} ${FILE_2} ${FILE_3} ${FILE_4}
 	sudo reboot
 }
-
 realvnc () {
+	# Determine the latest version
+	VNCS_VER=`wget -q -O - https://www.realvnc.com/en/connect/download/vnc/ | grep -m 1 'download-link-path' | awk '{ print $9 }' | awk -F '-' '{ print $3 }'`
+	VNCV_VER=`wget -q -O - https://www.realvnc.com/en/connect/download/viewer/linux | grep 'x64.deb' | awk -F '-' '{ print $4 }'`
+
+	# Check	is wanting 64 or 32 bit
+        if [[ $(getconf LONG_BIT) = "64" ]]
+        then
+		VNCSERVER=VNC-Server-${VNCS_VER}-Linux-x64.deb
+		VNCVIEWER=VNC-Viewer-${VNCV_VER}-Linux-x64.deb
+        else
+		VNCSERVER=VNC-Server-${VNCS_VER}-Linux-x86.deb
+		VNCVIEWER=VNC-Viewer-${VNCV_VER}-Linux-x86.deb
+        fi
+
+	# Download the RealVNC files
+	wget https://www.realvnc.com/download/file/vnc.files/$VNCSERVER
+	wget https://www.realvnc.com/download/file/viewer.files/$VNCVIEWER
+	
+	# Install both
+	sudo dpkg --install $VNCSERVER
+	sudo apt install -f -y
+	sudo dpkg --install $VNCVIEWER
+	sudo apt install -f -y
+	
+	# Register the license
+	read -p "Would you like to add the VNC license (y/n)? "
+	case $(echo $REPLY | tr '[A-Z]' '[a-z]') in
+		y|yes) sudo vnclicense -add 4326B-7H7LA-RG5F2-292D5-9LTTA ;;
+		*)     echo "OK, we shall skip it." ;;
+	esac
+	# Set up a nice alias for starting up with multiple resolutions
+	# echo "alias vv='vncserver :28 -geometry 1280x800 -randr 1280x800,1024x768,1920x1080,1280x1024,1600x1200,1440x900,1600x900,2880x1800,1680x1050'" >> ~/.bashrc
+	# sudo vnclicense -add 4326B-7H7LA-RG5F2-292D5-9LTTA
+	
+	# Remove the install files
+	rm $VNCSERVER
+	rm $VNCVIEWER
+}
+
+realvnc-old () {
 	# Determine the latest version
 	VNCS_VER=`wget -q -O - https://www.realvnc.com/en/connect/download/vnc/ | grep 'download-link-path' | awk '{ print $3 }' | awk -F '-' '{ print $3 }'`
 	VNCV_VER=`wget -q -O - https://www.realvnc.com/en/connect/download/viewer/linux | grep 'x64.deb' | awk -F '-' '{ print $5 }'`
