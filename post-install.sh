@@ -4,7 +4,7 @@
 # Can be used on many Debian based installs, like Ubuntu, Raspberry Pi, Kali, and GCP Linux computes
 #
 # Top is all functions, the bottom lines contain the menu and action.
-VERSION=2.9
+VERSION=2.10
 # Found that Chromebooks don't have lsb-release install by default, so
 # switching to looking in /etc/os-release
 #	BUILD=`lsb_release -i | awk {'print $3'} | tr '[:upper:]' '[:lower:]'`
@@ -228,7 +228,7 @@ tor () {
 
 	# Install the TOR Browser on Linux
 	TOR_FILE=tor-browser-linux64-${TOR_VERSION}_en-US.tar.xz
-	TOR_LINK=https://dist.torproject.org/torbrowser/${TOR_VERSION}/${TOR_FILE}
+	TOR_LINK=
 
 	# Download, untar, and set up for use
 	wget ${TOR_LINK}
@@ -244,7 +244,8 @@ tor () {
 expressvpn () {
 	# BASE_URL=https://www.expressvpn.works/clients/linux
 	BASE_URL=https://download.expressvpn.xyz/clients/linux
-	FILE_1=expressvpn_3.14.0.4-1_amd64.deb
+	
+	FILE_1=expressvpn_3.37.0.2-1_amd64.deb
 	wget ${BASE_URL}/${FILE_1}
 	sudo dpkg -i ${FILE_1}
 	echo Please log into your account and get the activiation code.
