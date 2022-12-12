@@ -4,7 +4,7 @@
 # Can be used on many Debian based installs, like Ubuntu, Raspberry Pi, Kali, and GCP Linux computes
 #
 # Top is all functions, the bottom lines contain the menu and action.
-VERSION=2.10
+VERSION=2.11
 # Found that Chromebooks don't have lsb-release install by default, so
 # switching to looking in /etc/os-release
 #	BUILD=`lsb_release -i | awk {'print $3'} | tr '[:upper:]' '[:lower:]'`
@@ -227,18 +227,18 @@ tor () {
 	TOR_VERSION=`wget -q -O - https://www.torproject.org/download/languages/ | grep 'tor-browser-linux64-' | awk -F '/' '{ print $4;exit }'`
 
 	# Install the TOR Browser on Linux
-	TOR_FILE=tor-browser-linux64-${TOR_VERSION}_en-US.tar.xz
-	TOR_LINK=
+	# TOR_FILE=tor-browser-linux64-${TOR_VERSION}_en-US.tar.xz
+	TOR_FILE=tor-browser-linux64-${TOR_VERSION}_ALL.tar.xz
+	TOR_LINK=https://dist.torproject.org/torbrowser/${TOR_VERSION}/${TOR_FILE}
 
 	# Download, untar, and set up for use
 	wget ${TOR_LINK}
 	tar -xf ${TOR_FILE}
 	rm ${TOR_FILE}
-	sudo mv tor-browser_en-US ~/tor-browser
-	echo '#!/bin/bash' > ~/tor-browser/copy-to-start-menu.sh 
-	echo 'mkdir -p ~/.local/share/applications/' >> ~/tor-browser/copy-to-start-menu.sh
-	echo 'cp ~/tor-browser/start-tor-browser.desktop ~/.local/share/applications/' >> ~/tor-browser/copy-to-start-menu.sh
-	chmod 777 ~/tor-browser/copy-to-start-menu.sh
+	echo '#!/bin/bash' > ./tor-browser/copy-to-start-menu.sh 
+	echo 'mkdir -p ~/.local/share/applications/' >> ./tor-browser/copy-to-start-menu.sh
+	echo 'cp start-tor-browser.desktop ~/.local/share/applications/' >> ./tor-browser/copy-to-start-menu.sh
+	chmod 777 ./tor-browser/copy-to-start-menu.sh
 }
 
 expressvpn () {
