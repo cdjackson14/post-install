@@ -4,7 +4,7 @@
 # Can be used on many Debian based installs, like Ubuntu, Raspberry Pi, Kali, and GCP Linux computes
 #
 # Top is all functions, the bottom lines contain the menu and action.
-VERSION=2.11
+VERSION=2.12
 # Found that Chromebooks don't have lsb-release install by default, so
 # switching to looking in /etc/os-release
 #	BUILD=`lsb_release -i | awk {'print $3'} | tr '[:upper:]' '[:lower:]'`
@@ -81,6 +81,15 @@ wallpapers () {
 	fi
 }
 
+gui-software () {
+	sudo apt install -y pinta keepassxc color-picker
+	
+	# Install AppImageLauncher
+	sudo apt install software-properties-common
+	sudo add-apt-repository ppa:appimagelauncher-team/stable
+	sudo apt update
+	sudo apt install appimagelauncher
+}
 
 xfce-goodies () {
 	# Install the essential XFCE Ubuntu stuff
@@ -271,23 +280,13 @@ kernel-latest () {
 	sudo reboot
 }
 realvnc () {
-	# Determine the latest version
-	VNCS_VER=`wget -q -O - https://www.realvnc.com/en/connect/download/vnc/ | grep -m 1 'download-link-path' | awk '{ print $9 }' | awk -F '-' '{ print $3 }'`
-	VNCV_VER=`wget -q -O - https://www.realvnc.com/en/connect/download/viewer/linux | grep 'x64.deb' | awk -F '-' '{ print $4 }'`
-
-	# Check	is wanting 64 or 32 bit
-        if [[ $(getconf LONG_BIT) = "64" ]]
-        then
-		VNCSERVER=VNC-Server-${VNCS_VER}-Linux-x64.deb
-		VNCVIEWER=VNC-Viewer-${VNCV_VER}-Linux-x64.deb
-        else
-		VNCSERVER=VNC-Server-${VNCS_VER}-Linux-x86.deb
-		VNCVIEWER=VNC-Viewer-${VNCV_VER}-Linux-x86.deb
-        fi
+	VNCSERVER=VNC-Server-6.11.0-Linux-x64.deb
+	VNCVIEWER=VNC-Viewer-6.22.315-Linux-x64.deb
+	VNCURL=http://home.jackson.pub/dl/
 
 	# Download the RealVNC files
-	wget https://www.realvnc.com/download/file/vnc.files/$VNCSERVER
-	wget https://www.realvnc.com/download/file/viewer.files/$VNCVIEWER
+	wget ${VNCURL}${VNCSERVER}
+	wget ${VNCURL}${VNCVIEWER}
 	
 	# Install both
 	sudo dpkg --install $VNCSERVER
@@ -301,49 +300,9 @@ realvnc () {
 		y|yes) sudo vnclicense -add 4326B-7H7LA-RG5F2-292D5-9LTTA ;;
 		*)     echo "OK, we shall skip it." ;;
 	esac
+
 	# Set up a nice alias for starting up with multiple resolutions
 	# echo "alias vv='vncserver :28 -geometry 1280x800 -randr 1280x800,1024x768,1920x1080,1280x1024,1600x1200,1440x900,1600x900,2880x1800,1680x1050'" >> ~/.bashrc
-	# sudo vnclicense -add 4326B-7H7LA-RG5F2-292D5-9LTTA
-	
-	# Remove the install files
-	rm $VNCSERVER
-	rm $VNCVIEWER
-}
-
-realvnc-old () {
-	# Determine the latest version
-	VNCS_VER=`wget -q -O - https://www.realvnc.com/en/connect/download/vnc/ | grep 'download-link-path' | awk '{ print $3 }' | awk -F '-' '{ print $3 }'`
-	VNCV_VER=`wget -q -O - https://www.realvnc.com/en/connect/download/viewer/linux | grep 'x64.deb' | awk -F '-' '{ print $5 }'`
-
-	# Check	is wanting 64 or 32 bit
-        if [[ $(getconf LONG_BIT) = "64" ]]
-        then
-		VNCSERVER=VNC-Server-${VNCS_VER}-Linux-x64.deb
-		VNCVIEWER=VNC-Viewer-${VNCV_VER}-Linux-x64.deb
-        else
-		VNCSERVER=VNC-Server-${VNCS_VER}-Linux-x86.deb
-		VNCVIEWER=VNC-Viewer-${VNCV_VER}-Linux-x86.deb
-        fi
-
-	# Download the RealVNC files
-	wget https://www.realvnc.com/download/file/vnc.files/$VNCSERVER
-	wget https://www.realvnc.com/download/file/viewer.files/$VNCVIEWER
-	
-	# Install both
-	sudo dpkg --install $VNCSERVER
-	sudo apt install -f -y
-	sudo dpkg --install $VNCVIEWER
-	sudo apt install -f -y
-	
-	# Register the license
-	read -p "Would you like to add the VNC license (y/n)? "
-	case $(echo $REPLY | tr '[A-Z]' '[a-z]') in
-		y|yes) sudo vnclicense -add 4326B-7H7LA-RG5F2-292D5-9LTTA ;;
-		*)     echo "OK, we shall skip it." ;;
-	esac
-	# Set up a nice alias for starting up with multiple resolutions
-	# echo "alias vv='vncserver :28 -geometry 1280x800 -randr 1280x800,1024x768,1920x1080,1280x1024,1600x1200,1440x900,1600x900,2880x1800,1680x1050'" >> ~/.bashrc
-	# sudo vnclicense -add 4326B-7H7LA-RG5F2-292D5-9LTTA
 	
 	# Remove the install files
 	rm $VNCSERVER
@@ -491,6 +450,7 @@ SELECTION=( $(whiptail --title "Post Install on Debian Based Architecture - ${VE
 	"build-essentials"  "Install: build-essential module-assistant dkms " OFF \
 	"essentials"        "Install: basic utilities - vim, networking, monitoring, tools, and misc." OFF \
 	"optionals"         "Install: rdesktop iftop ircii ubuntu-restricted-extras" OFF \
+	"gui-software"      "Install: GUI Pinta, AppImageLauncher, Color Picker, KeepassXC" OFF \
 	"qemu-guest"        "Install: Guest tools for qemu/kvm " OFF \
 	"wallpapers"        "Install: A bunch of Ubuntu wallpapers" OFF \
 	"xfce-goodies"      "Install: xfce-goodies " OFF \
