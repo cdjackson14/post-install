@@ -85,10 +85,10 @@ gui-software () {
 	sudo apt install -y pinta keepassxc color-picker
 	
 	# Install AppImageLauncher
-	sudo apt install software-properties-common
-	sudo add-apt-repository ppa:appimagelauncher-team/stable
+	sudo apt install -y software-properties-common
+	sudo add-apt-repository -y ppa:appimagelauncher-team/stable
 	sudo apt update
-	sudo apt install appimagelauncher
+	sudo apt install -y appimagelauncher
 }
 
 xfce-goodies () {
