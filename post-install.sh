@@ -55,7 +55,7 @@ build-essentials () {
 
 essentials () {
 	# Install the essential stuff for most all Debian based systems (Deb, Ubuntu, RaspberryPi, Kali...)
-	sudo apt install -y htop vim net-tools nmon ssh screen sshfs cmatrix vlc mplayer rtorrent exiv2 git cifs-utils exfatprogs gparted
+	sudo apt install -y htop vim net-tools nmon ssh tmux sshfs cmatrix vlc mplayer rtorrent exiv2 git cifs-utils exfatprogs gparted
 	sudo apt install -y exfat-utils 
 }
 
