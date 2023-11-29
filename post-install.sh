@@ -4,7 +4,7 @@
 # Can be used on many Debian based installs, like Ubuntu, Raspberry Pi, Kali, and GCP Linux computes
 #
 # Top is all functions, the bottom lines contain the menu and action.
-VERSION=2.12
+VERSION=2.13
 # Found that Chromebooks don't have lsb-release install by default, so
 # switching to looking in /etc/os-release
 #	BUILD=`lsb_release -i | awk {'print $3'} | tr '[:upper:]' '[:lower:]'`
@@ -98,6 +98,15 @@ xfce-goodies () {
 
 xfce-gcloud () {
 	sudo apt install -y xubuntu-desktop xfce4
+}
+
+brave-browser () {
+	# Install of Brave Browser.  Instructions right on https://brave.com/linux/
+	sudo apt install -f curl
+	sudo curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
+	echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] https://brave-browser-apt-release.s3.brave.com/ stable main"|sudo tee /etc/apt/sources.list.d/brave-browser-release.list
+	sudo apt update
+	sudo apt -f install brave-browser
 }
 
 google-chrome () {
@@ -258,7 +267,7 @@ expressvpn () {
 	wget ${BASE_URL}/${FILE_1}
 	sudo dpkg -i ${FILE_1}
 	echo Please log into your account and get the activiation code.
-	echo :: ERGQ8M5C6PWCOVTJDW9T05Q ::
+	echo :: activate ERGQ8M5C6PWCOVTJDW9T05Q ::
 	echo https://www.expressvpn.com/sign-in
 	rm ${FILE_1}
 }
@@ -454,6 +463,7 @@ SELECTION=( $(whiptail --title "Post Install on Debian Based Architecture - ${VE
 	"qemu-guest"        "Install: Guest tools for qemu/kvm " OFF \
 	"wallpapers"        "Install: A bunch of Ubuntu wallpapers" OFF \
 	"xfce-goodies"      "Install: xfce-goodies " OFF \
+	"brave-browser"     "Install: Brave browser " OFF \
 	"google-chrome"     "Install: Google Chrome browser " OFF \
 	"google-drive"	    "Install: Google Drive using OCamlFUSE " OFF \
 	"realtek-wifi"      "Install: Realtek AC1200 wifi drivers (rtl88x2BU) " OFF \
