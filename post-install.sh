@@ -162,7 +162,7 @@ clean-up () {
 	# Clean up everything
 	echo "Cleaning Up" &&
 	sudo apt -f install &&
-	sudo apt autoremove &&
+	sudo apt -y autoremove &&
 	sudo apt -y autoclean &&
 	sudo apt -y clean
 }
