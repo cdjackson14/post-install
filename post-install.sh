@@ -4,7 +4,7 @@
 # Can be used on many Debian based installs, like Ubuntu, Raspberry Pi, Kali, and GCP Linux computes
 #
 # Top is all functions, the bottom lines contain the menu and action.
-VERSION=2.14
+VERSION=3.0
 # Found that Chromebooks don't have lsb-release install by default, so
 # switching to looking in /etc/os-release
 #	BUILD=`lsb_release -i | awk {'print $3'} | tr '[:upper:]' '[:lower:]'`
@@ -13,6 +13,8 @@ VERSION=2.14
 BUILD=`grep ^ID= /etc/os-release | awk -F = '{ print $2 }' | tr '[:lower:]' '[:upper:]'`
 RELEASE=`grep ^VERSION_ID= /etc/os-release | awk -F = '{ print $2 }' | sed s/\"//g`
 CODENAME=`grep VERSION_CODENAME /etc/os-release | awk -F = '{ print $2 }'`
+declare -a POSTMSG
+SPACE5='     '
 
 ##############################
 # FUNCTIONS
@@ -31,6 +33,9 @@ alias pp='ps -ef | grep '
 alias h='history'
 " >> ~/.bashrc &&
 	source ~/.bashrc
+
+	# Any message to display post all selected installs and configs.  Listed in a end summary.
+	POSTMSG[${COUNT}]="${FUNCNAME} "
 }
 
 create-swap () {
@@ -40,35 +45,55 @@ create-swap () {
 	sudo mkswap /swapfile
 	sudo swapon /swapfile
 	echo '/swapfile swap swap defaults 0 0' | sudo tee -a /etc/fstab
+
+	# Any message to display post all selected installs and configs.  Listed in a end summary.
+	POSTMSG[${COUNT}]="${FUNCNAME} "
 }
+
 
 update-upgrade () {
 	# Update the system
 	sudo apt update &&
 	sudo apt upgrade -y
+
+	# Any message to display post all selected installs and configs.  Listed in a end summary.
+	POSTMSG[${COUNT}]="${FUNCNAME} "
 }
 
 build-essentials () {
 	# Install the basics for compiling and inside a VM
 	sudo apt install -y build-essential module-assistant dkms
+
+	# Any message to display post all selected installs and configs.  Listed in a end summary.
+	POSTMSG[${COUNT}]="${FUNCNAME} "
 }
 
 essentials () {
 	# Install the essential stuff for most all Debian based systems (Deb, Ubuntu, RaspberryPi, Kali...)
 	sudo apt install -y htop vim net-tools nmon ssh tmux sshfs cmatrix vlc mplayer rtorrent exiv2 git cifs-utils exfatprogs gparted
 	sudo apt install -y exfat-utils 
+
+	# Any message to display post all selected installs and configs.  Listed in a end summary.
+	POSTMSG[${COUNT}]="${FUNCNAME} "
 }
 
 optionals () {
 	# Added the ~n needed when install wildcards using apt (or I could have fallen back to apt-get)
 	sudo apt install -y rdesktop iftop ircii ubuntu-restricted-extras
+
+	# Any message to display post all selected installs and configs.  Listed in a end summary.
+	POSTMSG[${COUNT}]="${FUNCNAME} "
 }
 
 qemu-guest () {
 	sudo apt install -y qemu-guest-agent spice-vdagent
 	mkdir ~/bin
 	echo $'xrandr --output \"$(xrandr | awk \'/ connected/{print $1; exit; }\')\" --auto' > ~/bin/vmresize
+	# '
 	chmod 777 ~/bin/vmresize
+
+	# Any message to display post all selected installs and configs.  Listed in a end summary.
+	POSTMSG[${COUNT}]="${FUNCNAME} "
 }
 
 wallpapers () {
@@ -79,6 +104,9 @@ wallpapers () {
 		# Maybe this is not Ubuntu 20+, so fall back to the old behavious of apt
 		sudo apt install -y ubuntu-wallpapers*
 	fi
+
+	# Any message to display post all selected installs and configs.  Listed in a end summary.
+	POSTMSG[${COUNT}]="${FUNCNAME} "
 }
 
 gui-software () {
@@ -89,15 +117,24 @@ gui-software () {
 	sudo add-apt-repository -y ppa:appimagelauncher-team/stable
 	sudo apt update
 	sudo apt install -y appimagelauncher
+
+	# Any message to display post all selected installs and configs.  Listed in a end summary.
+	POSTMSG[${COUNT}]="${FUNCNAME} "
 }
 
 xfce-goodies () {
 	# Install the essential XFCE Ubuntu stuff
 	sudo apt install -y xfce4-goodies
+
+	# Any message to display post all selected installs and configs.  Listed in a end summary.
+	POSTMSG[${COUNT}]="${FUNCNAME} "
 }
 
 xfce-gcloud () {
 	sudo apt install -y xubuntu-desktop xfce4
+
+	# Any message to display post all selected installs and configs.  Listed in a end summary.
+	POSTMSG[${COUNT}]="${FUNCNAME} "
 }
 
 brave-browser () {
@@ -107,6 +144,9 @@ brave-browser () {
 	echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] https://brave-browser-apt-release.s3.brave.com/ stable main"|sudo tee /etc/apt/sources.list.d/brave-browser-release.list
 	sudo apt update
 	sudo apt -f install brave-browser
+
+	# Any message to display post all selected installs and configs.  Listed in a end summary.
+	POSTMSG[${COUNT}]="${FUNCNAME} "
 }
 
 google-chrome () {
@@ -127,6 +167,9 @@ google-chrome () {
 		sudo apt --fix-broken install
 		rm -f google-chrome-stable_current_i386.deb
 	fi
+
+	# Any message to display post all selected installs and configs.  Listed in a end summary.
+	POSTMSG[${COUNT}]="${FUNCNAME} "
 }
 
 google-remote () {
@@ -139,23 +182,19 @@ google-remote () {
 	sudo apt install -y --with-source=chrome-remote-desktop_current_amd64.deb chrome-remote-desktop
 	sudo DEBIAN_FRONTEND=noninteractive apt install --assume-yes xfce4 desktop-base
 	echo "xfce4-session" > ~/.chrome-remote-desktop-session
-	# I don't think I really want this... I think this accidently was cut/pasted here many versions ago
-	# sudo apt install --assume-yes xscreensaver
 	sudo systemctl disable lightdm.service
-	echo ''
-	echo ''
-	echo '######################################################################'
-	echo 'Hey... since you install the Google Remote, you will want to visit:'
-	echo 'https://remotedesktop.google.com/headless'
-	echo '######################################################################'
-	echo ''
-	echo ''
+
+	# Any message to display post all selected installs and configs.  Listed in a end summary.
+	POSTMSG[${COUNT}]="${FUNCNAME}: Visit https://remotedesktop.google.com/headless for setting up the connection."
 }
 
 
 ssh-config () {
 	# Setup SSH which will require user input, so putting at end of script
 	ssh-keygen
+
+	# Any message to display post all selected installs and configs.  Listed in a end summary.
+	POSTMSG[${COUNT}]="${FUNCNAME} "
 }
 
 clean-up () {
@@ -165,6 +204,9 @@ clean-up () {
 	sudo apt -y autoremove &&
 	sudo apt -y autoclean &&
 	sudo apt -y clean
+
+	# Any message to display post all selected installs and configs.  Listed in a end summary.
+	POSTMSG[${COUNT}]="${FUNCNAME} "
 }
 
 lamp () {
@@ -209,6 +251,9 @@ lamp () {
 	echo '3. Add default-ssl.conf TLS configuration file'
 	echo '4. And then restart a few things listed in the above URL instructions'
 	echo ''
+
+	# Any message to display post all selected installs and configs.  Listed in a end summary.
+	POSTMSG[${COUNT}]="${FUNCNAME} "
 }
 
 lap-no-m () {
@@ -225,6 +270,9 @@ lap-no-m () {
 	
 	# Allow Emacs to color code PHP and web pages
 	sudo apt -y install php-elisp
+
+	# Any message to display post all selected installs and configs.  Listed in a end summary.
+	POSTMSG[${COUNT}]="${FUNCNAME} "
 }
 
 realtek-wifi () {
@@ -238,6 +286,9 @@ realtek-wifi () {
 	sudo dkms build -m rtl88x2bu -v ${VER}
 	sudo dkms install -m rtl88x2bu -v ${VER}
 	sudo modprobe 88x2bu
+
+	# Any message to display post all selected installs and configs.  Listed in a end summary.
+	POSTMSG[${COUNT}]="${FUNCNAME} "
 }
 
 tor () {
@@ -257,6 +308,9 @@ tor () {
 	echo 'mkdir -p ~/.local/share/applications/' >> ./tor-browser/copy-to-start-menu.sh
 	echo 'cp start-tor-browser.desktop ~/.local/share/applications/' >> ./tor-browser/copy-to-start-menu.sh
 	chmod 777 ./tor-browser/copy-to-start-menu.sh
+
+	# Any message to display post all selected installs and configs.  Listed in a end summary.
+	POSTMSG[${COUNT}]="${FUNCNAME} "
 }
 
 expressvpn () {
@@ -266,10 +320,10 @@ expressvpn () {
 	FILE_1=expressvpn_3.37.0.2-1_amd64.deb
 	wget ${BASE_URL}/${FILE_1}
 	sudo dpkg -i ${FILE_1}
-	echo Please log into your account and get the activiation code.
-	echo :: activate ERGQ8M5C6PWCOVTJDW9T05Q ::
-	echo https://www.expressvpn.com/sign-in
 	rm ${FILE_1}
+
+	# Any message to display post all selected installs and configs.  Listed in a end summary.
+	POSTMSG[${COUNT}]="${FUNCNAME}: expressvpn activiate ERGQ8M5C6PWCOVTJDW9T05Q"
 }
 
 kernel-latest () {
@@ -287,7 +341,11 @@ kernel-latest () {
 	sudo dpkg -i ${FILE_1} ${FILE_2} ${FILE_3} ${FILE_4}
 	rm ${FILE_1} ${FILE_2} ${FILE_3} ${FILE_4}
 	sudo reboot
+
+	# Any message to display post all selected installs and configs.  Listed in a end summary.
+	POSTMSG[${COUNT}]="${FUNCNAME} "
 }
+
 realvnc () {
 	VNCSERVER=VNC-Server-6.11.0-Linux-x64.deb
 	VNCVIEWER=VNC-Viewer-6.22.315-Linux-x64.deb
@@ -302,13 +360,6 @@ realvnc () {
 	sudo apt install -f -y
 	sudo dpkg --install $VNCVIEWER
 	sudo apt install -f -y
-	
-	# Register the license
-	read -p "Would you like to add the VNC license (y/n)? "
-	case $(echo $REPLY | tr '[A-Z]' '[a-z]') in
-		y|yes) sudo vnclicense -add 4326B-7H7LA-RG5F2-292D5-9LTTA ;;
-		*)     echo "OK, we shall skip it." ;;
-	esac
 
 	# Set up a nice alias for starting up with multiple resolutions
 	# echo "alias vv='vncserver :28 -geometry 1280x800 -randr 1280x800,1024x768,1920x1080,1280x1024,1600x1200,1440x900,1600x900,2880x1800,1680x1050'" >> ~/.bashrc
@@ -316,6 +367,9 @@ realvnc () {
 	# Remove the install files
 	rm $VNCSERVER
 	rm $VNCVIEWER
+
+	# Any message to display post all selected installs and configs.  Listed in a end summary.
+	POSTMSG[${COUNT}]="${FUNCNAME}: sudo vnclicense -add 4326B-7H7LA-RG5F2-292D5-9LTTA"
 }
 
 realvnc-xfce-add () {
@@ -327,6 +381,9 @@ export DESKTOP_SESSION
 startxfce4
 vncserver-virtual -kill $DISPLAY' | sudo tee -a /etc/vnc/xstartup.custom
 	sudo chmod 755 /etc/vnc/xstartup.custom
+
+	# Any message to display post all selected installs and configs.  Listed in a end summary.
+	POSTMSG[${COUNT}]="${FUNCNAME} "
 }
 
 wine () {
@@ -344,6 +401,9 @@ wine () {
 	sudo apt install --install-recommends winehq-devel
 	# Install WineTricks
 	sudo apt install winetricks
+
+	# Any message to display post all selected installs and configs.  Listed in a end summary.
+	POSTMSG[${COUNT}]="${FUNCNAME} "
 }
 
 wine-chromebook () {
@@ -365,11 +425,16 @@ wine-chromebook () {
 	wget  https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks
 	chmod +x winetricks
 
+	# Any message to display post all selected installs and configs.  Listed in a end summary.
+	POSTMSG[${COUNT}]="${FUNCNAME} "
 }
 
 libdvd () {
 	sudo apt install libdvd-pkg
 	sudo dpkg-reconfigure libdvd-pkg
+
+	# Any message to display post all selected installs and configs.  Listed in a end summary.
+	POSTMSG[${COUNT}]="${FUNCNAME} "
 }
 
 google-drive () {
@@ -387,14 +452,16 @@ google-drive () {
 	sudo apt update
 	sudo apt install google-drive-ocamlfuse
 	google-drive-ocamlfuse
-	echo "Now just create a directory and mount with google-drive-ocamlfuse"
-	echo "       $ mkdir ~/gdrive "
-	echo "       $ google-drive-ocamlfuse ~/gdrive "
-	echo " "
+
+	# Any message to display post all selected installs and configs.  Listed in a end summary.
+	POSTMSG[${COUNT}]="${FUNCNAME}: Create a directory and mount with google-drive-ocamlfuse with: \n\t mkdir ~/gdrive \n\t google-drive-ocamlfuse ~/gdrive)"
 }
 
 xo-installer () {
 	git clone https://github.com/ronivay/XenOrchestraInstallerUpdater.git
+
+	# Any message to display post all selected installs and configs.  Listed in a end summary.
+	POSTMSG[${COUNT}]="${FUNCNAME} "
 }
 
 ham-ax25 () {
@@ -403,6 +470,9 @@ ham-ax25 () {
 	sudo apt -y install ax25-tools ax25-apps
 	sudo systemctl start ax25
 	sudo systemctl enable ax25
+
+	# Any message to display post all selected installs and configs.  Listed in a end summary.
+	POSTMSG[${COUNT}]="${FUNCNAME} "
 }
 
 ham-direwolf () {
@@ -410,10 +480,9 @@ ham-direwolf () {
 	echo "Installing and configuring Direwolf"
 	sudo apt -y install direwolf
 	gunzip -c /usr/share/doc/direwolf/conf/direwolf.conf.gz > ~/direwolf.conf
-	echo '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
-	echo '!!  Be sure to edit ~/direwolf.conf  !!'
-	echo '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
 
+	# Any message to display post all selected installs and configs.  Listed in a end summary.
+	POSTMSG[${COUNT}]="${FUNCNAME}: Edit and config ~/direwolf.conf"
 }
 
 ham-xastir () {
@@ -422,20 +491,24 @@ ham-xastir () {
 	sudo apt -y install xastir
 	sudo usermod -a -G xastir-ax25 $USER
 
+	# Any message to display post all selected installs and configs.  Listed in a end summary.
+	POSTMSG[${COUNT}]="${FUNCNAME} "
 }
 
 ham-yaac () {
 	# YAAC
-	yaacPath=~/Applications/YAAC
+	yaacPath=~/Applications
 	echo "Installing and configuring Xastir"
 	sudo apt -y install default-jre
 	wget https://www.ka2ddo.org/ka2ddo/YAAC.zip
-	mkdir -p $yaacPath
-	unzip -d $yaacPath YAAC.zip
-	echo -e '#!/usr/bin/bash \n\njava -jar YAAC.jar' > $yaacPath/../yaac
-	chmod 774 $yaacPath/../yaac
+	mkdir -p $yaacPath/YAAC
+	unzip -d $yaacPath/YAAC YAAC.zip
+	echo -e '#!/usr/bin/bash \n\njava -jar YAAC.jar' > $yaacPath/yaac
+	chmod 774 $yaacPath/yaac
 	rm YAAC.zip
 
+	# Any message to display post all selected installs and configs.  Listed in a end summary.
+	POSTMSG[${COUNT}]="${FUNCNAME}: Run YAAC with the bash script file \n\t ${yaacPath}"
 }
 
 ham-ken-thd72 () {
@@ -444,9 +517,9 @@ ham-ken-thd72 () {
 	sudo apt -y install tmd710-tncsetup
 	sudo usermod -a -G dialout $USER
 	sudo usermod -a -G tty $USER
-	echo '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
-	echo '!!  Please reboot to restart service  !!'
-	echo '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+
+	# Any message to display post all selected installs and configs.  Listed in a end summary.
+	POSTMSG[${COUNT}]="${FUNCNAME}: Please reboot to fully restart service"
 }
 
 ham-pat () {
@@ -455,11 +528,9 @@ ham-pat () {
 	wget $downloadLink
 	sudo dpkg -i pat_*_linux_amd64.deb
 	sudo /usr/share/pat/ax25/install-systemd-ax25-unit.bash
-	echo '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
-	echo '!!  Be sure to edit                   !!'
-	echo '!!    1. ~/.config/pat/config.json    !!'
-	echo '!!    2. /etc/ax25/axports            !!'
-	echo '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+
+	# Any message to display post all selected installs and configs.  Listed in a end summary.
+	POSTMSG[${COUNT}]="${FUNCNAME}: Edit and config \n\t ~/.config/pat/config.json \n\t /etc/ax25/axports"
 }
 
 ham-clock () {
@@ -479,6 +550,9 @@ ham-clock () {
 
 	make -j ${cpuCores} ${targetSize}
 	sudo make install
+
+	# Any message to display post all selected installs and configs.  Listed in a end summary.
+	POSTMSG[${COUNT}]="${FUNCNAME} "
 }
 
 
@@ -557,18 +631,23 @@ SELECTION=( $(whiptail --title "Post Install on Debian Based Architecture - ${VE
 	"clean-up"          "Clean up everything " OFF \
 	3>&1 1>&2 2>&3) )
 
-# Now loop through all the returned selections, which is stored in an array $SELECTION
+# Loop through all the returned selections, which is stored in an array $SELECTION
+# We need a counter to assign to the POSTMSG array
+COUNT=0
 for i in "${SELECTION[@]}"
 do
-	$i
+	$i $COUNT
+	((COUNT=COUNT+1))
 done
 
-# Let us show what was selected and done... cause sometimes I walk away and forget what I just did
+# Show all the functions that were run, and any post message
+# Now we need a counter to just number the summary... nothing about the above COUNT
+COUNT=1
 echo
-echo "Completed: "
-MYCOUNT=0
-for i in "${SELECTION[@]}"
+echo "Well this is exciting, we have installed and congfigured the following:"
+for i in "${POSTMSG[@]}"
 do
-	((MYCOUNT=MYCOUNT+1))
-	echo    ${MYCOUNT}. ${i}
+	echo -e $COUNT. $i
+	((COUNT=COUNT+1))
 done
+
