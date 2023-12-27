@@ -92,16 +92,17 @@ qemu-guest () {
 	# '
 	chmod 777 ~/bin/vmresize
 
-	echo -e "[Desktop Entry]\n
-Version=1.0\n
-Type=Application\n
-Name=Resize Display\n
-Comment=Resize display to match the current VM display\n
-Exec=~/bin/vmresize\n
-Icon=ccsm\n
-Path=\n
-Terminal=false\n
-StartupNotify=false\n" > ~/Desktop/Resize.desktop
+	echo -e "[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Resize Display
+Comment=Resize display to match the current VM display
+Exec=${HOME}/bin/vmresize
+Icon=ccsm
+Path=
+Terminal=false
+StartupNotify=false
+" > ~/Desktop/Resize.desktop
 
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
