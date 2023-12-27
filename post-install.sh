@@ -93,7 +93,7 @@ qemu-guest () {
 	chmod 777 ~/bin/vmresize
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME} "
+	POSTMSG[${COUNT}]="${FUNCNAME}: vmresize (to change screen to window size) was place in ~/bin/ "
 }
 
 wallpapers () {
