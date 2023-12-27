@@ -644,7 +644,7 @@ done
 # Now we need a counter to just number the summary... nothing about the above COUNT
 COUNT=1
 echo
-echo "Well this is exciting, we have installed and congfigured the following:"
+echo "Well this is exciting, we have installed and configured the following:"
 for i in "${POSTMSG[@]}"
 do
 	echo -e $COUNT. $i
