@@ -508,7 +508,7 @@ ham-yaac () {
 	rm YAAC.zip
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME}: Run YAAC with the bash script file \n\t ${yaacPath}"
+	POSTMSG[${COUNT}]="${FUNCNAME}: Run YAAC with the bash script file \n\t ${yaacPath}/yaac"
 }
 
 ham-ken-thd72 () {
