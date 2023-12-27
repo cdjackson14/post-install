@@ -4,7 +4,7 @@
 # Can be used on many Debian based installs, like Ubuntu, Raspberry Pi, Kali, and GCP Linux computes
 #
 # Top is all functions, the bottom lines contain the menu and action.
-VERSION=2.13
+VERSION=2.14
 # Found that Chromebooks don't have lsb-release install by default, so
 # switching to looking in /etc/os-release
 #	BUILD=`lsb_release -i | awk {'print $3'} | tr '[:upper:]' '[:lower:]'`
@@ -397,7 +397,72 @@ xo-installer () {
 	git clone https://github.com/ronivay/XenOrchestraInstallerUpdater.git
 }
 
-hamclock () {
+ham-ax25 () {
+	# Install AX.25 tools
+	echo "Installing and configuring AX.25 tools"
+	sudo apt -y install ax25-tools ax25-apps
+	sudo systemctl start ax25
+	sudo systemctl enable ax25
+}
+
+ham-direwolf () {
+	# Direwolf
+	echo "Installing and configuring Direwolf"
+	sudo apt -y install direwolf
+	gunzip -c /usr/share/doc/direwolf/conf/direwolf.conf.gz > ~/direwolf.conf
+	echo '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+	echo '!!  Be sure to edit ~/direwolf.conf  !!'
+	echo '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+
+}
+
+ham-xastir () {
+	# Xastir
+	echo "Installing and configuring Xastir"
+	sudo apt -y install xastir
+	sudo usermod -a -G xastir-ax25 $USER
+
+}
+
+ham-yaac () {
+	# YAAC
+	yaacPath=~/Applications/YAAC
+	echo "Installing and configuring Xastir"
+	sudo apt -y install default-jre
+	wget https://www.ka2ddo.org/ka2ddo/YAAC.zip
+	mkdir -p $yaacPath
+	unzip -d $yaacPath YAAC.zip
+	echo -e '#!/usr/bin/bash \n\njava -jar YAAC.jar' > $yaacPath/../yaac
+	chmod 774 $yaacPath/../yaac
+	rm YAAC.zip
+
+}
+
+ham-ken-thd72 () {
+	# Kenwood TH-D72 Configuration
+	echo "Installing additional Kenwood TH-D72 tools"
+	sudo apt -y install tmd710-tncsetup
+	sudo usermod -a -G dialout $USER
+	sudo usermod -a -G tty $USER
+	echo '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+	echo '!!  Please reboot to restart service  !!'
+	echo '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+}
+
+ham-pat () {
+	# Pat
+	downloadLink=`wget -O - https://github.com/la5nta/pat/releases|grep amd64.deb |head -1 | grep strong | awk -F '"' '{ print $2}'`
+	wget $downloadLink
+	sudo dpkg -i pat_*_linux_amd64.deb
+	sudo /usr/share/pat/ax25/install-systemd-ax25-unit.bash
+	echo '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+	echo '!!  Be sure to edit                   !!'
+	echo '!!    1. ~/.config/pat/config.json    !!'
+	echo '!!    2. /etc/ax25/axports            !!'
+	echo '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+}
+
+ham-clock () {
 	sudo apt -y install make g++ libx11-dev xserver-xorg raspberrypi-ui-mods lightdm lxsession
 	cd ~
 	rm -fr ESPHamClock
@@ -476,7 +541,13 @@ SELECTION=( $(whiptail --title "Post Install on Debian Based Architecture - ${VE
 	"wine-chromebook"   "Install: Wine & Winetricks on a Chromebook" OFF \
 	"libdvd"	    "Install: Install and configure libdvd-pkg for copy protected DVDs" OFF \
 	"xo-installer"      "Install: XenOrchestraInstallerUpdater" OFF \
-	"hamclock"          "Install: HamClock" OFF \
+	"ham-ax25"          "Install: Ham: AX.25 tools" OFF \
+	"ham-direwolf"      "Install: Ham: Direwolf" OFF \
+	"ham-yaac"          "Install: Ham: YAAC" OFF \
+	"ham-xastir"        "Install: Ham: Xastir" OFF \
+	"ham-ken-thd72"     "Install: Ham: Kenwood TH-D72 Tools" OFF \
+	"ham-pat"           "Install: Ham: Pat Winlink" OFF \
+	"ham-clock"         "Install: Ham: HamClock" OFF \
 	"ssh-config"        "set up SSH keys in .ssh " OFF \
 	"create-swap"       "GCP: Create swap space on a Micro compute " OFF \
 	"google-remote"     "GCP: install Google Remote " OFF \
