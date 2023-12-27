@@ -14,7 +14,7 @@ BUILD=`grep ^ID= /etc/os-release | awk -F = '{ print $2 }' | tr '[:lower:]' '[:u
 RELEASE=`grep ^VERSION_ID= /etc/os-release | awk -F = '{ print $2 }' | sed s/\"//g`
 CODENAME=`grep VERSION_CODENAME /etc/os-release | awk -F = '{ print $2 }'`
 declare -a POSTMSG
-SPACE5='     '
+
 
 ##############################
 # FUNCTIONS
@@ -86,11 +86,23 @@ optionals () {
 }
 
 qemu-guest () {
-	sudo apt install -y qemu-guest-agent spice-vdagent
-	mkdir ~/bin
+	#sudo apt install -y qemu-guest-agent spice-vdagent
+	mkdir -p ~/bin
 	echo $'xrandr --output \"$(xrandr | awk \'/ connected/{print $1; exit; }\')\" --auto' > ~/bin/vmresize
 	# '
 	chmod 777 ~/bin/vmresize
+
+	echo -e "[Desktop Entry]\n
+Version=1.0\n
+Type=Application\n
+Name=Resize Display\n
+Comment=Resize display to match the current VM display\n
+Exec=~/bin/vmresize\n
+Icon=ccsm\n
+Path=\n
+Terminal=false\n
+StartupNotify=false\n" > ~/Desktop/Resize.desktop
+
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
 	POSTMSG[${COUNT}]="${FUNCNAME}: vmresize (to change screen to window size) was place in ~/bin/ "
