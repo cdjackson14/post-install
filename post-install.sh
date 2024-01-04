@@ -4,7 +4,7 @@
 # Can be used on many Debian based installs, like Ubuntu, Raspberry Pi, Kali, and GCP Linux computes
 #
 # Top is all functions, the bottom lines contain the menu and action.
-VERSION=3.0
+VERSION=3.1
 # Found that Chromebooks don't have lsb-release install by default, so
 # switching to looking in /etc/os-release
 #	BUILD=`lsb_release -i | awk {'print $3'} | tr '[:upper:]' '[:lower:]'`
@@ -510,7 +510,7 @@ ham-xastir () {
 
 ham-yaac () {
 	# YAAC
-	yaacPath=~/Applications
+	yaacPath=${HOME}
 	echo "Installing and configuring Xastir"
 	sudo apt -y install default-jre
 	wget https://www.ka2ddo.org/ka2ddo/YAAC.zip
@@ -518,6 +518,16 @@ ham-yaac () {
 	unzip -d $yaacPath/YAAC YAAC.zip
 	echo -e '#!/usr/bin/bash \n\njava -jar YAAC.jar' > $yaacPath/yaac
 	chmod 774 $yaacPath/yaac
+	echo "[Desktop Entry]
+Version=1.0
+Type=Application
+Name=YAAC
+Comment=Yet Another APRS Client
+Exec=java -jar ${yaacPath}/YAAC/YAAC.jar
+Icon=${yaacPath}/YAAC/images/yaaclogo64.ico
+Path=
+Terminal=false
+StartupNotify=false" > $yaacPath/YAAC.desktop
 	rm YAAC.zip
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
