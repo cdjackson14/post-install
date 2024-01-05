@@ -4,7 +4,7 @@
 # Can be used on many Debian based installs, like Ubuntu, Raspberry Pi, Kali, and GCP Linux computes
 #
 # Top is all functions, the bottom lines contain the menu and action.
-VERSION=3.1
+VERSION=3.2
 # Found that Chromebooks don't have lsb-release install by default, so
 # switching to looking in /etc/os-release
 #	BUILD=`lsb_release -i | awk {'print $3'} | tr '[:upper:]' '[:lower:]'`
@@ -137,7 +137,7 @@ gui-software () {
 
 xfce-goodies () {
 	# Install the essential XFCE Ubuntu stuff
-	sudo apt install -y xfce4-goodies
+	sudo apt install -y xfce4-goodies plank
 
 	# Setup the terminal like we like it
 	termConfigPath=${HOME}/.config/xfce4/terminal
@@ -196,6 +196,22 @@ TabActivityColor=#0f4999" > ${termConfigPath}/terminalrc
 	gsettings set org.xfce.mousepad.preferences.view.show-whitespace leading true
 	gsettings set org.xfce.mousepad.preferences.view.show-whitespace trailing true
 	gsettings set org.xfce.mousepad.preferences.window always-show-tabs true
+
+	# Config Plank to autorun at login
+	autoStart=${HOME}/.config/autostart
+	mkdir -p ${termConfigPath}
+	echo "[Desktop Entry]
+Encoding=UTF-8
+Version=0.9.4
+Type=Application
+Name=Plank
+Comment=Plank menu start bar
+Exec=plank
+OnlyShowIn=XFCE;
+RunHook=0
+StartupNotify=false
+Terminal=false
+Hidden=false" > ${autoStart}/Plank.desktop
 
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
@@ -683,7 +699,7 @@ SELECTION=( $(whiptail --title "Post Install on Debian Based Architecture - ${VE
 	"gui-software"      "Install: GUI Pinta, AppImageLauncher, Color Picker, KeepassXC" OFF \
 	"qemu-guest"        "Install: Guest tools for qemu/kvm " OFF \
 	"wallpapers"        "Install: A bunch of Ubuntu wallpapers" OFF \
-	"xfce-goodies"      "Install: xfce-goodies " OFF \
+	"xfce-goodies"      "Install: xfce-goodies and plank" OFF \
 	"brave-browser"     "Install: Brave browser " OFF \
 	"google-chrome"     "Install: Google Chrome browser " OFF \
 	"google-drive"	    "Install: Google Drive using OCamlFUSE " OFF \
