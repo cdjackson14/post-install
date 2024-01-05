@@ -139,6 +139,65 @@ xfce-goodies () {
 	# Install the essential XFCE Ubuntu stuff
 	sudo apt install -y xfce4-goodies
 
+	# Setup the terminal like we like it
+	termConfigPath=${HOME}/.config/xfce4/terminal
+	mkdir -p ${termConfigPath}
+	echo "[Configuration]
+FontName=DejaVu Sans Mono 12
+MiscAlwaysShowTabs=FALSE
+MiscBell=FALSE
+MiscBellUrgent=FALSE
+MiscBordersDefault=TRUE
+MiscCursorBlinks=FALSE
+MiscCursorShape=TERMINAL_CURSOR_SHAPE_BLOCK
+MiscDefaultGeometry=120x34
+MiscInheritGeometry=FALSE
+MiscMenubarDefault=TRUE
+MiscMouseAutohide=FALSE
+MiscMouseWheelZoom=TRUE
+MiscToolbarDefault=FALSE
+MiscConfirmClose=TRUE
+MiscCycleTabs=TRUE
+MiscTabCloseButtons=TRUE
+MiscTabCloseMiddleClick=TRUE
+MiscTabPosition=GTK_POS_TOP
+MiscHighlightUrls=TRUE
+MiscMiddleClickOpensUri=FALSE
+MiscCopyOnSelect=FALSE
+MiscShowRelaunchDialog=TRUE
+MiscRewrapOnResize=TRUE
+MiscUseShiftArrowsToScroll=FALSE
+MiscSlimTabs=FALSE
+MiscNewTabAdjacent=FALSE
+MiscSearchDialogOpacity=100
+MiscShowUnsafePasteDialog=TRUE
+ColorPalette=#000000;#aa0000;#44aa44;#aa5500;#0039aa;#aa22aa;#1a92aa;#aaaaaa;#777777;#ff8787;#4ce64c;#ded82c;#295fcc;#cc58cc;#4ccce6;#ffffff
+ColorForeground=#b7b7b7
+ColorBackground=#131926
+ColorCursor=#0f4999
+ColorSelection=#163b59
+ColorSelectionUseDefault=FALSE
+ColorBold=#ffffff
+ColorBoldUseDefault=FALSE
+TabActivityColor=#0f4999" > ${termConfigPath}/terminalrc
+
+	# Also update Mouspad look and feel
+	gsettings set org.xfce.mousepad.preferences.view auto-indent true
+	gsettings set org.xfce.mousepad.preferences.view color-scheme 'cobalt'
+	gsettings set org.xfce.mousepad.preferences.view font-name 'DejaVu Sans Mono 12'
+	gsettings set org.xfce.mousepad.preferences.view highlight-current-line true
+	gsettings set org.xfce.mousepad.preferences.view indent-on-tab true
+	gsettings set org.xfce.mousepad.preferences.view indent-width -1
+	gsettings set org.xfce.mousepad.preferences.view show-line-endings true
+	gsettings set org.xfce.mousepad.preferences.view show-line-numbers true
+	gsettings set org.xfce.mousepad.preferences.view show-whitespace true
+	gsettings set org.xfce.mousepad.preferences.view word-wrap true
+	gsettings set org.xfce.mousepad.preferences.view.show-whitespace inside true
+	gsettings set org.xfce.mousepad.preferences.view.show-whitespace leading true
+	gsettings set org.xfce.mousepad.preferences.view.show-whitespace trailing true
+	gsettings set org.xfce.mousepad.preferences.window always-show-tabs true
+
+
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
 	POSTMSG[${COUNT}]="${FUNCNAME} "
 }
