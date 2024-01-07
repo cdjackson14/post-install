@@ -411,7 +411,7 @@ expressvpn () {
 	rm ${FILE_1}
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME}: expressvpn activiate ERGQ8M5C6PWCOVTJDW9T05Q"
+	POSTMSG[${COUNT}]="${FUNCNAME}: expressvpn activate ERGQ8M5C6PWCOVTJDW9T05Q"
 }
 
 kernel-latest () {
