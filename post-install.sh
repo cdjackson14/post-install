@@ -89,7 +89,7 @@ qemu-guest () {
 	#sudo apt install -y qemu-guest-agent spice-vdagent
 	mkdir -p ~/bin
 	echo $'#!/usr/bin/bash
-output --xrandr \"$(xrandr | awk \'/ connected/{print $1; exit; }\')\" --auto' > ~/bin/display-resizer
+xrandr --output  \"$(xrandr | awk \'/ connected/{print $1; exit; }\')\" --auto' > ~/bin/display-resizer
 	chmod 777 ~/bin/display-resizer
 
 	echo -e "[Desktop Entry]
