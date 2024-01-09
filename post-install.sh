@@ -4,7 +4,7 @@
 # Can be used on many Debian based installs, like Ubuntu, Raspberry Pi, Kali, and GCP Linux computes
 #
 # Top is all functions, the bottom lines contain the menu and action.
-VERSION=3.2
+VERSION=3.3
 # Found that Chromebooks don't have lsb-release install by default, so
 # switching to looking in /etc/os-release
 #	BUILD=`lsb_release -i | awk {'print $3'} | tr '[:upper:]' '[:lower:]'`
@@ -88,25 +88,25 @@ optionals () {
 qemu-guest () {
 	#sudo apt install -y qemu-guest-agent spice-vdagent
 	mkdir -p ~/bin
-	echo $'xrandr --output \"$(xrandr | awk \'/ connected/{print $1; exit; }\')\" --auto' > ~/bin/vmresize
-	# '
-	chmod 777 ~/bin/vmresize
+	echo $'#!/usr/bin/bash
+output --xrandr \"$(xrandr | awk \'/ connected/{print $1; exit; }\')\" --auto' > ~/bin/display-resizer
+	chmod 777 ~/bin/display-resizer
 
 	echo -e "[Desktop Entry]
 Version=1.0
 Type=Application
 Name=Resize Display
 Comment=Resize display to match the current VM display
-Exec=${HOME}/bin/vmresize
+Exec=${HOME}/bin/display-resizer
 Icon=ccsm
 Path=
 Terminal=false
 StartupNotify=false
-" > ~/Desktop/Resize.desktop
+" > ~/Desktop/Display-Resizer.desktop
 
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME}: vmresize (to change screen to window size) was place in ~/bin/ "
+	POSTMSG[${COUNT}]="${FUNCNAME}: display-resizer (to change screen to window size) was place in ~/bin/ "
 }
 
 wallpapers () {
