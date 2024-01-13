@@ -4,7 +4,7 @@
 # Can be used on many Debian based installs, like Ubuntu, Raspberry Pi, Kali, and GCP Linux computes
 #
 # Top is all functions, the bottom lines contain the menu and action.
-VERSION=3.3
+VERSION=3.4
 # Found that Chromebooks don't have lsb-release install by default, so
 # switching to looking in /etc/os-release
 #	BUILD=`lsb_release -i | awk {'print $3'} | tr '[:upper:]' '[:lower:]'`
@@ -381,7 +381,7 @@ realtek-wifi () {
 
 tor () {
 	# Find the current version
-	TOR_VERSION=`wget -q -O - https://www.torproject.org/download/languages/ | grep 'tor-browser-linux64-' | awk -F '/' '{ print $4;exit }'`
+	TOR_VERSION=`wget -q -O - https://www.torproject.org/download/languages/ | grep 'linux' | awk -F '/' '{ print $5 }'`
 
 	# Install the TOR Browser on Linux
 	# TOR_FILE=tor-browser-linux64-${TOR_VERSION}_en-US.tar.xz
