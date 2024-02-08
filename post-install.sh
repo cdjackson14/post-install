@@ -4,7 +4,7 @@
 # Can be used on many Debian based installs, like Ubuntu, Raspberry Pi, Kali, and GCP Linux computes
 #
 # Top is all functions, the bottom lines contain the menu and action.
-VERSION=3.4
+VERSION=3.5
 # Found that Chromebooks don't have lsb-release install by default, so
 # switching to looking in /etc/os-release
 #	BUILD=`lsb_release -i | awk {'print $3'} | tr '[:upper:]' '[:lower:]'`
@@ -276,6 +276,13 @@ google-remote () {
 	POSTMSG[${COUNT}]="${FUNCNAME}: Visit https://remotedesktop.google.com/headless for setting up the connection."
 }
 
+calibre () {
+	# Install Calibre most recent version
+	# Install pre-requisit for Ubuntu
+	install libxcb-cursor0
+	# Install using the main script as shown on the Calibre download page for Linux
+	sudo -v && wget -nv -O- https://download.calibre-ebook.com/linux-installer.sh | sudo sh /dev/stdin
+}
 
 ssh-config () {
 	# Setup SSH which will require user input, so putting at end of script
@@ -703,6 +710,7 @@ SELECTION=( $(whiptail --title "Post Install on Debian Based Architecture - ${VE
 	"brave-browser"     "Install: Brave browser " OFF \
 	"google-chrome"     "Install: Google Chrome browser " OFF \
 	"google-drive"	    "Install: Google Drive using OCamlFUSE " OFF \
+	"calibre"           "Install: Calibre ebook organizer " OFF \
 	"realtek-wifi"      "Install: Realtek AC1200 wifi drivers (rtl88x2BU) " OFF \
 	"realvnc"           "Install: RealVNC files" OFF \
 	"realvnc-xfce4-add" "Install: Configure XFCE4 startup for use with RealVNC (for older versions, pre 2021)" OFF \
