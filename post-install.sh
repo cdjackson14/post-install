@@ -4,7 +4,7 @@
 # Can be used on many Debian based installs, like Ubuntu, Raspberry Pi, Kali, and GCP Linux computes
 #
 # Top is all functions, the bottom lines contain the menu and action.
-VERSION=3.6
+VERSION=3.7
 # Found that Chromebooks don't have lsb-release install by default, so
 # switching to looking in /etc/os-release
 #	BUILD=`lsb_release -i | awk {'print $3'} | tr '[:upper:]' '[:lower:]'`
@@ -126,10 +126,10 @@ gui-software () {
 	sudo apt install -y pinta keepassxc color-picker
 	
 	# Install AppImageLauncher
-	sudo apt install -y software-properties-common
-	sudo add-apt-repository -y ppa:appimagelauncher-team/stable
-	sudo apt update
-	sudo apt install -y appimagelauncher
+	#sudo apt install -y software-properties-common
+	#sudo add-apt-repository -y ppa:appimagelauncher-team/stable
+	#sudo apt update
+	#sudo apt install -y appimagelauncher
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
 	POSTMSG[${COUNT}]="${FUNCNAME} "
@@ -557,8 +557,8 @@ google-drive () {
 
 qemu-virtmanager () {
 	# Install Qemu and Virt-Manager
-	install -y bridge-utils
-	install -y qemu-kvm qemu-system virt-manager virt-viewer libvirt-daemon libvirt-daemon-system libvirt-clients
+	sudo apt install -y bridge-utils
+	sudo apt install -y qemu-kvm qemu-system virt-manager virt-viewer libvirt-daemon libvirt-daemon-system libvirt-clients
 	
 	# Create a link to images in the local user's home
 	ln -s /var/lib/libvirt/images ${HOME}/images
