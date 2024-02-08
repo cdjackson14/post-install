@@ -279,7 +279,7 @@ google-remote () {
 calibre () {
 	# Install Calibre most recent version
 	# Install pre-requisit for Ubuntu
-	install libxcb-cursor0
+	sudo apt install -y libxcb-cursor0
 	# Install using the main script as shown on the Calibre download page for Linux
 	sudo -v && wget -nv -O- https://download.calibre-ebook.com/linux-installer.sh | sudo sh /dev/stdin
 
