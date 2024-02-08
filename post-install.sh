@@ -4,7 +4,7 @@
 # Can be used on many Debian based installs, like Ubuntu, Raspberry Pi, Kali, and GCP Linux computes
 #
 # Top is all functions, the bottom lines contain the menu and action.
-VERSION=3.5
+VERSION=3.6
 # Found that Chromebooks don't have lsb-release install by default, so
 # switching to looking in /etc/os-release
 #	BUILD=`lsb_release -i | awk {'print $3'} | tr '[:upper:]' '[:lower:]'`
@@ -282,6 +282,9 @@ calibre () {
 	install libxcb-cursor0
 	# Install using the main script as shown on the Calibre download page for Linux
 	sudo -v && wget -nv -O- https://download.calibre-ebook.com/linux-installer.sh | sudo sh /dev/stdin
+
+	# Any message to display post all selected installs and configs.  Listed in a end summary.
+	POSTMSG[${COUNT}]="${FUNCNAME}: Ready to run and import your ebooks. "
 }
 
 ssh-config () {
@@ -552,6 +555,18 @@ google-drive () {
 	POSTMSG[${COUNT}]="${FUNCNAME}: Create a directory and mount with google-drive-ocamlfuse with: \n\t mkdir ~/gdrive \n\t google-drive-ocamlfuse ~/gdrive)"
 }
 
+qemu-virtmanager () {
+	# Install Qemu and Virt-Manager
+	install -y bridge-utils
+	install -y qemu-kvm qemu-system virt-manager virt-viewer libvirt-daemon libvirt-daemon-system libvirt-clients
+	
+	# Create a link to images in the local user's home
+	ln -s /var/lib/libvirt/images ${HOME}/images
+
+	# Any message to display post all selected installs and configs.  Listed in a end summary.
+	POSTMSG[${COUNT}]="${FUNCNAME}: Reboot before running Qemu or Virt-Manager. "
+}
+
 xo-installer () {
 	git clone https://github.com/ronivay/XenOrchestraInstallerUpdater.git
 
@@ -714,6 +729,7 @@ SELECTION=( $(whiptail --title "Post Install on Debian Based Architecture - ${VE
 	"realtek-wifi"      "Install: Realtek AC1200 wifi drivers (rtl88x2BU) " OFF \
 	"realvnc"           "Install: RealVNC files" OFF \
 	"realvnc-xfce4-add" "Install: Configure XFCE4 startup for use with RealVNC (for older versions, pre 2021)" OFF \
+	"qemu-virtmanager"  "Install: Qemu and Virt-Manager " OFF \
 	"tor"               "Install: TOR Browser " OFF \
 	"expressvpn"        "Install: Express VPN " OFF \
 	"kernel-latest"     "Install: Latest Ubuntu kernel v5.4.6 (will reboot) " OFF \
