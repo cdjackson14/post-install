@@ -290,7 +290,7 @@ calibre () {
 dummy-video () {
 	# Set up a dummy video mode, often needed when using VNC with no attached monitor and wanting 
 	# to still connect to the native screen
-	echo sudo apt install -y xserver-xorg-video-dummy
+	sudo apt install -y xserver-xorg-video-dummy
 	echo 'Section "Monitor"
     Identifier "Monitor0"
     HorizSync 28.0-80.0
