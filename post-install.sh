@@ -4,7 +4,7 @@
 # Can be used on many Debian based installs, like Ubuntu, Raspberry Pi, Kali, and GCP Linux computes
 #
 # Top is all functions, the bottom lines contain the menu and action.
-VERSION=3.7
+VERSION=3.8
 # Found that Chromebooks don't have lsb-release install by default, so
 # switching to looking in /etc/os-release
 #	BUILD=`lsb_release -i | awk {'print $3'} | tr '[:upper:]' '[:lower:]'`
@@ -286,6 +286,41 @@ calibre () {
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
 	POSTMSG[${COUNT}]="${FUNCNAME}: Ready to run and import your ebooks. "
 }
+
+dummy-video () {
+	# Set up a dummy video mode, often needed when using VNC with no attached monitor and wanting 
+	# to still connect to the native screen
+	echo sudo apt install -y xserver-xorg-video-dummy
+	echo 'Section "Monitor"
+    Identifier "Monitor0"
+    HorizSync 28.0-80.0
+    VertRefresh 48.0-75.0
+    Modeline "1920x1080_60.00" 173.00 1920 2048 2248 2576 1080 1083 1088 1120 -hsync +vsync
+    Modeline "1920x1200_60.00" 193.25 1920 2056 2256 2592 1200 1203 1209 1245 -hsync +vsync
+EndSection
+    
+Section "Device"
+    Identifier "Card0"
+    Driver "dummy"
+    VideoRam 256000
+EndSection
+    
+Section "Screen"
+    Identifier "Screen0"
+    DefaultDepth 24
+    Device "Card0"
+    Monitor "Monitor0"
+    SubSection "Display"
+        Depth 24
+        Modes "1920x1200" "1920x1080"
+    EndSubSection
+EndSection
+' | sudo tee -a /etc/X11/xorg.conf
+
+	# Any message to display post all selected installs and configs.  Listed in a end summary.
+	POSTMSG[${COUNT}]="${FUNCNAME} Reboot to make it all wonderful. "
+}
+
 
 ssh-config () {
 	# Setup SSH which will require user input, so putting at end of script
@@ -726,6 +761,7 @@ SELECTION=( $(whiptail --title "Post Install on Debian Based Architecture - ${VE
 	"google-chrome"     "Install: Google Chrome browser " OFF \
 	"google-drive"	    "Install: Google Drive using OCamlFUSE " OFF \
 	"calibre"           "Install: Calibre ebook organizer " OFF \
+	"dummy-video"       "Install: Dummy video for physical computers needing to use remote desktop tools " OFF \
 	"realtek-wifi"      "Install: Realtek AC1200 wifi drivers (rtl88x2BU) " OFF \
 	"realvnc"           "Install: RealVNC files" OFF \
 	"realvnc-xfce4-add" "Install: Configure XFCE4 startup for use with RealVNC (for older versions, pre 2021)" OFF \
