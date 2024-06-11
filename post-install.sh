@@ -4,7 +4,7 @@
 # Can be used on many Debian based installs, like Ubuntu, Raspberry Pi, Kali, and GCP Linux computes
 #
 # Top is all functions, the bottom lines contain the menu and action.
-VERSION=3.9
+VERSION=3.10
 # Found that Chromebooks don't have lsb-release install by default, so
 # switching to looking in /etc/os-release
 #	BUILD=`lsb_release -i | awk {'print $3'} | tr '[:upper:]' '[:lower:]'`
@@ -21,8 +21,13 @@ declare -a POSTMSG
 ##############################
 
 set-bashrc () {
+	# Create ~/bin for local scripts
+	mkdir ~/bin
+
 	# Update the .bashrc with some helpful alias commands
 	echo -e "
+PATH=$PATH:~/bin
+
 alias update='sudo apt update; apt list --upgradable'
 alias install='sudo apt install'
 alias upgrade='sudo apt upgrade'
