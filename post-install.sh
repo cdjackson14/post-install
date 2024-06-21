@@ -4,7 +4,7 @@
 # Can be used on many Debian based installs, like Ubuntu, Raspberry Pi, Kali, and GCP Linux computes
 #
 # Top is all functions, the bottom lines contain the menu and action.
-VERSION=3.10
+VERSION=3.11
 # Found that Chromebooks don't have lsb-release install by default, so
 # switching to looking in /etc/os-release
 #	BUILD=`lsb_release -i | awk {'print $3'} | tr '[:upper:]' '[:lower:]'`
@@ -487,7 +487,7 @@ kernel-latest () {
 realvnc () {
 	VNCSERVER=VNC-Server-6.11.0-Linux-x64.deb
 	VNCVIEWER=VNC-Viewer-6.22.315-Linux-x64.deb
-	VNCURL=http://home.jackson.pub/dl/
+	VNCURL=http://home.jackson.pub/asset/dl/
 
 	# Download the RealVNC files
 	wget ${VNCURL}${VNCSERVER}
