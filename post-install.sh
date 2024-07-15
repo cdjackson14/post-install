@@ -4,7 +4,7 @@
 # Can be used on many Debian based installs, like Ubuntu, Raspberry Pi, Kali, and GCP Linux computes
 #
 # Top is all functions, the bottom lines contain the menu and action.
-VERSION=3.13
+VERSION=3.14
 # Found that Chromebooks don't have lsb-release install by default, so
 # switching to looking in /etc/os-release
 #	BUILD=`lsb_release -i | awk {'print $3'} | tr '[:upper:]' '[:lower:]'`
@@ -221,6 +221,18 @@ Hidden=false" > ${autoStart}/Plank.desktop
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
 	POSTMSG[${COUNT}]="${FUNCNAME} "
+}
+qemu-virtmanager () {
+	# Install the needed items
+ 	sudo apt install -y qemu-system bridge-utils qemu-kvm qemu-system virt-manager virt-viewer libvirt-daemon libvirt-daemon-system libvirt-clientsv
+
+  	# Set up a softlink to the images folder and make available to local user
+   	virt_path='/var/lib/libvirt/images'
+ 	ln -s ${virt_path} ~/images
+  	sudo chmod 777 ${virt_path}
+
+	# Any message to display post all selected installs and configs.  Listed in a end summary.
+	POSTMSG[${COUNT}]="${FUNCNAME} libvirt-bin will need to be installed for Ubuntu BEFORE Ubuntu 18.10"
 }
 
 xfce-gcloud () {
@@ -763,6 +775,7 @@ SELECTION=( $(NEWT_COLORS='window=,' whiptail --title "Post Install on Debian Ba
 	"qemu-guest"        "Install: Guest tools for qemu/kvm " OFF \
 	"wallpapers"        "Install: A bunch of Ubuntu wallpapers" OFF \
 	"xfce-goodies"      "Install: xfce-goodies and plank" OFF \
+	"qemu-virtmanager"  "Install: Qemu and VirtManager" OFF \
 	"brave-browser"     "Install: Brave browser " OFF \
 	"google-chrome"     "Install: Google Chrome browser " OFF \
 	"google-drive"	    "Install: Google Drive using OCamlFUSE " OFF \
