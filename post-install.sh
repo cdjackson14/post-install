@@ -222,18 +222,6 @@ Hidden=false" > ${autoStart}/Plank.desktop
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
 	POSTMSG[${COUNT}]="${FUNCNAME} "
 }
-qemu-virtmanager () {
-	# Install the needed items
- 	sudo apt install -y qemu-system bridge-utils qemu-kvm qemu-system virt-manager virt-viewer libvirt-daemon libvirt-daemon-system libvirt-clientsv
-
-  	# Set up a softlink to the images folder and make available to local user
-   	virt_path='/var/lib/libvirt/images'
- 	ln -s ${virt_path} ~/images
-  	sudo chmod 777 ${virt_path}
-
-	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME} libvirt-bin will need to be installed for Ubuntu BEFORE Ubuntu 18.10"
-}
 
 xfce-gcloud () {
 	sudo apt install -y xubuntu-desktop xfce4
@@ -610,10 +598,12 @@ google-drive () {
 qemu-virtmanager () {
 	# Install Qemu and Virt-Manager
 	sudo apt install -y bridge-utils
-	sudo apt install -y qemu-kvm qemu-system virt-manager virt-viewer libvirt-daemon libvirt-daemon-system libvirt-clients
-	
-	# Create a link to images in the local user's home
-	ln -s /var/lib/libvirt/images ${HOME}/images
+	sudo apt install -y qemu-system qemu-kvm virt-manager virt-viewer libvirt-daemon libvirt-daemon-system libvirt-clientsv
+ 
+ 	# Set up a softlink to the images folder and make available to local user
+   	virt_path='/var/lib/libvirt/images'
+ 	ln -s ${virt_path} ~/images
+  	sudo chmod 777 ${virt_path}
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
 	POSTMSG[${COUNT}]="${FUNCNAME}: Reboot before running Qemu or Virt-Manager. "
@@ -772,10 +762,10 @@ SELECTION=( $(NEWT_COLORS='window=,' whiptail --title "Post Install on Debian Ba
 	"essentials"        "Install: basic utilities - vim, networking, monitoring, tools, and misc." OFF \
 	"optionals"         "Install: rdesktop iftop ircii ubuntu-restricted-extras" OFF \
 	"gui-software"      "Install: GUI Pinta, AppImageLauncher, Color Picker, KeepassXC" OFF \
+	"qemu-virtmanager"  "Install: Qemu and VirtManager" OFF \
 	"qemu-guest"        "Install: Guest tools for qemu/kvm " OFF \
 	"wallpapers"        "Install: A bunch of Ubuntu wallpapers" OFF \
 	"xfce-goodies"      "Install: xfce-goodies and plank" OFF \
-	"qemu-virtmanager"  "Install: Qemu and VirtManager" OFF \
 	"brave-browser"     "Install: Brave browser " OFF \
 	"google-chrome"     "Install: Google Chrome browser " OFF \
 	"google-drive"	    "Install: Google Drive using OCamlFUSE " OFF \
@@ -784,7 +774,6 @@ SELECTION=( $(NEWT_COLORS='window=,' whiptail --title "Post Install on Debian Ba
 	"realtek-wifi"      "Install: Realtek AC1200 wifi drivers (rtl88x2BU) " OFF \
 	"realvnc"           "Install: RealVNC files" OFF \
 	"realvnc-xfce4-add" "Install: Configure XFCE4 startup for use with RealVNC (for older versions, pre 2021)" OFF \
-	"qemu-virtmanager"  "Install: Qemu and Virt-Manager " OFF \
 	"tor"               "Install: TOR Browser " OFF \
 	"expressvpn"        "Install: Express VPN " OFF \
 	"kernel-latest"     "Install: Latest Ubuntu kernel v5.4.6 (will reboot) " OFF \
