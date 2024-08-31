@@ -4,7 +4,7 @@
 # Can be used on many Debian based installs, like Ubuntu, Raspberry Pi, Kali, and GCP Linux computes
 #
 # Top is all functions, the bottom lines contain the menu and action.
-VERSION=3.14
+VERSION=3.15
 # Found that Chromebooks don't have lsb-release install by default, so
 # switching to looking in /etc/os-release
 #	BUILD=`lsb_release -i | awk {'print $3'} | tr '[:upper:]' '[:lower:]'`
@@ -598,7 +598,8 @@ google-drive () {
 qemu-virtmanager () {
 	# Install Qemu and Virt-Manager
 	sudo apt install -y bridge-utils
-	sudo apt install -y qemu-system qemu-kvm virt-manager virt-viewer libvirt-daemon libvirt-daemon-system libvirt-clientsv
+	sudo apt install -y qemu-system qemu-kvm virt-manager virt-viewer libvirt-daemon libvirt-daemon-system 
+	sudo apt install -y libvirt-clientsv
  
  	# Set up a softlink to the images folder and make available to local user
    	virt_path='/var/lib/libvirt/images'
@@ -614,6 +615,18 @@ xo-installer () {
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
 	POSTMSG[${COUNT}]="${FUNCNAME} "
+}
+
+ham-chirp () {
+	# Install Chirp using Python 3 wheel
+	# Install distro packages
+	sudo apt -y install python3-wxgtk4.0 pipx
+
+	# Install CHIRP (and Python dependencies)
+	pipx install --system-site-packages ./chirp-*-py3-none-any.whl
+
+	# Any message to display post all selected installs and configs.  Listed in a end summary.
+	POSTMSG[${COUNT}]="${FUNCNAME}: Run using ~/.local/bin/chirp "
 }
 
 ham-ax25 () {
@@ -781,6 +794,7 @@ SELECTION=( $(NEWT_COLORS='window=,' whiptail --title "Post Install on Debian Ba
 	"wine-chromebook"   "Install: Wine & Winetricks on a Chromebook" OFF \
 	"libdvd"	    "Install: Install and configure libdvd-pkg for copy protected DVDs" OFF \
 	"xo-installer"      "Install: XenOrchestraInstallerUpdater" OFF \
+	"ham-chirp"         "Install: Ham: Chirp" OFF \
 	"ham-ax25"          "Install: Ham: AX.25 tools" OFF \
 	"ham-direwolf"      "Install: Ham: Direwolf" OFF \
 	"ham-yaac"          "Install: Ham: YAAC" OFF \
