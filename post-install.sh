@@ -622,9 +622,19 @@ ham-chirp () {
 	# Install distro packages
 	sudo apt -y install python3-wxgtk4.0 pipx
 
-	# Install CHIRP (and Python dependencies)
-	pipx install --system-site-packages ./chirp-*-py3-none-any.whl
+	# Find the most recent version of Chirp-Next
+	version=`curl "https://archive.chirpmyradio.com/chirp_next/" | grep -m 1 'folder.gif' | awk -F '"' '{print $8}' | sed 's/next-//' | sed 's/\///'`
+	
+	# Download the most recent version
+	link='https://archive.chirpmyradio.com/chirp_next/next-'${version}'/chirp-'${version}'-py3-none-any.whl'
+	wget ${link}
 
+	# Install CHIRP (and Python dependencies)
+	pipx install --system-site-packages ./chirp-${version}-py3-none-any.whl
+
+	# Remove the Chirp file
+	rm chirp-${version}-py3-none-any.whl
+	
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
 	POSTMSG[${COUNT}]="${FUNCNAME}: Run using ~/.local/bin/chirp "
 }
