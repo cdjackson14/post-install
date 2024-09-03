@@ -4,7 +4,7 @@
 # Can be used on many Debian based installs, like Ubuntu, Raspberry Pi, Kali, and GCP Linux computes
 #
 # Top is all functions, the bottom lines contain the menu and action.
-VERSION=3.15
+VERSION=3.16
 # Found that Chromebooks don't have lsb-release install by default, so
 # switching to looking in /etc/os-release
 #	BUILD=`lsb_release -i | awk {'print $3'} | tr '[:upper:]' '[:lower:]'`
@@ -242,6 +242,14 @@ brave-browser () {
 	POSTMSG[${COUNT}]="${FUNCNAME} "
 }
 
+screensavers () {
+	# Install all known screensavers
+	sudo apt install -y xscreensaver xscreensaver-data xscreensaver-data-extra xscreensaver-gl xscreensaver-gl-extra rss-glx
+
+	# Any message to display post all selected installs and configs.  Listed in a end summary.
+	POSTMSG[${COUNT}]="${FUNCNAME} "
+}
+
 google-chrome () {
 	# Installation of Google Chrome
 	if [[ $(getconf LONG_BIT) = "64" ]]
@@ -461,27 +469,7 @@ expressvpn () {
 	rm ${FILE_1}
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME}: expressvpn activate ERGQ8M5C6PWCOVTJDW9T05Q"
-}
-
-kernel-latest () {
-	BASE_URL=https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.4.6/
-	FILE_1=linux-headers-5.4.6-050406_5.4.6-050406.201912211140_all.deb
-	FILE_2=linux-headers-5.4.6-050406-generic_5.4.6-050406.201912211140_amd64.deb
-	FILE_3=linux-image-unsigned-5.4.6-050406-generic_5.4.6-050406.201912211140_amd64.deb
-	FILE_4=linux-modules-5.4.6-050406-generic_5.4.6-050406.201912211140_amd64.deb
-	sudo apt update &&
-	sudo apt upgrade -y 
-	wget ${BASE_URL}/${FILE_1}
-	wget ${BASE_URL}/${FILE_2}
-	wget ${BASE_URL}/${FILE_3}
-	wget ${BASE_URL}/${FILE_4}
-	sudo dpkg -i ${FILE_1} ${FILE_2} ${FILE_3} ${FILE_4}
-	rm ${FILE_1} ${FILE_2} ${FILE_3} ${FILE_4}
-	sudo reboot
-
-	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME} "
+	POSTMSG[${COUNT}]="${FUNCNAME}: expressvpn activate ERGQ8M5C6PWCOVTJDW9T0Q5 (rearrange)"
 }
 
 realvnc () {
@@ -780,45 +768,45 @@ NEWT_COLORS='window=,'
 SELECTION=( $(NEWT_COLORS='window=,' whiptail --title "Post Install on Debian Based Architecture - ${VERSION}" --checklist --separate-output \
 	"What post install activities would you like to run on ${BUILD} ${RELEASE} (${CODENAME})?" ${HEIGHT} ${WIDTH} $((HEIGHT-8)) \
 	"set-bashrc"        "Create common alias in .bashrc " OFF \
+	"ssh-config"        "set up SSH keys in .ssh " OFF \
 	"update-upgrade"    "Update and upgrade core system " OFF \
 	"build-essentials"  "Install: build-essential module-assistant dkms " OFF \
 	"essentials"        "Install: basic utilities - vim, networking, monitoring, tools, and misc." OFF \
 	"optionals"         "Install: rdesktop iftop ircii ubuntu-restricted-extras" OFF \
 	"gui-software"      "Install: GUI Pinta, AppImageLauncher, Color Picker, KeepassXC" OFF \
-	"qemu-virtmanager"  "Install: Qemu and VirtManager" OFF \
-	"qemu-guest"        "Install: Guest tools for qemu/kvm " OFF \
-	"wallpapers"        "Install: A bunch of Ubuntu wallpapers" OFF \
-	"xfce-goodies"      "Install: xfce-goodies and plank" OFF \
+	"clean-up"          "Clean up everything" OFF \
 	"brave-browser"     "Install: Brave browser " OFF \
+	"calibre"           "Install: Calibre ebook organizer " OFF \
+	"create-swap"       "GCP: Create swap space on a Micro compute " OFF \
+	"dummy-video"       "Install: Dummy video for physical computers needing to use remote desktop tools " OFF \
+	"expressvpn"        "Install: Express VPN " OFF \
 	"google-chrome"     "Install: Google Chrome browser " OFF \
 	"google-drive"	    "Install: Google Drive using OCamlFUSE " OFF \
-	"calibre"           "Install: Calibre ebook organizer " OFF \
-	"dummy-video"       "Install: Dummy video for physical computers needing to use remote desktop tools " OFF \
+	"google-remote"     "GCP: install Google Remote " OFF \
+	"ham-ax25"          "Install: Ham: AX.25 tools" OFF \
+	"ham-chirp"         "Install: Ham: Chirp" OFF \
+	"ham-clock"         "Install: Ham: HamClock" OFF \
+	"ham-direwolf"      "Install: Ham: Direwolf" OFF \
+	"ham-ken-thd72"     "Install: Ham: Kenwood TH-D72 Tools" OFF \
+	"ham-pat"           "Install: Ham: Pat Winlink" OFF \
+	"ham-xastir"        "Install: Ham: Xastir" OFF \
+	"ham-yaac"          "Install: Ham: YAAC" OFF \
+	"lamp"		    "GCP: install LAMP 7.0 (Linux, Apache, MariaDB, PHP) on GCP " OFF \
+	"lap-no-m"	    "GCP: install LAP(no MySQL) 7.3 (Linux, Apache, PHP, MySQL Connectors only) on GCP " OFF \
+	"libdvd"	    "Install: Install and configure libdvd-pkg for copy protected DVDs" OFF \
+	"qemu-guest"        "Install: Guest tools for qemu/kvm " OFF \
+	"qemu-virtmanager"  "Install: Qemu and VirtManager" OFF \
 	"realtek-wifi"      "Install: Realtek AC1200 wifi drivers (rtl88x2BU) " OFF \
 	"realvnc"           "Install: RealVNC files" OFF \
 	"realvnc-xfce4-add" "Install: Configure XFCE4 startup for use with RealVNC (for older versions, pre 2021)" OFF \
+	"screensavers"	    "Install: Screensavers" OFF \
 	"tor"               "Install: TOR Browser " OFF \
-	"expressvpn"        "Install: Express VPN " OFF \
-	"kernel-latest"     "Install: Latest Ubuntu kernel v5.4.6 (will reboot) " OFF \
-	"wine"		    "Install: Wine & Winetricks" OFF \
+	"wallpapers"        "Install: A bunch of Ubuntu wallpapers" OFF \
 	"wine-chromebook"   "Install: Wine & Winetricks on a Chromebook" OFF \
-	"libdvd"	    "Install: Install and configure libdvd-pkg for copy protected DVDs" OFF \
-	"xo-installer"      "Install: XenOrchestraInstallerUpdater" OFF \
-	"ham-chirp"         "Install: Ham: Chirp" OFF \
-	"ham-ax25"          "Install: Ham: AX.25 tools" OFF \
-	"ham-direwolf"      "Install: Ham: Direwolf" OFF \
-	"ham-yaac"          "Install: Ham: YAAC" OFF \
-	"ham-xastir"        "Install: Ham: Xastir" OFF \
-	"ham-ken-thd72"     "Install: Ham: Kenwood TH-D72 Tools" OFF \
-	"ham-pat"           "Install: Ham: Pat Winlink" OFF \
-	"ham-clock"         "Install: Ham: HamClock" OFF \
-	"ssh-config"        "set up SSH keys in .ssh " OFF \
-	"create-swap"       "GCP: Create swap space on a Micro compute " OFF \
-	"google-remote"     "GCP: install Google Remote " OFF \
+	"wine"		    "Install: Wine & Winetricks" OFF \
 	"xfce-gcloud"       "GCP: install xfce4 for GCP compute " OFF \
-	"lamp"		    "GCP: install LAMP 7.0 (Linux, Apache, MariaDB, PHP) on GCP " OFF \
-	"lap-no-m"	    "GCP: install LAP(no MySQL) 7.3 (Linux, Apache, PHP, MySQL Connectors only) on GCP " OFF \
-	"clean-up"          "Clean up everything " OFF \
+	"xfce-goodies"      "Install: xfce-goodies and plank" OFF \
+	"xo-installer"      "Install: XenOrchestraInstallerUpdater" OFF \
 	3>&1 1>&2 2>&3) )
 
 # Loop through all the returned selections, which is stored in an array $SELECTION
