@@ -707,7 +707,7 @@ ham-pat () {
 }
 
 ham-clock () {
-	sudo apt -y install make g++ libx11-dev xserver-xorg raspberrypi-ui-mods lightdm lxsession
+	sudo apt install -y make g++ curl libx11-dev xserver-xorg raspberrypi-ui-mods lightdm lxsession xorg-dev
 	cd ~
 	rm -fr ESPHamClock
 	curl -O https://www.clearskyinstitute.com/ham/HamClock/ESPHamClock.zip
