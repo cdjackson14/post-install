@@ -4,7 +4,7 @@
 # Can be used on many Debian based installs, like Ubuntu, Raspberry Pi, Kali, and GCP Linux computes
 #
 # Top is all functions, the bottom lines contain the menu and action.
-VERSION=3.17
+VERSION=3.18
 # Found that Chromebooks don't have lsb-release install by default, so
 # switching to looking in /etc/os-release
 #	BUILD=`lsb_release -i | awk {'print $3'} | tr '[:upper:]' '[:lower:]'`
@@ -237,6 +237,14 @@ brave-browser () {
 	echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] https://brave-browser-apt-release.s3.brave.com/ stable main"|sudo tee /etc/apt/sources.list.d/brave-browser-release.list
 	sudo apt update
 	sudo apt install -y brave-browser
+
+	# Any message to display post all selected installs and configs.  Listed in a end summary.
+	POSTMSG[${COUNT}]="${FUNCNAME} "
+}
+
+chromium () {
+	# Install of Chromium Browser
+	sudo apt install -y chromium
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
 	POSTMSG[${COUNT}]="${FUNCNAME} "
@@ -776,11 +784,12 @@ SELECTION=( $(NEWT_COLORS='window=,' whiptail --title "Post Install on Debian Ba
 	"gui-software"      "Install: GUI Pinta, AppImageLauncher, Color Picker, KeepassXC" OFF \
 	"clean-up"          "Clean up everything" OFF \
 	"brave-browser"     "Install: Brave browser " OFF \
+	"chromium"          "Install: Chromium browser " OFF \
+	"google-chrome"     "Install: Google Chrome browser " OFF \
 	"calibre"           "Install: Calibre ebook organizer " OFF \
 	"create-swap"       "GCP: Create swap space on a Micro compute " OFF \
 	"dummy-video"       "Install: Dummy video for physical computers needing to use remote desktop tools " OFF \
 	"expressvpn"        "Install: Express VPN " OFF \
-	"google-chrome"     "Install: Google Chrome browser " OFF \
 	"google-drive"	    "Install: Google Drive using OCamlFUSE " OFF \
 	"google-remote"     "GCP: install Google Remote " OFF \
 	"ham-ax25"          "Install: Ham: AX.25 tools" OFF \
