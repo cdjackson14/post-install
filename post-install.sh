@@ -4,7 +4,7 @@
 # Can be used on many Debian based installs, like Ubuntu, Raspberry Pi, Kali, and GCP Linux computes
 #
 # Top is all functions, the bottom lines contain the menu and action.
-VERSION=3.18
+VERSION=3.19
 # Found that Chromebooks don't have lsb-release install by default, so
 # switching to looking in /etc/os-release
 #	BUILD=`lsb_release -i | awk {'print $3'} | tr '[:upper:]' '[:lower:]'`
@@ -612,6 +612,17 @@ xo-installer () {
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
 	POSTMSG[${COUNT}]="${FUNCNAME} "
 }
+gps () {
+	sudo apt install -y gpsd gpsd-clients gpsd-tools
+	sudo cp /etc/default/gpsd /etc/default/gpsd.orig
+	sudo sed -i -e 's/DEVICES=""/DEVICES="\/dev\/ttyACM0"/g' /etc/default/gpsd 
+	sudo sed -i -e 's/GPSD_OPTIONS=""/DGPSD_OPTIONS="-n -b"/g' /etc/default/gpsd
+	sudo systemctl start gpsd
+
+ 	# Any message to display post all selected installs and configs.  Listed in a end summary.
+	POSTMSG[${COUNT}]="${FUNCNAME} CLI Tools: cgps and gpsmon"
+
+}
 
 ham-chirp () {
 	# Install Chirp using Python 3 wheel
@@ -792,6 +803,7 @@ SELECTION=( $(NEWT_COLORS='window=,' whiptail --title "Post Install on Debian Ba
 	"expressvpn"        "Install: Express VPN " OFF \
 	"google-drive"	    "Install: Google Drive using OCamlFUSE " OFF \
 	"google-remote"     "GCP: install Google Remote " OFF \
+	"gps"               "Install: GPS CLI tools for USB units " OFF \
 	"ham-ax25"          "Install: Ham: AX.25 tools" OFF \
 	"ham-chirp"         "Install: Ham: Chirp" OFF \
 	"ham-clock"         "Install: Ham: HamClock" OFF \
