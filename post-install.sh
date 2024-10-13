@@ -4,7 +4,7 @@
 # Can be used on many Debian based installs, like Ubuntu, Raspberry Pi, Kali, and GCP Linux computes
 #
 # Top is all functions, the bottom lines contain the menu and action.
-VERSION=3.19
+VERSION=3.20
 # Found that Chromebooks don't have lsb-release install by default, so
 # switching to looking in /etc/os-release
 #	BUILD=`lsb_release -i | awk {'print $3'} | tr '[:upper:]' '[:lower:]'`
@@ -627,7 +627,7 @@ gps () {
 ham-chirp () {
 	# Install Chirp using Python 3 wheel
 	# Install distro packages
-	sudo apt -y install python3-wxgtk4.0 pipx
+	sudo apt -y install python3-wxgtk4.0 pipx curl
 
 	# Find the most recent version of Chirp-Next
 	version=`curl "https://archive.chirpmyradio.com/chirp_next/" | grep -m 1 'folder.gif' | awk -F '"' '{print $8}' | sed 's/next-//' | sed 's/\///'`
@@ -726,7 +726,7 @@ ham-pat () {
 }
 
 ham-clock () {
-	sudo apt install -y make g++ curl libx11-dev xserver-xorg raspberrypi-ui-mods lightdm lxsession xorg-dev
+	sudo apt install -y curl make g++ libx11-dev libgpiod-dev xorg-dev
 	cd ~
 	rm -fr ESPHamClock
 	curl -O https://www.clearskyinstitute.com/ham/HamClock/ESPHamClock.zip
