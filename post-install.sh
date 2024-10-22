@@ -4,7 +4,7 @@
 # Can be used on many Debian based installs, like Ubuntu, Raspberry Pi, Kali, and GCP Linux computes
 #
 # Top is all functions, the bottom lines contain the menu and action.
-VERSION=3.21
+VERSION=3.22
 # Found that Chromebooks don't have lsb-release install by default, so
 # switching to looking in /etc/os-release
 #	BUILD=`lsb_release -i | awk {'print $3'} | tr '[:upper:]' '[:lower:]'`
@@ -799,7 +799,7 @@ SELECTION=( $(NEWT_COLORS='window=,' whiptail --title "Post Install on Debian Ba
 	"essentials"        "Install: basic utilities - vim, networking, monitoring, tools, and misc." OFF \
 	"optionals"         "Install: rdesktop iftop ircii ubuntu-restricted-extras" OFF \
 	"gui-software"      "Install: GUI Pinta, Color Picker, KeepassXC" OFF \
- 	"sublime"           "Inatall: Sublime" OFF \
+ 	"sublime"           "Install: Sublime" OFF \
 	"clean-up"          "Clean up everything" OFF \
 	"brave-browser"     "Install: Brave browser " OFF \
 	"chromium"          "Install: Chromium browser " OFF \
