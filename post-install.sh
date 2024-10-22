@@ -4,7 +4,7 @@
 # Can be used on many Debian based installs, like Ubuntu, Raspberry Pi, Kali, and GCP Linux computes
 #
 # Top is all functions, the bottom lines contain the menu and action.
-VERSION=3.20
+VERSION=3.21
 # Found that Chromebooks don't have lsb-release install by default, so
 # switching to looking in /etc/os-release
 #	BUILD=`lsb_release -i | awk {'print $3'} | tr '[:upper:]' '[:lower:]'`
@@ -114,6 +114,18 @@ StartupNotify=false
 	POSTMSG[${COUNT}]="${FUNCNAME}: display-resizer (to change screen to window size) was place in ~/bin/ "
 }
 
+sublime () {
+	# source: https://www.sublimetext.com/docs/linux_repositories.html#apt
+ 	wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/sublimehq-archive.gpg > /dev/null
+  	echo "deb https://download.sublimetext.com/ apt/stable/" | sudo tee /etc/apt/sources.list.d/sublime-text.list
+	sudo apt update
+	sudo apt install -y sublime-text
+ 
+	# Any message to display post all selected installs and configs.  Listed in a end summary.
+	POSTMSG[${COUNT}]="${FUNCNAME} "
+}
+
+
 wallpapers () {
 	# Things to install with wildcard (for Ubuntu 20.04+)
 	sudo apt install -y '~nubuntu-wallpapers*'
@@ -129,14 +141,8 @@ wallpapers () {
 
 gui-software () {
 	sudo apt install -y pinta keepassxc color-picker
-	
-	# Install AppImageLauncher
-	#sudo apt install -y software-properties-common
-	#sudo add-apt-repository -y ppa:appimagelauncher-team/stable
-	#sudo apt update
-	#sudo apt install -y appimagelauncher
 
-	# Any message to display post all selected installs and configs.  Listed in a end summary.
+ 	# Any message to display post all selected installs and configs.  Listed in a end summary.
 	POSTMSG[${COUNT}]="${FUNCNAME} "
 }
 
@@ -792,7 +798,8 @@ SELECTION=( $(NEWT_COLORS='window=,' whiptail --title "Post Install on Debian Ba
 	"build-essentials"  "Install: build-essential module-assistant dkms " OFF \
 	"essentials"        "Install: basic utilities - vim, networking, monitoring, tools, and misc." OFF \
 	"optionals"         "Install: rdesktop iftop ircii ubuntu-restricted-extras" OFF \
-	"gui-software"      "Install: GUI Pinta, AppImageLauncher, Color Picker, KeepassXC" OFF \
+	"gui-software"      "Install: GUI Pinta, Color Picker, KeepassXC" OFF \
+ 	"sublime"           "Inatall: Sublime" OFF \
 	"clean-up"          "Clean up everything" OFF \
 	"brave-browser"     "Install: Brave browser " OFF \
 	"chromium"          "Install: Chromium browser " OFF \
