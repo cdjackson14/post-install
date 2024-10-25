@@ -672,12 +672,7 @@ ham-ax25-service () {
  	mv ax25systemd del.ax25systemd
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME}: AX.25 as a service.
- # Start/Stop
- sudo systemctl start ax25
- 
- # Enable auto start
- sudo systemctl enable ax25 "
+	POSTMSG[${COUNT}]="${FUNCNAME}: AX.25 as a service. \n# Start/Stop \nsudo systemctl start ax25 \n\n# Enable auto start \nsudo systemctl enable ax25 "
 }
 
 
