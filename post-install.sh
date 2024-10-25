@@ -4,7 +4,7 @@
 # Can be used on many Debian based installs, like Ubuntu, Raspberry Pi, Kali, and GCP Linux computes
 #
 # Top is all functions, the bottom lines contain the menu and action.
-VERSION=3.22
+VERSION=3.23
 # Found that Chromebooks don't have lsb-release install by default, so
 # switching to looking in /etc/os-release
 #	BUILD=`lsb_release -i | awk {'print $3'} | tr '[:upper:]' '[:lower:]'`
@@ -656,12 +656,30 @@ ham-ax25 () {
 	# Install AX.25 tools
 	echo "Installing and configuring AX.25 tools"
 	sudo apt -y install ax25-tools ax25-apps
-	sudo systemctl start ax25
-	sudo systemctl enable ax25
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME} "
+	POSTMSG[${COUNT}]="${FUNCNAME}: Be sure to update /etc/ax25/axports "
 }
+
+ham-ax25-service () {
+	# Creating AX.25 as a service
+	echo "Creating AX.25 as a service"
+	sudo apt -y install make
+	git clone https://github.com/F4FXL/ax25systemd.git
+	cd ax25systemd
+	sudo make install
+	cd ..
+ 	mv ax25systemd del.ax25systemd
+
+	# Any message to display post all selected installs and configs.  Listed in a end summary.
+	POSTMSG[${COUNT}]="${FUNCNAME}: AX.25 as a service.
+ # Start/Stop
+ sudo systemctl start ax25
+ 
+ # Enable auto start
+ sudo systemctl enable ax25 "
+}
+
 
 ham-direwolf () {
 	# Direwolf
@@ -812,7 +830,8 @@ SELECTION=( $(NEWT_COLORS='window=,' whiptail --title "Post Install on Debian Ba
 	"google-remote"     "GCP: install Google Remote " OFF \
 	"gps"               "Install: GPS CLI tools for USB units " OFF \
 	"ham-ax25"          "Install: Ham: AX.25 tools" OFF \
-	"ham-chirp"         "Install: Ham: Chirp" OFF \
+	"ham-ax25-service"  "Config : Ham: AX.25 as a service " OFF \
+ 	"ham-chirp"         "Install: Ham: Chirp" OFF \
 	"ham-clock"         "Install: Ham: HamClock" OFF \
 	"ham-direwolf"      "Install: Ham: Direwolf" OFF \
 	"ham-ken-thd72"     "Install: Ham: Kenwood TH-D72 Tools" OFF \
