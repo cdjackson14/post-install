@@ -726,8 +726,9 @@ Exec=java -jar ${yaacPath}/YAAC/YAAC.jar
 Icon=${yaacPath}/YAAC/images/yaaclogo64.ico
 Path=
 Terminal=false
-StartupNotify=false" > $yaacPath/YAAC.desktop
-	rm YAAC.zip
+StartupNotify=false" > $yaacPath/.local/share/applications/YAAC.desktop
+	
+ 	rm YAAC.zip
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
 	POSTMSG[${COUNT}]="${FUNCNAME}: Run YAAC with the bash script file \n\t ${yaacPath}/yaac"
