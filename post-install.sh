@@ -4,7 +4,7 @@
 # Can be used on many Debian based installs, like Ubuntu, Raspberry Pi, Kali, and GCP Linux computes
 #
 # Top is all functions, the bottom lines contain the menu and action.
-VERSION=3.23
+VERSION=3.24
 # Found that Chromebooks don't have lsb-release install by default, so
 # switching to looking in /etc/os-release
 #	BUILD=`lsb_release -i | awk {'print $3'} | tr '[:upper:]' '[:lower:]'`
@@ -283,6 +283,17 @@ google-chrome () {
 		rm -f google-chrome-stable_current_i386.deb
 	fi
 
+	# Any message to display post all selected installs and configs.  Listed in a end summary.
+	POSTMSG[${COUNT}]="${FUNCNAME} "
+}
+
+1password () {
+	# 1password download and install as a DEB file
+	URL='https://downloads.1password.com/linux/debian/amd64/stable/1password-latest.deb'
+ 	wget $URL
+  	sudo apt -y install ./1password-latest.deb
+   	rm ./1password-latest.deb
+  
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
 	POSTMSG[${COUNT}]="${FUNCNAME} "
 }
@@ -817,6 +828,7 @@ SELECTION=( $(NEWT_COLORS='window=,' whiptail --title "Post Install on Debian Ba
 	"brave-browser"     "Install: Brave browser " OFF \
 	"chromium"          "Install: Chromium browser " OFF \
 	"google-chrome"     "Install: Google Chrome browser " OFF \
+ 	"1password"         "Install: 1Password desktop " OFF \
 	"calibre"           "Install: Calibre ebook organizer " OFF \
 	"create-swap"       "GCP: Create swap space on a Micro compute " OFF \
 	"dummy-video"       "Install: Dummy video for physical computers needing to use remote desktop tools " OFF \
