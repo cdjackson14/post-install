@@ -237,7 +237,7 @@ xfce-gcloud () {
 
 brave-browser () {
 	# Install of Brave Browser.  Instructions right on https://brave.com/linux/
-	sudo apt install -f curl
+	sudo apt install -y curl
 	sudo curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
 	echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] https://brave-browser-apt-release.s3.brave.com/ stable main"|sudo tee /etc/apt/sources.list.d/brave-browser-release.list
 	sudo apt update
@@ -360,7 +360,9 @@ EndSection
 
 
 ssh-config () {
-	# Setup SSH which will require user input, so putting at end of script
+	# Install OpenSSH if not install
+ 	sudo apt install -y ssh
+ 	# Setup SSH which will require user input, so putting at end of script
 	ssh-keygen
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
