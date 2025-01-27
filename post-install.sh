@@ -4,7 +4,7 @@
 # Can be used on many Debian based installs, like Ubuntu, Raspberry Pi, Kali, and GCP Linux computes
 #
 # Top is all functions, the bottom lines contain the menu and action.
-VERSION=3.24
+VERSION=3.25
 # Found that Chromebooks don't have lsb-release install by default, so
 # switching to looking in /etc/os-release
 #	BUILD=`lsb_release -i | awk {'print $3'} | tr '[:upper:]' '[:lower:]'`
@@ -76,7 +76,12 @@ build-essentials () {
 essentials () {
 	# Install the essential stuff for most all Debian based systems (Deb, Ubuntu, RaspberryPi, Kali...)
 	sudo apt install -y htop vim net-tools nmon ssh tmux sshfs cmatrix vlc mplayer rtorrent exiv2 git cifs-utils exfatprogs gparted
+
+	# Sometimes not available on newer releases, so put it alone
 	sudo apt install -y exfat-utils 
+
+	# Used for some AppImage files
+	sudo apt install -y libfuse-dev
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
 	POSTMSG[${COUNT}]="${FUNCNAME} "
@@ -139,7 +144,7 @@ wallpapers () {
 }
 
 gui-software () {
-	sudo apt install -y pinta keepassxc color-picker
+	sudo apt install -y keepassxc color-picker
 
  	# Any message to display post all selected installs and configs.  Listed in a end summary.
 	POSTMSG[${COUNT}]="${FUNCNAME} "
@@ -630,6 +635,17 @@ xo-installer () {
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
 	POSTMSG[${COUNT}]="${FUNCNAME} "
 }
+sqlite () {
+	# CLI tools
+	sudo apt install -y sqlite3 sqlite3-tools sqlite-utils
+	# GUI tools
+	sudo apt install -y sqlitebrowser
+
+ 	# Any message to display post all selected installs and configs.  Listed in a end summary.
+	POSTMSG[${COUNT}]="${FUNCNAME} - GUI and CLI tools installed."
+
+}
+
 gps () {
 	sudo apt install -y gpsd gpsd-clients gpsd-tools
 	sudo cp /etc/default/gpsd /etc/default/gpsd.orig
@@ -779,6 +795,17 @@ ham-clock () {
 	POSTMSG[${COUNT}]="${FUNCNAME} "
 }
 
+vscode () {
+	# VS Code download and install
+	URL='https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64'
+	NAME='code.deb'
+	curl -L -# -o ${NAME} ${URL} 
+	sudo dpkg -i ${NAME}
+	rm ${NAME}
+
+	# Any message to display post all selected installs and configs.  Listed in a end summary.
+	POSTMSG[${COUNT}]="${FUNCNAME} "
+}
 
 ######################################################################
 # MAIN
@@ -847,19 +874,21 @@ SELECTION=( $(NEWT_COLORS='window=,' whiptail --title "Post Install on Debian Ba
 	"ham-pat"           "Install: Ham: Pat Winlink" OFF \
 	"ham-xastir"        "Install: Ham: Xastir" OFF \
 	"ham-yaac"          "Install: Ham: YAAC" OFF \
-	"lamp"		    "GCP: install LAMP 7.0 (Linux, Apache, MariaDB, PHP) on GCP " OFF \
-	"lap-no-m"	    "GCP: install LAP(no MySQL) 7.3 (Linux, Apache, PHP, MySQL Connectors only) on GCP " OFF \
-	"libdvd"	    "Install: Install and configure libdvd-pkg for copy protected DVDs" OFF \
+	"lamp"              "GCP: install LAMP 7.0 (Linux, Apache, MariaDB, PHP) on GCP " OFF \
+	"lap-no-m"          "GCP: install LAP(no MySQL) 7.3 (Linux, Apache, PHP, MySQL Connectors only) on GCP " OFF \
+	"libdvd"            "Install: Install and configure libdvd-pkg for copy protected DVDs" OFF \
 	"qemu-guest"        "Install: Guest tools for qemu/kvm " OFF \
 	"qemu-virtmanager"  "Install: Qemu and VirtManager" OFF \
 	"realtek-wifi"      "Install: Realtek AC1200 wifi drivers (rtl88x2BU) " OFF \
 	"realvnc"           "Install: RealVNC files" OFF \
 	"realvnc-xfce4-add" "Install: Configure XFCE4 startup for use with RealVNC (for older versions, pre 2021)" OFF \
-	"screensavers"	    "Install: Screensavers" OFF \
+	"screensavers"      "Install: Screensavers" OFF \
+	"sqlite"            "Install: SQLite CLI and GUI" OFF \
 	"tor"               "Install: TOR Browser " OFF \
+	"vscode"            "Install: Visual Studio for Linux " OFF \
 	"wallpapers"        "Install: A bunch of Ubuntu wallpapers" OFF \
 	"wine-chromebook"   "Install: Wine & Winetricks on a Chromebook" OFF \
-	"wine"		    "Install: Wine & Winetricks" OFF \
+	"wine"              "Install: Wine & Winetricks" OFF \
 	"xfce-gcloud"       "GCP: install xfce4 for GCP compute " OFF \
 	"xfce-goodies"      "Install: xfce-goodies and plank" OFF \
 	"xo-installer"      "Install: XenOrchestraInstallerUpdater" OFF \
