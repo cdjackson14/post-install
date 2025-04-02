@@ -4,7 +4,7 @@
 # Can be used on many Debian based installs, like Ubuntu, Raspberry Pi, Kali, and GCP Linux computes
 #
 # Top is all functions, the bottom lines contain the menu and action.
-VERSION=3.25
+VERSION=3.3
 # Found that Chromebooks don't have lsb-release install by default, so
 # switching to looking in /etc/os-release
 #	BUILD=`lsb_release -i | awk {'print $3'} | tr '[:upper:]' '[:lower:]'`
@@ -14,6 +14,15 @@ BUILD=`grep ^ID= /etc/os-release | awk -F = '{ print $2 }' | tr '[:lower:]' '[:u
 RELEASE=`grep ^VERSION_ID= /etc/os-release | awk -F = '{ print $2 }' | sed s/\"//g`
 CODENAME=`grep VERSION_CODENAME /etc/os-release | awk -F = '{ print $2 }'`
 declare -a POSTMSG
+
+hostname=$(hostname -f)
+logged_in_user=$(whoami)
+os_info=$(lsb_release -d | awk -F ':\t' '{print $2}')
+current_date=$(date)
+cpu_model=$(grep "model name" /proc/cpuinfo | head -n 1 | awk -F ': ' '{print $2}')
+cpu_cores=$(grep -c "processor" /proc/cpuinfo)
+total_memory_kb=$(grep "MemTotal" /proc/meminfo | awk '{print $2}')
+total_memory_gb=$((total_memory_kb / 1024 / 1024))
 
 
 ##############################
@@ -903,11 +912,21 @@ do
 	((COUNT=COUNT+1))
 done
 
+echo "--- System Information -------------"
+echo "       Computer Name: $hostname"
+echo "                User: ${logged_in_user}"
+echo "    Operating System: $os_info"
+echo "        Current Date: $current_date"
+echo "           CPU Model: $cpu_model"
+echo "  CPU Cores (Approx): $cpu_cores"
+echo "        Total Memory: $total_memory_gb GB (${total_memory_kb} MB)"
+echo "------------------------------------"
+
 # Show all the functions that were run, and any post message
-# Now we need a counter to just number the summary... nothing about the above COUNT
-COUNT=1
 echo
 echo "Well this is exciting, we have installed and configured the following:"
+
+COUNT=1
 for i in "${POSTMSG[@]}"
 do
 	echo -e $COUNT. $i
