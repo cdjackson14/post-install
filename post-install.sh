@@ -930,7 +930,7 @@ echo "    Operating System: $os_info"
 echo "      Display Server: $installed_x (${installed_system})"
 echo "        Current Date: $current_date"
 echo "           CPU Model: $cpu_model"
-echo "  CPU Cores (Approx): $cpu_cores"
+echo "           CPU Cores: $cpu_cores"
 echo "        Total Memory: $total_memory_gb GB (${total_memory_kb} MB)"
 echo "------------------------------------"
 
