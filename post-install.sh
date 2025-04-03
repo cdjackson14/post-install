@@ -935,14 +935,13 @@ echo "        Total Memory: $total_memory_gb GB (${total_memory_kb} MB)"
 echo "------------------------------------"
 
 
-# Show all the functions that were run, and any post message
-echo
-echo "Well this is exciting, we have installed and configured the following:"
-
+# Show all the functions that were run, and any post message, if any where selected
+if [ ${COUNT} != 0 ]; then
+	echo "Well this is exciting, we have installed and configured the following:"
+fi
 COUNT=1
 for i in "${POSTMSG[@]}"
 do
 	echo -e $COUNT. $i
 	((COUNT=COUNT+1))
 done
-
