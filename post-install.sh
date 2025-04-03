@@ -4,7 +4,7 @@
 # Can be used on many Debian based installs, like Ubuntu, Raspberry Pi, Kali, and GCP Linux computes
 #
 # Top is all functions, the bottom lines contain the menu and action.
-VERSION=3.3
+VERSION=3.4
 # Found that Chromebooks don't have lsb-release install by default, so
 # switching to looking in /etc/os-release
 #	BUILD=`lsb_release -i | awk {'print $3'} | tr '[:upper:]' '[:lower:]'`
@@ -18,6 +18,17 @@ declare -a POSTMSG
 hostname=$(hostname -f)
 logged_in_user=$(whoami)
 os_info=$(lsb_release -d | awk -F ':\t' '{print $2}')
+installed_x=$(basename /etc/xdg/menus/*application* | awk -F '-' '{print $1}')
+# Evaluate the value of $installed_x
+if [ "$BUILD" == "UBUNTU"  ]; then
+	if [ "$installed_x" == "xfce" ]; then
+	  installed_system="Xubuntu"
+	elif [ "$installed_x" == "gnome" ]; then
+	  installed_system="Ubuntu"
+	else
+	  installed_system="Could not determine specific Ubuntu flavor based on '$installed_x'"
+	fi
+fi
 current_date=$(date)
 cpu_model=$(grep "model name" /proc/cpuinfo | head -n 1 | awk -F ': ' '{print $2}')
 cpu_cores=$(grep -c "processor" /proc/cpuinfo)
@@ -916,11 +927,13 @@ echo "--- System Information -------------"
 echo "       Computer Name: $hostname"
 echo "                User: ${logged_in_user}"
 echo "    Operating System: $os_info"
+echo "      Display Server: $installed_x (${installed_system})"
 echo "        Current Date: $current_date"
 echo "           CPU Model: $cpu_model"
 echo "  CPU Cores (Approx): $cpu_cores"
 echo "        Total Memory: $total_memory_gb GB (${total_memory_kb} MB)"
 echo "------------------------------------"
+
 
 # Show all the functions that were run, and any post message
 echo
