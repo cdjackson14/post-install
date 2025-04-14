@@ -103,6 +103,9 @@ essentials () {
 	# Used for some AppImage files
 	sudo apt install -y libfuse-dev
 
+ 	# Add to default groups
+  	sudo usermod -aG tty,dialout,www-data,bluetooth $USER
+
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
 	POSTMSG[${COUNT}]="${FUNCNAME} "
 }
@@ -729,6 +732,9 @@ ham-direwolf () {
 	echo "Installing and configuring Direwolf"
 	sudo apt -y install direwolf
 	gunzip -c /usr/share/doc/direwolf/conf/direwolf.conf.gz > ~/direwolf.conf
+
+  	# Add user to direwolf group
+  	sudo usermod -aG direwolf $USER
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
 	POSTMSG[${COUNT}]="${FUNCNAME}: Edit and config ~/direwolf.conf"
