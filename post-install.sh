@@ -4,7 +4,7 @@
 # Can be used on many Debian based installs, like Ubuntu, Raspberry Pi, Kali, and GCP Linux computes
 #
 # Top is all functions, the bottom lines contain the menu and action.
-VERSION=3.4
+VERSION=3.5
 # Found that Chromebooks don't have lsb-release install by default, so
 # switching to looking in /etc/os-release
 #	BUILD=`lsb_release -i | awk {'print $3'} | tr '[:upper:]' '[:lower:]'`
@@ -833,6 +833,26 @@ vscode () {
 	POSTMSG[${COUNT}]="${FUNCNAME} "
 }
 
+signal () {
+	# Source: https://signal.org/download/
+	# NOTE: These instructions only work for 64-bit Debian-based
+	# Linux distributions such as Ubuntu, Mint etc.
+	
+	# 1. Install our official public software signing key:
+	wget -O- https://updates.signal.org/desktop/apt/keys.asc | gpg --dearmor > signal-desktop-keyring.gpg;
+	cat signal-desktop-keyring.gpg | sudo tee /usr/share/keyrings/signal-desktop-keyring.gpg > /dev/null
+	
+	# 2. Add our repository to your list of repositories:
+	echo 'deb [arch=amd64 signed-by=/usr/share/keyrings/signal-desktop-keyring.gpg] https://updates.signal.org/desktop/apt xenial main' |\
+	  sudo tee /etc/apt/sources.list.d/signal-xenial.list
+	
+	# 3. Update your package database and install Signal:
+	sudo apt update && sudo apt install signal-desktop
+
+	# Any message to display post all selected installs and configs.  Listed in a end summary.
+	POSTMSG[${COUNT}]="${FUNCNAME} "
+}
+
 ######################################################################
 # MAIN
 ######################################################################
@@ -909,6 +929,7 @@ SELECTION=( $(NEWT_COLORS='window=,' whiptail --title "Post Install on Debian Ba
 	"realvnc"           "Install: RealVNC files" OFF \
 	"realvnc-xfce4-add" "Install: Configure XFCE4 startup for use with RealVNC (for older versions, pre 2021)" OFF \
 	"screensavers"      "Install: Screensavers" OFF \
+	"signal"            "Install: Signal messenger" OFF \
 	"sqlite"            "Install: SQLite CLI and GUI" OFF \
 	"tor"               "Install: TOR Browser " OFF \
 	"vscode"            "Install: Visual Studio for Linux " OFF \
