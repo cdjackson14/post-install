@@ -4,7 +4,7 @@
 # Can be used on many Debian based installs, like Ubuntu, Raspberry Pi, Kali, and GCP Linux computes
 #
 # Top is all functions, the bottom lines contain the menu and action.
-VERSION=3.5
+VERSION=3.6
 # Found that Chromebooks don't have lsb-release install by default, so
 # switching to looking in /etc/os-release
 #	BUILD=`lsb_release -i | awk {'print $3'} | tr '[:upper:]' '[:lower:]'`
@@ -106,6 +106,8 @@ essentials () {
  	# Add to default groups
   	sudo usermod -aG tty,dialout,www-data,bluetooth $USER
 
+	# Add in items needed for GVFS
+ 	sudo apt install -y gvfs-backends gvfs-fuse
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
 	POSTMSG[${COUNT}]="${FUNCNAME} "
 }
@@ -529,7 +531,7 @@ expressvpn () {
 realvnc () {
 	VNCSERVER=VNC-Server-6.11.0-Linux-x64.deb
 	VNCVIEWER=VNC-Viewer-6.22.315-Linux-x64.deb
-	VNCURL=http://home.jackson.pub/assets/dl/
+	VNCURL=http://home.jackson.pub/public/vnc/
 
 	# Download the RealVNC files
 	wget ${VNCURL}${VNCSERVER}
