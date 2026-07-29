@@ -7,5 +7,5 @@ This uses a command line menu system (whiptail) for selecting the various compon
     $ cd post-install
     $ ./post-install
 
-![screenshot](screenshotv2.23.png)
+![screenshot](screenshotv2.png)
 

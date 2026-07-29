@@ -897,7 +897,7 @@ SELECTION=( $(NEWT_COLORS='window=,' whiptail --title "Post Install on Debian Ba
 	"ssh-config"        "set up SSH keys in .ssh " OFF \
 	"update-upgrade"    "Update and upgrade core system " OFF \
 	"build-essentials"  "Install: build-essential module-assistant dkms " OFF \
-	"essentials"        "Install: basic utilities - vim, networking, monitoring, tools, and misc." OFF \
+	"essentials"        "Install: basic CLI utilities - vim and more" OFF \
 	"optionals"         "Install: rdesktop iftop ircii ubuntu-restricted-extras" OFF \
 	"gui-software"      "Install: GUI Pinta, Color Picker, KeepassXC" OFF \
  	"sublime"           "Install: Sublime" OFF \
@@ -908,7 +908,7 @@ SELECTION=( $(NEWT_COLORS='window=,' whiptail --title "Post Install on Debian Ba
  	"1password"         "Install: 1Password desktop " OFF \
 	"calibre"           "Install: Calibre ebook organizer " OFF \
 	"create-swap"       "GCP: Create swap space on a Micro compute " OFF \
-	"dummy-video"       "Install: Dummy video for physical computers needing to use remote desktop tools " OFF \
+	"dummy-video"       "Install: Dummy video for physical computers " OFF \
 	"expressvpn"        "Install: Express VPN " OFF \
 	"google-drive"	    "Install: Google Drive using OCamlFUSE " OFF \
 	"google-remote"     "GCP: install Google Remote " OFF \
@@ -923,13 +923,13 @@ SELECTION=( $(NEWT_COLORS='window=,' whiptail --title "Post Install on Debian Ba
 	"ham-xastir"        "Install: Ham: Xastir" OFF \
 	"ham-yaac"          "Install: Ham: YAAC" OFF \
 	"lamp"              "GCP: install LAMP 7.0 (Linux, Apache, MariaDB, PHP) on GCP " OFF \
-	"lap-no-m"          "GCP: install LAP(no MySQL) 7.3 (Linux, Apache, PHP, MySQL Connectors only) on GCP " OFF \
-	"libdvd"            "Install: Install and configure libdvd-pkg for copy protected DVDs" OFF \
+	"lap-no-m"          "GCP: install LAP(no MySQL) 7.3 on GCP " OFF \
+	"libdvd"            "Install: Install and configure libdvd-pkg for DVDs" OFF \
 	"qemu-guest"        "Install: Guest tools for qemu/kvm " OFF \
 	"qemu-virtmanager"  "Install: Qemu and VirtManager" OFF \
 	"realtek-wifi"      "Install: Realtek AC1200 wifi drivers (rtl88x2BU) " OFF \
 	"realvnc"           "Install: RealVNC files" OFF \
-	"realvnc-xfce4-add" "Install: Configure XFCE4 startup for use with RealVNC (for older versions, pre 2021)" OFF \
+	"realvnc-xfce4-add" "Install: Configure XFCE4 startup with RealVNC (pre 2021)" OFF \
 	"screensavers"      "Install: Screensavers" OFF \
 	"signal"            "Install: Signal messenger" OFF \
 	"sqlite"            "Install: SQLite CLI and GUI" OFF \
