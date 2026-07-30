@@ -1,32 +1,32 @@
 #!/bin/bash
-
 # Created by Chris Jackson, cdjackson14@gmail.com
 # Can be used on many Debian based installs, like Ubuntu, Raspberry Pi, Kali, and GCP Linux computes
-#
-# Top is all functions, the bottom lines contain the menu and action.
-VERSION=3.6
-# Found that Chromebooks don't have lsb-release install by default, so
-# switching to looking in /etc/os-release
-#	BUILD=`lsb_release -i | awk {'print $3'} | tr '[:upper:]' '[:lower:]'`
-#	RELEASE=`lsb_release -r | awk {'print $2'}`
-#	CODENAME=`lsb_release -c | awk {'print $2'} | tr '[:upper:]' '[:lower:]'`
-BUILD=`grep ^ID= /etc/os-release | awk -F = '{ print $2 }' | tr '[:lower:]' '[:upper:]'`
-RELEASE=`grep ^VERSION_ID= /etc/os-release | awk -F = '{ print $2 }' | sed s/\"//g`
-CODENAME=`grep VERSION_CODENAME /etc/os-release | awk -F = '{ print $2 }'`
-declare -a POSTMSG
 
+##############################
+# INIT
+##############################
+
+script_version=3.7
+
+# Array for storing final comments from each section to be displayed at the end of running
+declare -a postmsg
+
+# Chromebooks don't have lsb-release so use /etc/os-release
+build_name=`grep ^ID= /etc/os-release | awk -F = '{ print $2 }' | tr '[:lower:]' '[:upper:]'`
+build_release=`grep ^VERSION_ID= /etc/os-release | awk -F = '{ print $2 }' | sed s/\"//g`
+build_codename=`grep VERSION_CODENAME /etc/os-release | awk -F = '{ print $2 }'`
 hostname=$(hostname -f)
 logged_in_user=$(whoami)
 os_info=$(lsb_release -d | awk -F ':\t' '{print $2}')
 installed_x=$(basename /etc/xdg/menus/*application* | awk -F '-' '{print $1}')
 # Evaluate the value of $installed_x
-if [ "$BUILD" == "UBUNTU"  ]; then
+if [ "$build_name" == "UBUNTU"  ]; then
 	if [ "$installed_x" == "xfce" ]; then
-	  installed_system="Xubuntu"
+		installed_system="Xubuntu"
 	elif [ "$installed_x" == "gnome" ]; then
-	  installed_system="Ubuntu"
+		installed_system="Ubuntu"
 	else
-	  installed_system="Could not determine specific Ubuntu flavor based on '$installed_x'"
+		installed_system="Could not determine specific Ubuntu flavor based on '$installed_x'"
 	fi
 fi
 current_date=$(date)
@@ -40,13 +40,36 @@ total_memory_gb=$((total_memory_kb / 1024 / 1024))
 # FUNCTIONS
 ##############################
 
+create_bin () {
+	# Link or Create ~/bin for local scripts
+	localbin="~/.local/bin"
+	link_dir="~/bin"
+	if [ -d "$localbin" ]; then
+		ln -s ${localbin} ${link_dir}
+	else
+		mkdir -p "$link_dir"
+	fi
+}
+
+
+ssh-config () {
+	# Install OpenSSH if not install
+ 	sudo apt install -y ssh
+ 	# Setup SSH which will require user input, so putting at end of script
+	ssh-keygen
+
+	# Any message to display post all selected installs and configs.  Listed in a end summary.
+	postmsg[${msg_count}]="${FUNCNAME} "
+}
+
+
 set-bashrc () {
-	# Create ~/bin for local scripts
-	mkdir ~/bin
+	# Set this up
+	create_bin
 
 	# Update the .bashrc with some helpful alias commands
 	echo -e "
-PATH=$PATH:~/bin
+PATH=$PATH:${link_dir}
 
 alias update='sudo apt update; apt list --upgradable'
 alias install='sudo apt install'
@@ -60,8 +83,9 @@ alias h='history'
 	source ~/.bashrc
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME} "
+	postmsg[${msg_count}]="${FUNCNAME} "
 }
+
 
 create-swap () {
 	sudo fallocate -l 1G /swapfile
@@ -72,7 +96,7 @@ create-swap () {
 	echo '/swapfile swap swap defaults 0 0' | sudo tee -a /etc/fstab
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME} "
+	postmsg[${msg_count}]="${FUNCNAME} "
 }
 
 
@@ -82,20 +106,29 @@ update-upgrade () {
 	sudo apt upgrade -y
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME} "
+	postmsg[${msg_count}]="${FUNCNAME} "
 }
 
+
 build-essentials () {
-	# Install the basics for compiling and inside a VM
+	# Install the basics for compiling
 	sudo apt install -y build-essential module-assistant dkms
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME} "
+	postmsg[${msg_count}]="${FUNCNAME} "
 }
 
 essentials () {
-	# Install the essential stuff for most all Debian based systems (Deb, Ubuntu, RaspberryPi, Kali...)
-	sudo apt install -y htop vim net-tools nmon ssh tmux sshfs cmatrix vlc mplayer rtorrent exiv2 git cifs-utils exfatprogs gparted
+	# Install the essential stuff
+
+	# utils
+	sudo apt install -y htop vim net-tools nmon ssh tmux sshfs rtorrent cifs-utils gparted git
+
+	# media
+	sudo apt install -y vlc mplayer exiv2 cmatrix
+
+	# Sometimes not available so put it alone
+	sudo apt install -y	exfatprogs 
 
 	# Sometimes not available on newer releases, so put it alone
 	sudo apt install -y exfat-utils 
@@ -108,21 +141,26 @@ essentials () {
 
 	# Add in items needed for GVFS
  	sudo apt install -y gvfs-backends gvfs-fuse
+
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME} "
+	postmsg[${msg_count}]="${FUNCNAME} "
 }
+
 
 optionals () {
-	# Added the ~n needed when install wildcards using apt (or I could have fallen back to apt-get)
+	# Misc and optional
 	sudo apt install -y rdesktop iftop ircii ubuntu-restricted-extras
+	sudo apt install -y keepassxc color-picker
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME} "
+	postmsg[${msg_count}]="${FUNCNAME} "
 }
+
 
 qemu-guest () {
 	sudo apt install -y qemu-guest-agent spice-vdagent
-	mkdir -p ~/bin
+	# Link a local bin to the .local/bin (another function)
+	create_bin
 	echo $'#!/usr/bin/bash
 xrandr --output  \"$(xrandr | awk \'/ connected/{print $1; exit; }\')\" --auto' > ~/bin/display-resizer
 	chmod 777 ~/bin/display-resizer
@@ -138,10 +176,10 @@ Terminal=false
 StartupNotify=false
 " > ~/Desktop/Display-Resizer.desktop
 
-
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME}: display-resizer (to change screen to window size) was place in ~/bin/ "
+	postmsg[${msg_count}]="${FUNCNAME}: display-resizer (to change screen to window size) was place in ~/bin/ "
 }
+
 
 sublime () {
 	# source: https://www.sublimetext.com/docs/linux_repositories.html#apt
@@ -151,7 +189,7 @@ sublime () {
 	sudo apt install -y sublime-text
  
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME} "
+	postmsg[${msg_count}]="${FUNCNAME} "
 }
 
 
@@ -165,15 +203,9 @@ wallpapers () {
 	fi
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME} "
+	postmsg[${msg_count}]="${FUNCNAME} "
 }
 
-gui-software () {
-	sudo apt install -y keepassxc color-picker
-
- 	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME} "
-}
 
 xfce-goodies () {
 	# Install the essential XFCE Ubuntu stuff
@@ -255,15 +287,17 @@ Hidden=false" > ${autoStart}/Plank.desktop
 
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME} "
+	postmsg[${msg_count}]="${FUNCNAME} "
 }
 
-xfce-gcloud () {
+
+xfce-install () {
 	sudo apt install -y xubuntu-desktop xfce4
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME} "
+	postmsg[${msg_count}]="${FUNCNAME} "
 }
+
 
 brave-browser () {
 	# Install of Brave Browser.  Instructions right on https://brave.com/linux/
@@ -274,7 +308,7 @@ brave-browser () {
 	sudo apt install -y brave-browser
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME} "
+	postmsg[${msg_count}]="${FUNCNAME} "
 }
 
 chromium () {
@@ -282,7 +316,7 @@ chromium () {
 	sudo apt install -y chromium
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME} "
+	postmsg[${msg_count}]="${FUNCNAME} "
 }
 
 screensavers () {
@@ -290,7 +324,7 @@ screensavers () {
 	sudo apt install -y xscreensaver xscreensaver-data xscreensaver-data-extra xscreensaver-gl xscreensaver-gl-extra rss-glx
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME} "
+	postmsg[${msg_count}]="${FUNCNAME} "
 }
 
 google-chrome () {
@@ -313,7 +347,7 @@ google-chrome () {
 	fi
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME} "
+	postmsg[${msg_count}]="${FUNCNAME} "
 }
 
 1password () {
@@ -324,7 +358,7 @@ google-chrome () {
    	rm ./1password-latest.deb
   
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME} "
+	postmsg[${msg_count}]="${FUNCNAME} "
 }
 
 google-remote () {
@@ -340,7 +374,7 @@ google-remote () {
 	sudo systemctl disable lightdm.service
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME}: Visit https://remotedesktop.google.com/headless for setting up the connection."
+	postmsg[${msg_count}]="${FUNCNAME}: Visit https://remotedesktop.google.com/headless for setting up the connection."
 }
 
 calibre () {
@@ -351,7 +385,7 @@ calibre () {
 	sudo -v && wget -nv -O- https://download.calibre-ebook.com/linux-installer.sh | sudo sh /dev/stdin
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME}: Ready to run and import your ebooks. "
+	postmsg[${msg_count}]="${FUNCNAME}: Ready to run and import your ebooks. "
 }
 
 dummy-video () {
@@ -385,19 +419,9 @@ EndSection
 ' | sudo tee -a /etc/X11/xorg.conf
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME} Reboot to make it all wonderful. "
+	postmsg[${msg_count}]="${FUNCNAME} Reboot to make it all wonderful. "
 }
 
-
-ssh-config () {
-	# Install OpenSSH if not install
- 	sudo apt install -y ssh
- 	# Setup SSH which will require user input, so putting at end of script
-	ssh-keygen
-
-	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME} "
-}
 
 clean-up () {
 	# Clean up everything
@@ -408,74 +432,9 @@ clean-up () {
 	sudo apt -y clean
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME} "
+	postmsg[${msg_count}]="${FUNCNAME} "
 }
 
-lamp () {
-	# Install the needed items for a basic LAMP
-	# Apache
-	sudo apt -y install apache2
-	# PHP
-	sudo apt -y install libapache2-mod-php7.3 php7.3 php7.0-gd php7.0-xml php7.0-curl php7.0-mbstring php7.0-mcrypt php7.0-xmlrpc
-	# MySQL (really MariaDB)
-	sudo apt install php7.0-mysql mariadb-server mariadb-client
-	# Start DB
-	sudo systemctl start mariadb
-	# Answer the DB wizard
-	sudo mysql_secure_installation
-	# enable and configure TLS and rewrite modules
-	sudo a2enmod rewrite ssl
-	sudo a2ensite default-ssl.conf
-	
-	# Allow Emacs to color code PHP and web pages
-	sudo apt -y install php-elisp
-	
-	# Install phpMyAdmin
-	# https://www.digitalocean.com/community/tutorials/how-to-install-and-secure-phpmyadmin-on-debian-9
-	sudo apt -y install phpmyadmin php-mbstring php-gettext
-	echo 'Post phpMyAdmin config and security at:'
-	echo 'https://www.digitalocean.com/community/tutorials/how-to-install-and-secure-phpmyadmin-on-debian-9'
-	echo ''
-	
-	echo 'Visit https://www.howtoforge.com/tutorial/install-wordpress-5-with-apache-on-debian-9/'
-	echo 'You still need to:'
-	echo '1. Keep root from logging into DB without password'
-	echo '2. Change DocumentRoot directive in'
-	echo '    /etc/apache2/sites-enabled/000-default.conf'
-	echo '    /etc/apache2/sites-enabled/default-ssl.conf'
-	echo ''
-	echo '		<Directory /var/www/html>'
-	echo '			Options Indexes FollowSymLinks MultiViews'
-	echo '			AllowOverride All'
-	echo '			Require all granted'
-	echo '		</Directory>'
-	echo ''
-	echo '3. Add default-ssl.conf TLS configuration file'
-	echo '4. And then restart a few things listed in the above URL instructions'
-	echo ''
-
-	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME} "
-}
-
-lap-no-m () {
-	# Install the needed items for a basic LAMP (no MySQL)
-	# Apache
-	sudo apt -y install apache2
-	# PHP
-	sudo apt -y install php7.3 php7.3-cli php7.3-common
-	# MySQL PHP connector only
-	sudo apt install php7.3-mysql
-	# enable and configure TLS and rewrite modules
-	sudo a2enmod rewrite ssl
-	sudo a2ensite default-ssl.conf
-	
-	# Allow Emacs to color code PHP and web pages
-	sudo apt -y install php-elisp
-
-	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME} "
-}
 
 realtek-wifi () {
 	sudo apt install build-essential git libelf-dev dkms bc
@@ -490,69 +449,75 @@ realtek-wifi () {
 	sudo modprobe 88x2bu
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME} "
+	postmsg[${msg_count}]="${FUNCNAME} "
 }
+
 
 tor () {
 	# Find the current version
-	TOR_VERSION=`wget -q -O - https://www.torproject.org/download/languages/ | grep 'linux' | awk -F '/' '{ print $5 }'`
+	tor_version=`wget -q -O - https://www.torproject.org/download/languages/ | grep 'linux' | awk -F '/' '{ print $5 }'`
 
 	# Install the TOR Browser on Linux
-	# TOR_FILE=tor-browser-linux64-${TOR_VERSION}_en-US.tar.xz
-	TOR_FILE=tor-browser-linux64-${TOR_VERSION}_ALL.tar.xz
-	TOR_LINK=https://dist.torproject.org/torbrowser/${TOR_VERSION}/${TOR_FILE}
+	# tor_file=tor-browser-linux64-${tor_version}_en-US.tar.xz
+	tor_file=tor-browser-linux64-${tor_version}_ALL.tar.xz
+	tor_link=https://dist.torproject.org/torbrowser/${tor_version}/${tor_file}
 
 	# Download, untar, and set up for use
-	wget ${TOR_LINK}
-	tar -xf ${TOR_FILE}
-	rm ${TOR_FILE}
+	wget ${tor_link}
+	tar -xf ${tor_file}
+	rm ${tor_file}
 	echo '#!/bin/bash' > ./tor-browser/copy-to-start-menu.sh 
 	echo 'mkdir -p ~/.local/share/applications/' >> ./tor-browser/copy-to-start-menu.sh
 	echo 'cp start-tor-browser.desktop ~/.local/share/applications/' >> ./tor-browser/copy-to-start-menu.sh
 	chmod 777 ./tor-browser/copy-to-start-menu.sh
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME} "
+	postmsg[${msg_count}]="${FUNCNAME} "
 }
 
-expressvpn () {
-	# BASE_URL=https://www.expressvpn.works/clients/linux
-	BASE_URL=https://download.expressvpn.xyz/clients/linux
+
+expressvpn-cli () {
+	# Source: https://www.expressvpn.com/support/vpn-setup/app-for-linux-cli/
+
+	# base_url=https://www.expressvpn.works/clients/linux
+	base_url=https://download.expressvpn.xyz/clients/linux
 	
-	FILE_1=expressvpn_3.37.0.2-1_amd64.deb
-	wget ${BASE_URL}/${FILE_1}
-	sudo dpkg -i ${FILE_1}
-	rm ${FILE_1}
+	file_name=expressvpn_3.37.0.2-1_amd64.deb
+	wget ${base_url}/${file_name}
+	sudo dpkg -i ${file_name}
+	rm ${file_name}
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME}: expressvpn activate ERGQ8M5C6PWCOVTJDW9T0Q5 (rearrange)"
+	postmsg[${msg_count}]="${FUNCNAME}: expressvpn activate ERGQ8M5C6PWCOVTJDW9T0Q5 (rearrange)"
 }
 
+
 realvnc () {
-	VNCSERVER=VNC-Server-6.11.0-Linux-x64.deb
-	VNCVIEWER=VNC-Viewer-6.22.315-Linux-x64.deb
-	VNCURL=http://home.jackson.pub/public/vnc/
+	vncserver_file=VNC-Server-6.11.0-Linux-x64.deb
+	vncviewer_file=VNC-Viewer-6.22.315-Linux-x64.deb
+	vnc_url=http://home.jackson.pub/public/vnc/
 
 	# Download the RealVNC files
-	wget ${VNCURL}${VNCSERVER}
-	wget ${VNCURL}${VNCVIEWER}
+	wget ${vnc_url}${vncserver_file}
+	wget ${vnc_url}${vncviewer_file}
 	
 	# Install both
-	sudo dpkg --install $VNCSERVER
+	sudo dpkg --install $vncserver_file
 	sudo apt install -f -y
-	sudo dpkg --install $VNCVIEWER
+	sudo dpkg --install $vncviewer_file
 	sudo apt install -f -y
 
 	# Set up a nice alias for starting up with multiple resolutions
 	# echo "alias vv='vncserver :28 -geometry 1280x800 -randr 1280x800,1024x768,1920x1080,1280x1024,1600x1200,1440x900,1600x900,2880x1800,1680x1050'" >> ~/.bashrc
 	
 	# Remove the install files
-	rm $VNCSERVER
-	rm $VNCVIEWER
+	rm $vncserver_file
+	rm $vncviewer_file
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME}: sudo vnclicense -add 4326B-7H7LA-RG5F2-292D5-9LTTA"
+	postmsg[${msg_count}]="${FUNCNAME}: sudo vnclicense -add 4326B-7H7LA-RG5F2-292D5-9LTTA"
 }
+
 
 realvnc-xfce-add () {
 	# This is needed to get RealVNC Server working on XFCE (specifically Xubuntu)
@@ -565,19 +530,21 @@ vncserver-virtual -kill $DISPLAY' | sudo tee -a /etc/vnc/xstartup.custom
 	sudo chmod 755 /etc/vnc/xstartup.custom
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME} "
+	postmsg[${msg_count}]="${FUNCNAME} "
 }
 
+
 wine () {
-	DISTRO=`lsb_release  -i | awk '{print $3}' | tr '[:upper:]' '[:lower:]'`
-	CODE_NAME=`lsb_release  -c | awk '{print $2}' | tr '[:upper:]' '[:lower:]'`
+	distro=`lsb_release  -i | awk '{print $3}' | tr '[:upper:]' '[:lower:]'`
+	code_name=`lsb_release  -c | awk '{print $2}' | tr '[:upper:]' '[:lower:]'`
+	 
 	# Install dependances
 	sudo apt install software-properties-common zenity cabextract
 	# Add the i386 arch
 	sudo dpkg --add-architecture i386
 	# Add the wine repo
 	wget -nc https://dl.winehq.org/wine-builds/winehq.key && sudo apt-key add winehq.key
-	sudo apt-add-repository 'deb https://dl.winehq.org/wine-builds/'${DISTRO}'/ '${CODE_NAME}' main'
+	sudo apt-add-repository 'deb https://dl.winehq.org/wine-builds/'${distro}'/ '${code_name}' main'
 	sudo add-apt-repository ppa:cybermax-dexter/sdl2-backport
 	# Install 4.21
 	sudo apt install --install-recommends winehq-devel
@@ -585,12 +552,10 @@ wine () {
 	sudo apt install winetricks
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME} "
+	postmsg[${msg_count}]="${FUNCNAME} "
 }
 
 wine-chromebook () {
-	DISTRO=`lsb_release  -i | awk '{print $3}' | tr '[:upper:]' '[:lower:]'`
-	CODE_NAME=`lsb_release  -c | awk '{print $2}' | tr '[:upper:]' '[:lower:]'`
 	# Install dependances
 	sudo apt install software-properties-common zenity cabextract
 	# Add the i386 arch
@@ -608,7 +573,7 @@ wine-chromebook () {
 	chmod +x winetricks
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME} "
+	postmsg[${msg_count}]="${FUNCNAME} "
 }
 
 libdvd () {
@@ -616,16 +581,16 @@ libdvd () {
 	sudo dpkg-reconfigure libdvd-pkg
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME} "
+	postmsg[${msg_count}]="${FUNCNAME} "
 }
 
 google-drive () {
-	if [[ ${BUILD} = "DEBIAN" ]]; then
+	if [[ ${build_name} = "DEBIAN" ]]; then
 		sudo apt install software-properties-common dirmngr
 		sudo echo deb http://ppa.launchpad.net/alessandro-strada/ppa/ubuntu xenial main >> /etc/apt/sources.list.d/alessandro-strada-ubuntu-ppa-bionic.list
 		sudo echo deb-src http://ppa.launchpad.net/alessandro-strada/ppa/ubuntu xenial main >> /etc/apt/sources.list.d/alessandro-strada-ubuntu-ppa-bionic.list
 		sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys AD5F235DF639B041
-	elif [[ ${BUILD} = "UBUNTU" ]]; then
+	elif [[ ${build_name} = "UBUNTU" ]]; then
 		sudo add-apt-repository ppa:alessandro-strada/ppa
 	else
 		# Not sure what, so we will try the basic Ubuntu packages
@@ -636,7 +601,7 @@ google-drive () {
 	google-drive-ocamlfuse
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME}: Create a directory and mount with google-drive-ocamlfuse with: \n\t mkdir ~/gdrive \n\t google-drive-ocamlfuse ~/gdrive)"
+	postmsg[${msg_count}]="${FUNCNAME}: Create a directory and mount with google-drive-ocamlfuse with: \n\t mkdir ~/gdrive \n\t google-drive-ocamlfuse ~/gdrive)"
 }
 
 qemu-virtmanager () {
@@ -651,14 +616,14 @@ qemu-virtmanager () {
   	sudo chmod 777 ${virt_path}
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME}: Reboot before running Qemu or Virt-Manager. "
+	postmsg[${msg_count}]="${FUNCNAME}: Reboot before running Qemu or Virt-Manager. "
 }
 
 xo-installer () {
 	git clone https://github.com/ronivay/XenOrchestraInstallerUpdater.git
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME} "
+	postmsg[${msg_count}]="${FUNCNAME} "
 }
 sqlite () {
 	# CLI tools
@@ -667,7 +632,7 @@ sqlite () {
 	sudo apt install -y sqlitebrowser
 
  	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME} - GUI and CLI tools installed."
+	postmsg[${msg_count}]="${FUNCNAME} - GUI and CLI tools installed."
 
 }
 
@@ -679,7 +644,7 @@ gps () {
 	sudo systemctl start gpsd
 
  	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME} CLI Tools: cgps and gpsmon"
+	postmsg[${msg_count}]="${FUNCNAME} CLI Tools: cgps and gpsmon"
 
 }
 
@@ -692,8 +657,8 @@ ham-chirp () {
 	version=`curl "https://archive.chirpmyradio.com/chirp_next/" | grep -m 1 'folder.gif' | awk -F '"' '{print $8}' | sed 's/next-//' | sed 's/\///'`
 	
 	# Download the most recent version
-	link='https://archive.chirpmyradio.com/chirp_next/next-'${version}'/chirp-'${version}'-py3-none-any.whl'
-	wget ${link}
+	url_link='https://archive.chirpmyradio.com/chirp_next/next-'${version}'/chirp-'${version}'-py3-none-any.whl'
+	wget ${url_link}
 
 	# Install CHIRP (and Python dependencies)
 	pipx install --system-site-packages ./chirp-${version}-py3-none-any.whl
@@ -702,8 +667,9 @@ ham-chirp () {
 	rm chirp-${version}-py3-none-any.whl
 	
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME}: Run using ~/.local/bin/chirp "
+	postmsg[${msg_count}]="${FUNCNAME}: Run using ~/.local/bin/chirp "
 }
+
 
 ham-ax25 () {
 	# Install AX.25 tools
@@ -711,8 +677,9 @@ ham-ax25 () {
 	sudo apt -y install ax25-tools ax25-apps
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME}: Be sure to update /etc/ax25/axports "
+	postmsg[${msg_count}]="${FUNCNAME}: Be sure to update /etc/ax25/axports "
 }
+
 
 ham-ax25-service () {
 	# Creating AX.25 as a service
@@ -725,7 +692,7 @@ ham-ax25-service () {
  	mv ax25systemd del.ax25systemd
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME}: AX.25 as a service. \n   # Start/Stop \n   sudo systemctl start ax25 \n\n   # Enable auto start \n   sudo systemctl enable ax25 "
+	postmsg[${msg_count}]="${FUNCNAME}: AX.25 as a service. \n   # Start/Stop \n   sudo systemctl start ax25 \n\n   # Enable auto start \n   sudo systemctl enable ax25 "
 }
 
 
@@ -739,8 +706,9 @@ ham-direwolf () {
   	sudo usermod -aG direwolf $USER
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME}: Edit and config ~/direwolf.conf"
+	postmsg[${msg_count}]="${FUNCNAME}: Edit and config ~/direwolf.conf"
 }
+
 
 ham-xastir () {
 	# Xastir
@@ -749,8 +717,9 @@ ham-xastir () {
 	sudo usermod -a -G xastir-ax25 $USER
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME} "
+	postmsg[${msg_count}]="${FUNCNAME} "
 }
+
 
 ham-yaac () {
 	# YAAC
@@ -776,8 +745,9 @@ StartupNotify=false" > $yaacPath/.local/share/applications/YAAC.desktop
  	rm YAAC.zip
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME}: Run YAAC with the bash script file \n\t ${yaacPath}/yaac"
+	postmsg[${msg_count}]="${FUNCNAME}: Run YAAC with the bash script file \n\t ${yaacPath}/yaac"
 }
+
 
 ham-ken-thd72 () {
 	# Kenwood TH-D72 Configuration
@@ -787,8 +757,9 @@ ham-ken-thd72 () {
 	sudo usermod -a -G tty $USER
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME}: Please reboot to fully restart service"
+	postmsg[${msg_count}]="${FUNCNAME}: Please reboot to fully restart service"
 }
+
 
 ham-pat () {
 	# Pat
@@ -798,8 +769,9 @@ ham-pat () {
 	sudo /usr/share/pat/ax25/install-systemd-ax25-unit.bash
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME}: Edit and config \n\t ~/.config/pat/config.json \n\t /etc/ax25/axports"
+	postmsg[${msg_count}]="${FUNCNAME}: Edit and config \n\t ~/.config/pat/config.json \n\t /etc/ax25/axports"
 }
+
 
 ham-clock () {
 	sudo apt install -y curl make g++ libx11-dev libgpiod-dev xorg-dev
@@ -820,8 +792,9 @@ ham-clock () {
 	sudo make install
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME} "
+	postmsg[${msg_count}]="${FUNCNAME} "
 }
+
 
 vscode () {
 	# VS Code download and install
@@ -832,8 +805,9 @@ vscode () {
 	rm ${NAME}
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME} "
+	postmsg[${msg_count}]="${FUNCNAME} "
 }
+
 
 signal () {
 	# Source: https://signal.org/download/
@@ -852,8 +826,10 @@ signal () {
 	sudo apt update && sudo apt install signal-desktop
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	POSTMSG[${COUNT}]="${FUNCNAME} "
+	postmsg[${msg_count}]="${FUNCNAME} "
 }
+
+
 
 ######################################################################
 # MAIN
@@ -891,27 +867,30 @@ declare -a SELECTION
 #   example of a possible value
 #             $SELECTION=(create-alias update-upgrade options ssh-config)
 NEWT_COLORS='window=,'
-SELECTION=( $(NEWT_COLORS='window=,' whiptail --title "Post Install on Debian Based Architecture - ${VERSION}" --checklist --separate-output \
-	"What post install activities would you like to run on ${BUILD} ${RELEASE} (${CODENAME})?" ${HEIGHT} ${WIDTH} $((HEIGHT-8)) \
+SELECTION=( $(NEWT_COLORS='window=,' whiptail --title "Post Install on Debian Based Architecture - ${script_version}" --checklist --separate-output \
+	"What post install activities would you like to run on ${build_name} ${build_release} (${build_codename})?" ${HEIGHT} ${WIDTH} $((HEIGHT-8)) \
+	\
 	"set-bashrc"        "Create common alias in .bashrc " OFF \
 	"ssh-config"        "set up SSH keys in .ssh " OFF \
 	"update-upgrade"    "Update and upgrade core system " OFF \
 	"build-essentials"  "Install: build-essential module-assistant dkms " OFF \
 	"essentials"        "Install: basic CLI utilities - vim and more" OFF \
-	"optionals"         "Install: rdesktop iftop ircii ubuntu-restricted-extras" OFF \
-	"gui-software"      "Install: GUI Pinta, Color Picker, KeepassXC" OFF \
+	"optionals"         "Install: rdesktop keepassxc ubuntu-restricted-extras and more  " OFF \
+	"clean-up"          "Clean up install stuff " OFF \
+	"=== SOFTWARE ====" "============================================" OFF \
  	"sublime"           "Install: Sublime" OFF \
-	"clean-up"          "Clean up everything" OFF \
 	"brave-browser"     "Install: Brave browser " OFF \
-	"chromium"          "Install: Chromium browser " OFF \
 	"google-chrome"     "Install: Google Chrome browser " OFF \
+	"chromium"          "Install: Chromium browser " OFF \
  	"1password"         "Install: 1Password desktop " OFF \
 	"calibre"           "Install: Calibre ebook organizer " OFF \
-	"create-swap"       "GCP: Create swap space on a Micro compute " OFF \
-	"dummy-video"       "Install: Dummy video for physical computers " OFF \
-	"expressvpn"        "Install: Express VPN " OFF \
+	"expressvpn-cli"    "Install: Express VPN for CLI" OFF \
 	"google-drive"	    "Install: Google Drive using OCamlFUSE " OFF \
 	"google-remote"     "GCP: install Google Remote " OFF \
+	"signal"            "Install: Signal messenger" OFF \
+	"tor"               "Install: TOR Browser " OFF \
+	"vscode"            "Install: Visual Studio (open source) for Linux " OFF \
+	"=== HAM RADIO ===" "============================================" OFF \
 	"gps"               "Install: GPS CLI tools for USB units " OFF \
 	"ham-ax25"          "Install: Ham: AX.25 tools" OFF \
 	"ham-ax25-service"  "Config : Ham: AX.25 as a service " OFF \
@@ -922,8 +901,9 @@ SELECTION=( $(NEWT_COLORS='window=,' whiptail --title "Post Install on Debian Ba
 	"ham-pat"           "Install: Ham: Pat Winlink" OFF \
 	"ham-xastir"        "Install: Ham: Xastir" OFF \
 	"ham-yaac"          "Install: Ham: YAAC" OFF \
-	"lamp"              "GCP: install LAMP 7.0 (Linux, Apache, MariaDB, PHP) on GCP " OFF \
-	"lap-no-m"          "GCP: install LAP(no MySQL) 7.3 on GCP " OFF \
+	"=== UTILITIES ===" "============================================" OFF \
+	"create-swap"       "GCP: Create swap space on a Micro compute " OFF \
+	"dummy-video"       "Install: Dummy video for physical computers " OFF \
 	"libdvd"            "Install: Install and configure libdvd-pkg for DVDs" OFF \
 	"qemu-guest"        "Install: Guest tools for qemu/kvm " OFF \
 	"qemu-virtmanager"  "Install: Qemu and VirtManager" OFF \
@@ -931,25 +911,22 @@ SELECTION=( $(NEWT_COLORS='window=,' whiptail --title "Post Install on Debian Ba
 	"realvnc"           "Install: RealVNC files" OFF \
 	"realvnc-xfce4-add" "Install: Configure XFCE4 startup with RealVNC (pre 2021)" OFF \
 	"screensavers"      "Install: Screensavers" OFF \
-	"signal"            "Install: Signal messenger" OFF \
 	"sqlite"            "Install: SQLite CLI and GUI" OFF \
-	"tor"               "Install: TOR Browser " OFF \
-	"vscode"            "Install: Visual Studio for Linux " OFF \
 	"wallpapers"        "Install: A bunch of Ubuntu wallpapers" OFF \
 	"wine-chromebook"   "Install: Wine & Winetricks on a Chromebook" OFF \
 	"wine"              "Install: Wine & Winetricks" OFF \
-	"xfce-gcloud"       "GCP: install xfce4 for GCP compute " OFF \
+	"xfce-install"      "Install: xubuntu-desktop & xfce4 " OFF \
 	"xfce-goodies"      "Install: xfce-goodies and plank" OFF \
 	"xo-installer"      "Install: XenOrchestraInstallerUpdater" OFF \
 	3>&1 1>&2 2>&3) )
 
 # Loop through all the returned selections, which is stored in an array $SELECTION
-# We need a counter to assign to the POSTMSG array
-COUNT=0
+# We need a counter to assign to the postmsg array
+msg_count=0
 for i in "${SELECTION[@]}"
 do
-	$i $COUNT
-	((COUNT=COUNT+1))
+	$i $msg_count
+	((msg_count=msg_count+1))
 done
 
 echo "--- System Information -------------"
@@ -965,12 +942,12 @@ echo "------------------------------------"
 
 
 # Show all the functions that were run, and any post message, if any where selected
-if [ ${COUNT} != 0 ]; then
+if [ ${msg_count} != 0 ]; then
 	echo "Well this is exciting, we have installed and configured the following:"
 fi
-COUNT=1
-for i in "${POSTMSG[@]}"
+msg_count=1
+for i in "${postmsg[@]}"
 do
-	echo -e $COUNT. $i
-	((COUNT=COUNT+1))
+	echo -e $msg_count. $i
+	((msg_count=msg_count+1))
 done
