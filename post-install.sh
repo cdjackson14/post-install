@@ -866,7 +866,7 @@ declare -a SELECTION
 #
 #   example of a possible value
 #             $SELECTION=(create-alias update-upgrade options ssh-config)
-NEWT_COLORS='window=,'
+#NEWT_COLORS='window=,'
 SELECTION=( $(NEWT_COLORS='window=,' whiptail --title "Post Install on Debian Based Architecture - ${script_version}" --checklist --separate-output \
 	"What post install activities would you like to run on ${build_name} ${build_release} (${build_codename})?" ${HEIGHT} ${WIDTH} $((HEIGHT-8)) \
 	\
@@ -877,7 +877,7 @@ SELECTION=( $(NEWT_COLORS='window=,' whiptail --title "Post Install on Debian Ba
 	"essentials"        "Install: basic CLI utilities - vim and more" OFF \
 	"optionals"         "Install: rdesktop keepassxc ubuntu-restricted-extras and more  " OFF \
 	"clean-up"          "Clean up install stuff " OFF \
-	"=== SOFTWARE ====" "============================================" OFF \
+	"____SOFTWARE_______" "____________________________________________" OFF \
  	"sublime"           "Install: Sublime" OFF \
 	"brave-browser"     "Install: Brave browser " OFF \
 	"google-chrome"     "Install: Google Chrome browser " OFF \
@@ -890,7 +890,7 @@ SELECTION=( $(NEWT_COLORS='window=,' whiptail --title "Post Install on Debian Ba
 	"signal"            "Install: Signal messenger" OFF \
 	"tor"               "Install: TOR Browser " OFF \
 	"vscode"            "Install: Visual Studio (open source) for Linux " OFF \
-	"=== HAM RADIO ===" "============================================" OFF \
+	"____HAM RADIO______" "____________________________________________" OFF \
 	"gps"               "Install: GPS CLI tools for USB units " OFF \
 	"ham-ax25"          "Install: Ham: AX.25 tools" OFF \
 	"ham-ax25-service"  "Config : Ham: AX.25 as a service " OFF \
@@ -901,7 +901,7 @@ SELECTION=( $(NEWT_COLORS='window=,' whiptail --title "Post Install on Debian Ba
 	"ham-pat"           "Install: Ham: Pat Winlink" OFF \
 	"ham-xastir"        "Install: Ham: Xastir" OFF \
 	"ham-yaac"          "Install: Ham: YAAC" OFF \
-	"=== UTILITIES ===" "============================================" OFF \
+	"____UTILITIES______" "____________________________________________" OFF \
 	"create-swap"       "GCP: Create swap space on a Micro compute " OFF \
 	"dummy-video"       "Install: Dummy video for physical computers " OFF \
 	"libdvd"            "Install: Install and configure libdvd-pkg for DVDs" OFF \
