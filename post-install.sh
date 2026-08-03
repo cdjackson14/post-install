@@ -51,7 +51,7 @@
 	menu () {
 		select_main=$(\
 			NEWT_COLORS="" whiptail \
-			--backtitle "${build_name} ${build_release} (${build_codename})" \
+			--backtitle "   ${build_name} ${build_release} (${build_codename})" \
 			--title     "Post Install MAIN MENU v${script_version}" \
 			--menu      "Please choose:" \
 			--cancel-button "Quit" \
@@ -68,7 +68,7 @@
 	submenu_BASH () {
 		select_sub=$(\
 			NEWT_COLORS="" whiptail \
-			--backtitle "${build_name} ${build_release} (${build_codename})" \
+			--backtitle "   ${build_name} ${build_release} (${build_codename})" \
 			--title     "SUBMENU: ${select_main}" \
 			--checklist "Select components to install  (arrows to move; SPACE to select; TAB to jump focus):" \
 			--cancel-button "Back to Main Menu" \
@@ -85,7 +85,7 @@
 	submenu_Utilities () {
 		select_sub=$(\
 			NEWT_COLORS="" whiptail \
-			--backtitle "${build_name} ${build_release} (${build_codename})" \
+			--backtitle "   ${build_name} ${build_release} (${build_codename})" \
 			--title     "SUBMENU: ${select_main}" \
 			--checklist "Select components to install  (arrows to move; SPACE to select; TAB to jump focus):" \
 			--cancel-button "Back to Main Menu" \
@@ -111,7 +111,7 @@
 	submenu_Software () {
 		select_sub=$(\
 			NEWT_COLORS="" whiptail \
-			--backtitle "${build_name} ${build_release} (${build_codename})" \
+			--backtitle "   ${build_name} ${build_release} (${build_codename})" \
 			--title     "SUBMENU: ${select_main}" \
 			--checklist "Select components to install  (arrows to move; SPACE to select; TAB to jump focus):" \
 			--cancel-button "Back to Main Menu" \
@@ -133,7 +133,7 @@
 	submenu_Ham () {
 		select_sub=$(\
 			NEWT_COLORS="" whiptail \
-			--backtitle "${build_name} ${build_release} (${build_codename})" \
+			--backtitle "   ${build_name} ${build_release} (${build_codename})" \
 			--title     "SUBMENU: ${select_main}" \
 			--checklist "Select components to install  (arrows to move; SPACE to select; TAB to jump focus):" \
 			--cancel-button "Back to Main Menu" \
@@ -155,7 +155,7 @@
 	submenu_Old () {
 		select_sub=$(\
 			NEWT_COLORS="" whiptail \
-			--backtitle "${build_name} ${build_release} (${build_codename})" \
+			--backtitle "   ${build_name} ${build_release} (${build_codename})" \
 			--title     "SUBMENU: ${select_main}" \
 			--checklist "Select components to install  (arrows to move; SPACE to select; TAB to jump focus):" \
 			--cancel-button "Back to Main Menu" \
