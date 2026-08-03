@@ -5,162 +5,52 @@
 ##############################
 # INIT
 ##############################
-	script_version=4.0
 
-	# Check how big the current screen/terminal is
-	screen_height=`stty size | cut -d" " -f1`
-	screen_width=`stty size | cut -d" " -f2`
+script_version=3.7
 
-	# Array for storing final comments from each section to be displayed at the end of running
-	declare -a postmsg
+# Array for storing final comments from each section to be displayed at the end of running
+declare -a postmsg
 
-	logfile="post-install.log"
-
-	# Chromebooks don't have lsb-release so use /etc/os-release
-	build_name=`grep ^ID= /etc/os-release | awk -F = '{ print $2 }' | tr '[:lower:]' '[:upper:]'`
-	build_release=`grep ^VERSION_ID= /etc/os-release | awk -F = '{ print $2 }' | sed s/\"//g`
-	build_codename=`grep VERSION_CODENAME /etc/os-release | awk -F = '{ print $2 }'`
-	hostname=$(hostname -f)
-	logged_in_user=$(whoami)
-	os_info=$(lsb_release -d | awk -F ':\t' '{print $2}')
-	installed_x=$(basename /etc/xdg/menus/*application* | awk -F '-' '{print $1}')
-	# Evaluate the value of $installed_x
-	if [ "$build_name" == "UBUNTU"  ]; then
-		if [ "$installed_x" == "xfce" ]; then
-			installed_system="Xubuntu"
-		elif [ "$installed_x" == "gnome" ]; then
-			installed_system="Ubuntu"
-		else
-			installed_system="Could not determine specific Ubuntu flavor based on '$installed_x'"
-		fi
-	fi
-	current_date=$(date)
-	cpu_model=$(grep "model name" /proc/cpuinfo | head -n 1 | awk -F ': ' '{print $2}')
-	cpu_cores=$(grep -c "processor" /proc/cpuinfo)
-	total_memory_kb=$(grep "MemTotal" /proc/meminfo | awk '{print $2}')
-	total_memory_gb=$((total_memory_kb / 1024 / 1024))
-
-	# array holding all the submenu choices
-	declare -a select_sub
-
-
-
-##############################
-# MENU FUNCTIONS
-##############################
-	menu () {
-		select_main=$(\
-			NEWT_COLORS="" whiptail --menu "Main Menu" --cancel-button "Quit"\
-			$((screen_height-3)) $((screen_width-3)) $((screen_height-11)) \
-			"BASH"  "Basic things needed for a good BASH environment." \
-			"Utilities"  "Common utilities in CLI and GUI." \
-			"Software"  "General software, mostly graphical." \
-			"Ham"  "Ham radio software and general comms." \
-			"Old"  "Old and archived, may not be most up to date." \
-		3>&1 1>&2 2>&3)
-	}
-
-	submenu_BASH () {
-		select_sub=$(\
-			NEWT_COLORS="" whiptail --checklist "Sub menu for ${select_main}" \
-			$((screen_height-3)) $((screen_width-3)) $((screen_height-11)) \
-			"set-bashrc"       "Create common aliases in .bashrc and set up local BIN." OFF \
-			"ssh-config"       "Set up SSH keys in .ssh." OFF \
-			"update-upgrade"   "Update and upgrade core system." OFF \
-			"essentials"       "Basic CLI utilities (vim and more)." OFF \
-			"build-essentials" "Build-essential module-assistant dkms." OFF \
-		3>&1 1>&2 2>&3)
-	}
-
-	submenu_Utilities () {
-		select_sub=$(\
-			NEWT_COLORS="" whiptail --checklist "Sub menu for ${select_main}" \
-			$((screen_height-3)) $((screen_width-3)) $((screen_height-11)) \
-			"create-swap"       "GCP: Create swap space on a Micro compute " OFF \
-			"clean-up"          "Clean up install stuff " OFF \
-			"dummy-video"       "Install: Dummy video for physical computers " OFF \
-			"libdvd"            "Install: Install and configure libdvd-pkg for DVDs" OFF \
-			"qemu-guest"        "Install: Guest tools for qemu/kvm " OFF \
-			"qemu-virtmanager"  "Install: Qemu and VirtManager" OFF \
-			"realtek-wifi"      "Install: Realtek AC1200 wifi drivers (rtl88x2BU) " OFF \
-			"realvnc"           "Install: RealVNC files" OFF \
-			"realvnc-xfce4-add" "Install: Configure XFCE4 startup with RealVNC (pre 2021)" OFF \
-			"screensavers"      "Install: Screensavers" OFF \
-			"sqlite"            "Install: SQLite CLI and GUI" OFF \
-			"wallpapers"        "Install: A bunch of Ubuntu wallpapers" OFF \
-			"wine-chromebook"   "Install: Wine & Winetricks on a Chromebook" OFF \
-			"wine"              "Install: Wine & Winetricks" OFF \
-			"xfce-install"      "Install: xubuntu-desktop & xfce4 " OFF \
-			"xfce-goodies"      "Install: xfce-goodies and plank" OFF \
-		3>&1 1>&2 2>&3)
-	}
-
-	submenu_Software () {
-		select_sub=$(\
-			NEWT_COLORS="" whiptail --checklist "Sub menu for ${select_main}" \
-			$((screen_height-3)) $((screen_width-3)) $((screen_height-11)) \
-		 	"sublime"           "Install: Sublime" OFF \
-			"brave-browser"     "Install: Brave browser " OFF \
-			"google-chrome"     "Install: Google Chrome browser " OFF \
-			"chromium"          "Install: Chromium browser " OFF \
-		 	"1password"         "Install: 1Password desktop " OFF \
-			"calibre"           "Install: Calibre ebook organizer " OFF \
-			"expressvpn-cli"    "Install: Express VPN for CLI" OFF \
-			"google-drive"	    "Install: Google Drive using OCamlFUSE " OFF \
-			"google-remote"     "GCP: install Google Remote " OFF \
-			"signal"            "Install: Signal messenger" OFF \
-			"tor"               "Install: TOR Browser " OFF \
-			"vscode"            "Install: Visual Studio (open source) for Linux " OFF \
-		3>&1 1>&2 2>&3)
-	}
-
-	submenu_Ham () {
-		select_sub=$(\
-			NEWT_COLORS="" whiptail --checklist "Sub menu for ${select_main}" \
-			$((screen_height-3)) $((screen_width-3)) $((screen_height-11)) \
-			"gps"               "Install: GPS CLI tools for USB units " OFF \
-			"ham-ax25"          "Install: Ham: AX.25 tools" OFF \
-			"ham-ax25-service"  "Config : Ham: AX.25 as a service " OFF \
-		 	"ham-chirp"         "Install: Ham: Chirp" OFF \
-			"ham-clock"         "Install: Ham: HamClock" OFF \
-			"ham-direwolf"      "Install: Ham: Direwolf" OFF \
-			"ham-ken-thd72"     "Install: Ham: Kenwood TH-D72 Tools" OFF \
-			"ham-pat"           "Install: Ham: Pat Winlink" OFF \
-			"ham-xastir"        "Install: Ham: Xastir" OFF \
-			"ham-yaac"          "Install: Ham: YAAC" OFF \
-		3>&1 1>&2 2>&3)
-	}
-
-	submenu_Old () {
-		select_sub=$(\
-			NEWT_COLORS="" whiptail --checklist "Sub menu for ${select_main}" \
-			$((screen_height-3)) $((screen_width-3)) $((screen_height-11)) \
-			"xo-installer"      "Install: XenOrchestraInstallerUpdater" OFF \
-		3>&1 1>&2 2>&3)
-	}
-
-
-##############################
-# SCRIPT FUNCTIONS
-##############################
-
-### BASH
-create-bin () {
-	# Link or Create ~/bin for local scripts
-	my_bin="${HOME}/bin"
-	hidden_bin="${HOME}/.local/bin"
-	# Only do this if the local bin does not exist... otherwise skip all this
-	if [ -d "${my_bin}" ]; then
-		echo ""
+# Chromebooks don't have lsb-release so use /etc/os-release
+build_name=`grep ^ID= /etc/os-release | awk -F = '{ print $2 }' | tr '[:lower:]' '[:upper:]'`
+build_release=`grep ^VERSION_ID= /etc/os-release | awk -F = '{ print $2 }' | sed s/\"//g`
+build_codename=`grep VERSION_CODENAME /etc/os-release | awk -F = '{ print $2 }'`
+hostname=$(hostname -f)
+logged_in_user=$(whoami)
+os_info=$(lsb_release -d | awk -F ':\t' '{print $2}')
+installed_x=$(basename /etc/xdg/menus/*application* | awk -F '-' '{print $1}')
+# Evaluate the value of $installed_x
+if [ "$build_name" == "UBUNTU"  ]; then
+	if [ "$installed_x" == "xfce" ]; then
+		installed_system="Xubuntu"
+	elif [ "$installed_x" == "gnome" ]; then
+		installed_system="Ubuntu"
 	else
-		# My wanted BIN does not exist, so now check for other locations to link to
-		if [ -d "$hidden_bin" ]; then
-			ln -s ${hidden_bin} ${my_bin}
-		else
-			mkdir -p "$my_bin"
-		fi
+		installed_system="Could not determine specific Ubuntu flavor based on '$installed_x'"
+	fi
+fi
+current_date=$(date)
+cpu_model=$(grep "model name" /proc/cpuinfo | head -n 1 | awk -F ': ' '{print $2}')
+cpu_cores=$(grep -c "processor" /proc/cpuinfo)
+total_memory_kb=$(grep "MemTotal" /proc/meminfo | awk '{print $2}')
+total_memory_gb=$((total_memory_kb / 1024 / 1024))
+
+
+##############################
+# FUNCTIONS
+##############################
+
+create_bin () {
+	# Link or Create ~/bin for local scripts
+	localbin="~/.local/bin"
+	link_dir="~/bin"
+	if [ -d "$localbin" ]; then
+		ln -s ${localbin} ${link_dir}
+	else
+		mkdir -p "$link_dir"
 	fi
 }
+
 
 ssh-config () {
 	# Install OpenSSH if not install
@@ -172,9 +62,10 @@ ssh-config () {
 	postmsg[${msg_count}]="${FUNCNAME} "
 }
 
+
 set-bashrc () {
 	# Set this up
-	create-bin
+	create_bin
 
 	# Update the .bashrc with some helpful alias commands
 	echo -e "
@@ -195,6 +86,7 @@ alias h='history'
 	postmsg[${msg_count}]="${FUNCNAME} "
 }
 
+
 create-swap () {
 	sudo fallocate -l 1G /swapfile
 	sudo dd if=/dev/zero of=/swapfile bs=1024 count=1048576
@@ -207,6 +99,7 @@ create-swap () {
 	postmsg[${msg_count}]="${FUNCNAME} "
 }
 
+
 update-upgrade () {
 	# Update the system
 	sudo apt update &&
@@ -215,6 +108,7 @@ update-upgrade () {
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
 	postmsg[${msg_count}]="${FUNCNAME} "
 }
+
 
 build-essentials () {
 	# Install the basics for compiling
@@ -252,6 +146,7 @@ essentials () {
 	postmsg[${msg_count}]="${FUNCNAME} "
 }
 
+
 optionals () {
 	# Misc and optional
 	sudo apt install -y rdesktop iftop ircii ubuntu-restricted-extras
@@ -261,10 +156,11 @@ optionals () {
 	postmsg[${msg_count}]="${FUNCNAME} "
 }
 
+
 qemu-guest () {
 	sudo apt install -y qemu-guest-agent spice-vdagent
 	# Link a local bin to the .local/bin (another function)
-	create-bin
+	create_bin
 	echo $'#!/usr/bin/bash
 xrandr --output  \"$(xrandr | awk \'/ connected/{print $1; exit; }\')\" --auto' > ~/bin/display-resizer
 	chmod 777 ~/bin/display-resizer
@@ -284,6 +180,7 @@ StartupNotify=false
 	postmsg[${msg_count}]="${FUNCNAME}: display-resizer (to change screen to window size) was place in ~/bin/ "
 }
 
+
 sublime () {
 	# source: https://www.sublimetext.com/docs/linux_repositories.html#apt
  	wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/sublimehq-archive.gpg > /dev/null
@@ -294,6 +191,7 @@ sublime () {
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
 	postmsg[${msg_count}]="${FUNCNAME} "
 }
+
 
 wallpapers () {
 	# Things to install with wildcard (for Ubuntu 20.04+)
@@ -307,6 +205,7 @@ wallpapers () {
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
 	postmsg[${msg_count}]="${FUNCNAME} "
 }
+
 
 xfce-goodies () {
 	# Install the essential XFCE Ubuntu stuff
@@ -386,9 +285,11 @@ StartupNotify=false
 Terminal=false
 Hidden=false" > ${autoStart}/Plank.desktop
 
+
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
 	postmsg[${msg_count}]="${FUNCNAME} "
 }
+
 
 xfce-install () {
 	sudo apt install -y xubuntu-desktop xfce4
@@ -396,6 +297,7 @@ xfce-install () {
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
 	postmsg[${msg_count}]="${FUNCNAME} "
 }
+
 
 brave-browser () {
 	# Install of Brave Browser.  Instructions right on https://brave.com/linux/
@@ -520,6 +422,7 @@ EndSection
 	postmsg[${msg_count}]="${FUNCNAME} Reboot to make it all wonderful. "
 }
 
+
 clean-up () {
 	# Clean up everything
 	echo "Cleaning Up" &&
@@ -531,6 +434,7 @@ clean-up () {
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
 	postmsg[${msg_count}]="${FUNCNAME} "
 }
+
 
 realtek-wifi () {
 	sudo apt install build-essential git libelf-dev dkms bc
@@ -547,6 +451,7 @@ realtek-wifi () {
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
 	postmsg[${msg_count}]="${FUNCNAME} "
 }
+
 
 tor () {
 	# Find the current version
@@ -570,6 +475,7 @@ tor () {
 	postmsg[${msg_count}]="${FUNCNAME} "
 }
 
+
 expressvpn-cli () {
 	# Source: https://www.expressvpn.com/support/vpn-setup/app-for-linux-cli/
 
@@ -584,6 +490,7 @@ expressvpn-cli () {
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
 	postmsg[${msg_count}]="${FUNCNAME}: expressvpn activate ERGQ8M5C6PWCOVTJDW9T0Q5 (rearrange)"
 }
+
 
 realvnc () {
 	vncserver_file=VNC-Server-6.11.0-Linux-x64.deb
@@ -611,6 +518,7 @@ realvnc () {
 	postmsg[${msg_count}]="${FUNCNAME}: sudo vnclicense -add 4326B-7H7LA-RG5F2-292D5-9LTTA"
 }
 
+
 realvnc-xfce-add () {
 	# This is needed to get RealVNC Server working on XFCE (specifically Xubuntu)
 	# Set up the StartX
@@ -624,6 +532,7 @@ vncserver-virtual -kill $DISPLAY' | sudo tee -a /etc/vnc/xstartup.custom
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
 	postmsg[${msg_count}]="${FUNCNAME} "
 }
+
 
 wine () {
 	distro=`lsb_release  -i | awk '{print $3}' | tr '[:upper:]' '[:lower:]'`
@@ -716,7 +625,6 @@ xo-installer () {
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
 	postmsg[${msg_count}]="${FUNCNAME} "
 }
-
 sqlite () {
 	# CLI tools
 	sudo apt install -y sqlite3 sqlite3-tools sqlite-utils
@@ -762,6 +670,7 @@ ham-chirp () {
 	postmsg[${msg_count}]="${FUNCNAME}: Run using ~/.local/bin/chirp "
 }
 
+
 ham-ax25 () {
 	# Install AX.25 tools
 	echo "Installing and configuring AX.25 tools"
@@ -770,6 +679,7 @@ ham-ax25 () {
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
 	postmsg[${msg_count}]="${FUNCNAME}: Be sure to update /etc/ax25/axports "
 }
+
 
 ham-ax25-service () {
 	# Creating AX.25 as a service
@@ -785,6 +695,7 @@ ham-ax25-service () {
 	postmsg[${msg_count}]="${FUNCNAME}: AX.25 as a service. \n   # Start/Stop \n   sudo systemctl start ax25 \n\n   # Enable auto start \n   sudo systemctl enable ax25 "
 }
 
+
 ham-direwolf () {
 	# Direwolf
 	echo "Installing and configuring Direwolf"
@@ -798,6 +709,7 @@ ham-direwolf () {
 	postmsg[${msg_count}]="${FUNCNAME}: Edit and config ~/direwolf.conf"
 }
 
+
 ham-xastir () {
 	# Xastir
 	echo "Installing and configuring Xastir"
@@ -807,6 +719,7 @@ ham-xastir () {
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
 	postmsg[${msg_count}]="${FUNCNAME} "
 }
+
 
 ham-yaac () {
 	# YAAC
@@ -835,6 +748,7 @@ StartupNotify=false" > $yaacPath/.local/share/applications/YAAC.desktop
 	postmsg[${msg_count}]="${FUNCNAME}: Run YAAC with the bash script file \n\t ${yaacPath}/yaac"
 }
 
+
 ham-ken-thd72 () {
 	# Kenwood TH-D72 Configuration
 	echo "Installing additional Kenwood TH-D72 tools"
@@ -846,6 +760,7 @@ ham-ken-thd72 () {
 	postmsg[${msg_count}]="${FUNCNAME}: Please reboot to fully restart service"
 }
 
+
 ham-pat () {
 	# Pat
 	downloadLink=`wget -O - https://github.com/la5nta/pat/releases|grep amd64.deb |head -1 | grep strong | awk -F '"' '{ print $2}'`
@@ -856,6 +771,7 @@ ham-pat () {
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
 	postmsg[${msg_count}]="${FUNCNAME}: Edit and config \n\t ~/.config/pat/config.json \n\t /etc/ax25/axports"
 }
+
 
 ham-clock () {
 	sudo apt install -y curl make g++ libx11-dev libgpiod-dev xorg-dev
@@ -879,6 +795,7 @@ ham-clock () {
 	postmsg[${msg_count}]="${FUNCNAME} "
 }
 
+
 vscode () {
 	# VS Code download and install
 	URL='https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64'
@@ -890,6 +807,7 @@ vscode () {
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
 	postmsg[${msg_count}]="${FUNCNAME} "
 }
+
 
 signal () {
 	# Source: https://signal.org/download/
@@ -911,49 +829,105 @@ signal () {
 	postmsg[${msg_count}]="${FUNCNAME} "
 }
 
-##############################
+
+
+######################################################################
 # MAIN
-##############################
+######################################################################
 
-exitstatus=$?
+# Get the size of the current terminal window
+#eval `resize`
 
-while [ $exitstatus == 0 ]
+# Check to make sure whiptail is installed and available, if not install it.
+if hash whiptail 2>/dev/null; then
+	# It's installed, there is nothing to do... continue on.
+	echo ""
+else
+	# Not installed, or we can't find it, so let's prompt to install it
+	echo "Bummer, whiptail is required for the menu of install options."
+	read -p "Would you like to install whiptail now (y/n)? "
+	case $(echo $REPLY | tr '[A-Z]' '[a-z]') in
+		y|yes) sudo apt update; sudo apt install -y whiptail ;;
+		*)     echo "OK, we shall skip it, but things will not work :-(" ;;
+	esac
+fi
+
+# Check how big the current screen/terminal is
+# LINES=`tput lines`
+# COLUMNS=`tput cols`
+HEIGHT=`stty size | cut -d" " -f1`
+WIDTH=`stty size | cut -d" " -f2`
+
+declare -a SELECTION
+
+# OK, this is a little tricky...
+#   but I've added a left and right () before and after so the variable is
+#   interperated as an array.
+#
+#   example of a possible value
+#             $SELECTION=(create-alias update-upgrade options ssh-config)
+#NEWT_COLORS='window=,'
+SELECTION=( $(NEWT_COLORS='window=,' whiptail --title "Post Install on Debian Based Architecture - ${script_version}" --checklist --separate-output \
+	"What post install activities would you like to run on ${build_name} ${build_release} (${build_codename})?" ${HEIGHT} ${WIDTH} $((HEIGHT-8)) \
+	\
+	"set-bashrc"        "Create common alias in .bashrc " OFF \
+	"ssh-config"        "set up SSH keys in .ssh " OFF \
+	"update-upgrade"    "Update and upgrade core system " OFF \
+	"build-essentials"  "Install: build-essential module-assistant dkms " OFF \
+	"essentials"        "Install: basic CLI utilities - vim and more" OFF \
+	"optionals"         "Install: rdesktop keepassxc ubuntu-restricted-extras and more  " OFF \
+	"clean-up"          "Clean up install stuff " OFF \
+	"____SOFTWARE_______" "____________________________________________" OFF \
+ 	"sublime"           "Install: Sublime" OFF \
+	"brave-browser"     "Install: Brave browser " OFF \
+	"google-chrome"     "Install: Google Chrome browser " OFF \
+	"chromium"          "Install: Chromium browser " OFF \
+ 	"1password"         "Install: 1Password desktop " OFF \
+	"calibre"           "Install: Calibre ebook organizer " OFF \
+	"expressvpn-cli"    "Install: Express VPN for CLI" OFF \
+	"google-drive"	    "Install: Google Drive using OCamlFUSE " OFF \
+	"google-remote"     "GCP: install Google Remote " OFF \
+	"signal"            "Install: Signal messenger" OFF \
+	"tor"               "Install: TOR Browser " OFF \
+	"vscode"            "Install: Visual Studio (open source) for Linux " OFF \
+	"____HAM RADIO______" "____________________________________________" OFF \
+	"gps"               "Install: GPS CLI tools for USB units " OFF \
+	"ham-ax25"          "Install: Ham: AX.25 tools" OFF \
+	"ham-ax25-service"  "Config : Ham: AX.25 as a service " OFF \
+ 	"ham-chirp"         "Install: Ham: Chirp" OFF \
+	"ham-clock"         "Install: Ham: HamClock" OFF \
+	"ham-direwolf"      "Install: Ham: Direwolf" OFF \
+	"ham-ken-thd72"     "Install: Ham: Kenwood TH-D72 Tools" OFF \
+	"ham-pat"           "Install: Ham: Pat Winlink" OFF \
+	"ham-xastir"        "Install: Ham: Xastir" OFF \
+	"ham-yaac"          "Install: Ham: YAAC" OFF \
+	"____UTILITIES______" "____________________________________________" OFF \
+	"create-swap"       "GCP: Create swap space on a Micro compute " OFF \
+	"dummy-video"       "Install: Dummy video for physical computers " OFF \
+	"libdvd"            "Install: Install and configure libdvd-pkg for DVDs" OFF \
+	"qemu-guest"        "Install: Guest tools for qemu/kvm " OFF \
+	"qemu-virtmanager"  "Install: Qemu and VirtManager" OFF \
+	"realtek-wifi"      "Install: Realtek AC1200 wifi drivers (rtl88x2BU) " OFF \
+	"realvnc"           "Install: RealVNC files" OFF \
+	"realvnc-xfce4-add" "Install: Configure XFCE4 startup with RealVNC (pre 2021)" OFF \
+	"screensavers"      "Install: Screensavers" OFF \
+	"sqlite"            "Install: SQLite CLI and GUI" OFF \
+	"wallpapers"        "Install: A bunch of Ubuntu wallpapers" OFF \
+	"wine-chromebook"   "Install: Wine & Winetricks on a Chromebook" OFF \
+	"wine"              "Install: Wine & Winetricks" OFF \
+	"xfce-install"      "Install: xubuntu-desktop & xfce4 " OFF \
+	"xfce-goodies"      "Install: xfce-goodies and plank" OFF \
+	"xo-installer"      "Install: XenOrchestraInstallerUpdater" OFF \
+	3>&1 1>&2 2>&3) )
+
+# Loop through all the returned selections, which is stored in an array $SELECTION
+# We need a counter to assign to the postmsg array
+msg_count=0
+for i in "${SELECTION[@]}"
 do
-	menu
-	exitstatus=$?
-	if [ $exitstatus == 0 ]; then
-		submenu_$select_main
-		exitstatus=$?
-		if [ $exitstatus == 0 ]; then
-			# Loop through all the returned selections, which are stored in an array $select_sub
-			msg_count=0
-			for i in $select_sub
-			do
-				#eval $i | tee ${logfile}
-				eval $i $msg_count
-				((msg_count=msg_count+1))
-			done
-
-			# Show all the functions that were run, and any post message, if any where selected
-			echo " #########################################################################"
-			if [ ${msg_count} != 0 ]; then
-				echo " Well this is exciting, we have installed and configured the following:"
-				msg_count=1
-				for i in "${postmsg[@]}"
-				do
-					echo -e "    " $msg_count. $i
-					((msg_count=msg_count+1))
-				done
-				echo ""
-			fi
-			echo " Press any key to return to the menu.        "
-			echo " #########################################################################"
-			read -n 1 -s -r -p ""
-		else
-			exitstatus=0
-		fi
-	else
-		echo ""
+	$i $msg_count
+	((msg_count=msg_count+1))
+done
 
 echo "--- System Information -------------"
 echo "       Computer Name: $hostname"
@@ -966,5 +940,14 @@ echo "           CPU Cores: $cpu_cores"
 echo "        Total Memory: $total_memory_gb GB (${total_memory_kb} MB)"
 echo "------------------------------------"
 
-	fi
+
+# Show all the functions that were run, and any post message, if any where selected
+if [ ${msg_count} != 0 ]; then
+	echo "Well this is exciting, we have installed and configured the following:"
+fi
+msg_count=1
+for i in "${postmsg[@]}"
+do
+	echo -e $msg_count. $i
+	((msg_count=msg_count+1))
 done
