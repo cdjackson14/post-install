@@ -50,20 +50,30 @@
 ##############################
 	menu () {
 		select_main=$(\
-			NEWT_COLORS="" whiptail --menu "Main Menu" --cancel-button "Quit"\
+			NEWT_COLORS="" whiptail \
+			--backtitle "${build_name} ${build_release} (${build_codename})" \
+			--title     "Post Install MAIN MENU v${script_version}" \
+			--menu      "Please choose:" \
+			--cancel-button "Quit" \
 			$((screen_height-3)) $((screen_width-3)) $((screen_height-11)) \
-			"BASH"  "Basic things needed for a good BASH environment." \
-			"Utilities"  "Common utilities in CLI and GUI." \
-			"Software"  "General software, mostly graphical." \
-			"Ham"  "Ham radio software and general comms." \
-			"Old"  "Old and archived, may not be most up to date." \
+			\
+			"BASH"       "   Basic things needed for a good BASH environment." \
+			"Utilities"  "   Install command utilities for CLI and GUI." \
+			"Software"   "   General software, mostly graphical." \
+			"Ham"        "   Ham radio and general comms software." \
+			"Old"        "   Old and archived, may not be most up to date." \
 		3>&1 1>&2 2>&3)
 	}
 
 	submenu_BASH () {
 		select_sub=$(\
-			NEWT_COLORS="" whiptail --checklist "Sub menu for ${select_main}" \
+			NEWT_COLORS="" whiptail \
+			--backtitle "${build_name} ${build_release} (${build_codename})" \
+			--title     "SUBMENU: ${select_main}" \
+			--checklist "Select components to install  (arrows to move; SPACE to select; TAB to jump focus):" \
+			--cancel-button "Back to Main Menu" \
 			$((screen_height-3)) $((screen_width-3)) $((screen_height-11)) \
+			\
 			"set-bashrc"       "Create common aliases in .bashrc and set up local BIN." OFF \
 			"ssh-config"       "Set up SSH keys in .ssh." OFF \
 			"update-upgrade"   "Update and upgrade core system." OFF \
@@ -74,50 +84,61 @@
 
 	submenu_Utilities () {
 		select_sub=$(\
-			NEWT_COLORS="" whiptail --checklist "Sub menu for ${select_main}" \
+			NEWT_COLORS="" whiptail \
+			--backtitle "${build_name} ${build_release} (${build_codename})" \
+			--title     "SUBMENU: ${select_main}" \
+			--checklist "Select components to install  (arrows to move; SPACE to select; TAB to jump focus):" \
+			--cancel-button "Back to Main Menu" \
 			$((screen_height-3)) $((screen_width-3)) $((screen_height-11)) \
-			"create-swap"       "GCP: Create swap space on a Micro compute " OFF \
+			\
+			"create-swap"       "Create swap space on a GCP micro compute " OFF \
 			"clean-up"          "Clean up install stuff " OFF \
-			"dummy-video"       "Install: Dummy video for physical computers " OFF \
-			"libdvd"            "Install: Install and configure libdvd-pkg for DVDs" OFF \
-			"qemu-guest"        "Install: Guest tools for qemu/kvm " OFF \
-			"qemu-virtmanager"  "Install: Qemu and VirtManager" OFF \
-			"realtek-wifi"      "Install: Realtek AC1200 wifi drivers (rtl88x2BU) " OFF \
-			"realvnc"           "Install: RealVNC files" OFF \
-			"realvnc-xfce4-add" "Install: Configure XFCE4 startup with RealVNC (pre 2021)" OFF \
-			"screensavers"      "Install: Screensavers" OFF \
-			"sqlite"            "Install: SQLite CLI and GUI" OFF \
-			"wallpapers"        "Install: A bunch of Ubuntu wallpapers" OFF \
-			"wine-chromebook"   "Install: Wine & Winetricks on a Chromebook" OFF \
-			"wine"              "Install: Wine & Winetricks" OFF \
-			"xfce-install"      "Install: xubuntu-desktop & xfce4 " OFF \
-			"xfce-goodies"      "Install: xfce-goodies and plank" OFF \
+			"dummy-video"       "Install a dummy video for physical computers " OFF \
+			"libdvd"            "Install and configure libdvd-pkg for DVDs" OFF \
+			"qemu-guest"        "Install guest tools for qemu/kvm " OFF \
+			"qemu-virtmanager"  "Install Qemu and VirtManager" OFF \
+			"realtek-wifi"      "Install Realtek AC1200 wifi drivers (rtl88x2BU) " OFF \
+			"realvnc"           "Install RealVNC files" OFF \
+			"realvnc-xfce4-add" "Install Configure XFCE4 startup with RealVNC (pre 2021)" OFF \
+			"screensavers"      "Install many screensavers" OFF \
+			"sqlite"            "Install SQLite CLI and GUI" OFF \
+			"wallpapers"        "Install A bunch of Ubuntu wallpapers" OFF \
+			"xfce-install"      "Install xubuntu-desktop & xfce4 " OFF \
+			"xfce-goodies"      "Install xfce-goodies and plank" OFF \
 		3>&1 1>&2 2>&3)
 	}
 
 	submenu_Software () {
 		select_sub=$(\
-			NEWT_COLORS="" whiptail --checklist "Sub menu for ${select_main}" \
+			NEWT_COLORS="" whiptail \
+			--backtitle "${build_name} ${build_release} (${build_codename})" \
+			--title     "SUBMENU: ${select_main}" \
+			--checklist "Select components to install  (arrows to move; SPACE to select; TAB to jump focus):" \
+			--cancel-button "Back to Main Menu" \
 			$((screen_height-3)) $((screen_width-3)) $((screen_height-11)) \
-		 	"sublime"           "Install: Sublime" OFF \
-			"brave-browser"     "Install: Brave browser " OFF \
-			"google-chrome"     "Install: Google Chrome browser " OFF \
-			"chromium"          "Install: Chromium browser " OFF \
-		 	"1password"         "Install: 1Password desktop " OFF \
-			"calibre"           "Install: Calibre ebook organizer " OFF \
-			"expressvpn-cli"    "Install: Express VPN for CLI" OFF \
-			"google-drive"	    "Install: Google Drive using OCamlFUSE " OFF \
-			"google-remote"     "GCP: install Google Remote " OFF \
-			"signal"            "Install: Signal messenger" OFF \
-			"tor"               "Install: TOR Browser " OFF \
-			"vscode"            "Install: Visual Studio (open source) for Linux " OFF \
+			\
+		 	"sublime"           "Install Sublime" OFF \
+			"brave-browser"     "Install Brave browser " OFF \
+			"google-chrome"     "Install Google Chrome browser " OFF \
+			"chromium"          "Install Chromium browser " OFF \
+		 	"1password"         "Install 1Password desktop " OFF \
+			"calibre"           "Install Calibre ebook organizer " OFF \
+			"expressvpn-cli"    "Install Express VPN for CLI" OFF \
+			"signal"            "Install Signal messenger" OFF \
+			"tor"               "Install TOR Browser " OFF \
+			"vscode"            "Install Visual Studio (open source) for Linux " OFF \
 		3>&1 1>&2 2>&3)
 	}
 
 	submenu_Ham () {
 		select_sub=$(\
-			NEWT_COLORS="" whiptail --checklist "Sub menu for ${select_main}" \
+			NEWT_COLORS="" whiptail \
+			--backtitle "${build_name} ${build_release} (${build_codename})" \
+			--title     "SUBMENU: ${select_main}" \
+			--checklist "Select components to install  (arrows to move; SPACE to select; TAB to jump focus):" \
+			--cancel-button "Back to Main Menu" \
 			$((screen_height-3)) $((screen_width-3)) $((screen_height-11)) \
+			\
 			"gps"               "Install: GPS CLI tools for USB units " OFF \
 			"ham-ax25"          "Install: Ham: AX.25 tools" OFF \
 			"ham-ax25-service"  "Config : Ham: AX.25 as a service " OFF \
@@ -133,9 +154,18 @@
 
 	submenu_Old () {
 		select_sub=$(\
-			NEWT_COLORS="" whiptail --checklist "Sub menu for ${select_main}" \
+			NEWT_COLORS="" whiptail \
+			--backtitle "${build_name} ${build_release} (${build_codename})" \
+			--title     "SUBMENU: ${select_main}" \
+			--checklist "Select components to install  (arrows to move; SPACE to select; TAB to jump focus):" \
+			--cancel-button "Back to Main Menu" \
 			$((screen_height-3)) $((screen_width-3)) $((screen_height-11)) \
+			\
 			"xo-installer"      "Install: XenOrchestraInstallerUpdater" OFF \
+			"wine-chromebook"   "Install Wine & Winetricks on a Chromebook" OFF \
+			"wine"              "Install Wine & Winetricks" OFF \
+			"google-drive"	    "Install: Google Drive using OCamlFUSE " OFF \
+			"google-remote"     "GCP: install Google Remote " OFF \
 		3>&1 1>&2 2>&3)
 	}
 
