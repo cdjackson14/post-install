@@ -76,6 +76,7 @@
 			\
 			"set-bashrc"       "Create common aliases in .bashrc and set up local BIN." OFF \
 			"ssh-config"       "Set up SSH keys in .ssh." OFF \
+			"cli-only"         "CLI only tools like tmux, htop, bat, ncdu and more." OFF \
 			"update-upgrade"   "Update and upgrade core system." OFF \
 			"essentials"       "Basic CLI utilities (vim and more)." OFF \
 			"build-essentials" "Build-essential module-assistant dkms." OFF \
@@ -233,6 +234,12 @@ create-swap () {
 	sudo swapon /swapfile
 	echo '/swapfile swap swap defaults 0 0' | sudo tee -a /etc/fstab
 
+	# Any message to display post all selected installs and configs.  Listed in a end summary.
+	postmsg[${msg_count}]="${FUNCNAME} "
+}
+
+cli-only () {
+	sudo apt install -y btop ncdu bat curl wget tmux elinks links lynx
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
 	postmsg[${msg_count}]="${FUNCNAME} "
 }
