@@ -5,7 +5,7 @@
 ##############################
 # INIT
 ##############################
-	script_version=4.1
+	script_version=4.1.1
 
 	# Check how big the current screen/terminal is
 	screen_height=`stty size | cut -d" " -f1`
@@ -77,9 +77,9 @@
 			"set-bashrc"       "Create common aliases in .bashrc and set up local BIN." OFF \
 			"ssh-config"       "Set up SSH keys in .ssh." OFF \
 			"cli-base"         "CLI only tools like tmux, htop, bat, ncdu and more." OFF \
-			"essentials"       "Basic CLI utilities (vim and more)." OFF \
+			"essentials"       "Essenital tools and utilities in the Linux life." OFF \
 			"update-upgrade"   "Update and upgrade core system." OFF \
-			"build-make" "Build-essential module-assistant dkms." OFF \
+			"build-make"       "Build-essential module-assistant dkms." OFF \
 		3>&1 1>&2 2>&3)
 	}
 
