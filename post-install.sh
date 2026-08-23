@@ -5,7 +5,7 @@
 ##############################
 # INIT
 ##############################
-	script_version=4.0
+	script_version=4.1
 
 	# Check how big the current screen/terminal is
 	screen_height=`stty size | cut -d" " -f1`
@@ -76,10 +76,10 @@
 			\
 			"set-bashrc"       "Create common aliases in .bashrc and set up local BIN." OFF \
 			"ssh-config"       "Set up SSH keys in .ssh." OFF \
-			"cli-only"         "CLI only tools like tmux, htop, bat, ncdu and more." OFF \
-			"update-upgrade"   "Update and upgrade core system." OFF \
+			"cli-base"         "CLI only tools like tmux, htop, bat, ncdu and more." OFF \
 			"essentials"       "Basic CLI utilities (vim and more)." OFF \
-			"build-essentials" "Build-essential module-assistant dkms." OFF \
+			"update-upgrade"   "Update and upgrade core system." OFF \
+			"build-make" "Build-essential module-assistant dkms." OFF \
 		3>&1 1>&2 2>&3)
 	}
 
@@ -238,24 +238,12 @@ create-swap () {
 	postmsg[${msg_count}]="${FUNCNAME} "
 }
 
-cli-only () {
-	sudo apt install -y btop ncdu bat curl wget tmux elinks links lynx
-	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	postmsg[${msg_count}]="${FUNCNAME} "
-}
-
-update-upgrade () {
-	# Update the system
-	sudo apt update &&
-	sudo apt upgrade -y
-
-	# Any message to display post all selected installs and configs.  Listed in a end summary.
-	postmsg[${msg_count}]="${FUNCNAME} "
-}
-
-build-essentials () {
-	# Install the basics for compiling
-	sudo apt install -y build-essential module-assistant dkms
+cli-base () {
+	# Needed all the time
+	sudo apt install -y ssh vim htop curl wget tmux git cmatrix
+	
+	# Other CLI that are nice to have
+	sudo apt install -y net-tools nmon sshfs rtorrent cifs-utils btop ncdu bat elinks links lynx
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
 	postmsg[${msg_count}]="${FUNCNAME} "
@@ -265,10 +253,10 @@ essentials () {
 	# Install the essential stuff
 
 	# utils
-	sudo apt install -y htop vim net-tools nmon ssh tmux sshfs rtorrent cifs-utils gparted git
+	sudo apt install -y gparted 
 
 	# media
-	sudo apt install -y vlc mplayer exiv2 cmatrix
+	sudo apt install -y vlc mplayer exiv2
 
 	# Sometimes not available so put it alone
 	sudo apt install -y	exfatprogs 
@@ -284,6 +272,23 @@ essentials () {
 
 	# Add in items needed for GVFS
  	sudo apt install -y gvfs-backends gvfs-fuse
+
+	# Any message to display post all selected installs and configs.  Listed in a end summary.
+	postmsg[${msg_count}]="${FUNCNAME} "
+}
+
+update-upgrade () {
+	# Update the system
+	sudo apt update &&
+	sudo apt upgrade -y
+
+	# Any message to display post all selected installs and configs.  Listed in a end summary.
+	postmsg[${msg_count}]="${FUNCNAME} "
+}
+
+build-make () {
+	# Install the basics for compiling
+	sudo apt install -y build-essential module-assistant dkms
 
 	# Any message to display post all selected installs and configs.  Listed in a end summary.
 	postmsg[${msg_count}]="${FUNCNAME} "
