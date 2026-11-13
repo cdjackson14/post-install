@@ -94,7 +94,7 @@
 			\
 			"create-swap"       "Create swap space on a GCP micro compute " OFF \
 			"clean-up"          "Clean up install stuff " OFF \
-			"tmatrix"           "Install the tmatrix (debian based only)"
+			"tmatrix"           "Install the tmatrix (debian based only)" OFF \
 			"dummy-video"       "Install a dummy video for physical computers " OFF \
 			"libdvd"            "Install and configure libdvd-pkg for DVDs" OFF \
 			"qemu-guest"        "Install guest tools for qemu/kvm " OFF \
@@ -579,6 +579,9 @@ tmatrix () {
 	# Download and install
 	wget https://debian.ccns.ncku.edu.tw/debian/pool/main/t/tmatrix/tmatrix_1.4%2Bdfsg-3_amd64.deb
 	sudo dpkg -i tmatrix_1.4+dfsg-3_amd64.deb
+
+	# Any message to display post all selected installs and configs.  Listed in a end summary.
+	postmsg[${msg_count}]="${FUNCNAME} Now you have the better Matrix terminal thing."
 }
 
 realtek-wifi () {
